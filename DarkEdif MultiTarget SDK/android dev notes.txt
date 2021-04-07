@@ -1,0 +1,137 @@
+﻿First, you need VS 2015 or VS 2017.
+Run Visual Studio Installer, ensure under Individual Components, you have:
+Android SDK
+Android NDK
+Android Ant
+
+Compiling to a XOR'd password-protected ZIP file with multiple subfolders:
+Zip root\assets\mmf\armeabi
+Zip root\assets\mmf\armeabi-v7a
+Zip root\assets\mmf\x86
+
+
+You cannot run VS debugger unless you UNCHECK Deploy in solution config.
+It expects the app to be preinstalled on the device, but it will run the app itself.
+
+
+
+
+Assumptions:
+1) Extern C needed - true
+2) No declspec needed for Linux - true, but visibility comes into play, dll functions are exposed differently
+3) Boolean equivalent to bool - true, both quietly unsigned char
+4) String equivalent to const char * - not quite, UTF8 modified
+5) String on Unicode equivalent to const wchar_t * - Java only uses UTF8, that is, once you convert from jstring.
+6) root before Unix needs common.h, eventpump.h, fdstream.h 
+X) WRONG: copy rc.exe and rcdll.dll from Window 10 SDK to C:\Program Files (x86)\Microsoft Visual Studio 15.0\VC\bin
+You should not need rc.exe. If you have it, you need to remove the Ext.rc file from your project. Ext.rc is not required on any build bar Windows.
+7) you can obtain a new zlib file from http://rpmfind.net/linux/rpm2html/search.php?query=zlib-devel
+   and it can be extracted with 7zip.
+8) Add math library link via adding m; to project properties under Linker\Library Dependencies,
+	as if you were adding libm.so library.
+	(note Bluewing uses zlib, so it needs m; and z;)
+	(may also need #include <cmath> instead of <math.h>, further investigation recommended)
+9) SIGSEGV will happen and point at random code IF Thumb architecture setting is set to Disabled.
+   Setting it to ARM is OK. 
+   NOTE: The source code will be wrong if you have your test app pre-installed; the version the debugger
+   installs from project properties will be confused with the preexisting one on the device.
+10) SIGABRT will happen and point to no code if Java has an exception and you don't clear it before the
+    next Java call. So if you call Java func A() and then B(), and A() has an exception, A() will
+	return without C++ exception, but once you call B() you get instant SIGABRT.
+11) SIGABRT will also happen if you completely misuse Java, like FindClass("A B"), spaces aren't
+	allowed in class names. This will happen instantly, not on next call.
+12) Your VS folder filters may not persist and be ignored upon solution reload if you duplicate
+	whole folders between OS-specific project and shared project. You can work around this via
+	changing the Unique Identifier property of the folder and resaving the project.
+	A GUID generation tool is available under main menu > Tools menu in VS.
+13) SIGBUS is another common error. It's similar to SIGSEGV, but means you used an impossible memory address,
+	instead of an invalid one.
+	CHECK RETURN AND PARAMETER TYPES OF JNI CALLS??!
+14) If you're unable to use the debugger completely, check the API package you're using in project settings.
+	Setting it closer to your phone model may work better.
+	
+  
+Still to fix:
+• FIXED: no embedded JSON
+• FIXED: a kinda scruffy Windows -> Android function preprocessor converter
+• FIXED: around fifteen no-ops replacing the Windows critical section
+• FIXED: iffy ASM conversion
+• LATER: cSurface is missing entirely
+• LATER: Unicode support is dead (iconv not around for some reason)
+• FIXED: The functions Fusion needs exposed are currently not set up
+• NOT NEEDED: Exports from project need standardizing (assets\mmf\etc)
+• DONE: Template extension plz
+
+List all functions in shared library:
+nm -DC path "path to so file.so"
+
+Read log of Fusion/ext:
+adb logcat -s MMFRuntime:V MMFRuntimeNative:V libc:V dalvikvm:E AndroidRuntime:I System.err:V
+	dalvikvm will report crash data, useful during JNI as in some cases it will give you the correct
+JNI signature.
+	libc is not of much use, but will give you some crash data.
+	MMFRuntime is the usual Java Android runtime for Fusion.
+	MMFRuntimeNative are events created by native extensions.
+
+Details on C vs Java function equivalents:
+native void mystuff(int b); // C++ native function in Java file
+extern "C" JNIEXPORT void JNICALL mystuff(JNIEnv *, jclass javaClass, int b); // static Java func calling it
+extern "C" JNIEXPORT void JNICALL mystuff(JNIEnv *, jobject javaInstancePtr, int b); // non-static Java func calling it
+
+Java has no concept of a non-class-based function, like C#.
+The first parameter is JNIEnv *. The second parameter is jclass for static Java functions, and
+jobject for non-static Java functions.
+
+WHEN PORTING WINDOWS EXT TO ANDROID COMPAT:
+1) Copy-paste all files.
+2) Change the project name in All Configurations under project properties - for both Android and Windows.
+3) Inside Common.h, remove any headers you didn't add yourself, and add #include "..\Inc\DarkEdif.h" just above EDITDATA's definition.
+4) Change the project name in Common.h
+5) Rewrite your Action, Condition and Expression functions to take one int ID parameter.
+6) Rewrite the Extension class's variable list (just the DarkEDIF stuff above MinimumBuild). Copy it from the template.
+7) Likewise copy the new constructor declaration into the Extension from the template.
+8) Rewrite the Extension constructor's initialiser list. Copy it from the template too.
+
+C:\Microsoft\AndroidNDK64\android-ndk-r16b\toolchains\aarch64-linux-android-4.9\prebuilt\windows-x86_64\bin\aarch64-linux-android-objdump.exe -drwC "C:\Users\Phi\Documents\Visual Studio 2015\Projects\Fusion-related\DarkEdif MultiTarget SDK\DarkEdif MultiTarget SDK\Phi Object\ARM64\DebugRuntime\Edif.o" > "C:\Users\Phi\Documents\Visual Studio 2015\Projects\Fusion-related\DarkEdif MultiTarget SDK\DarkEdif MultiTarget SDK\Phi Object\ARM64Edif.asm"
+
+
+"clang ORIG.exe" -xc++ "X:\tiny.cpp" -Wall -Dd  -D RUN_ONLY -D COXSDK -D HWABETA -D _CRT_SECURE_NO_WARNINGS -D _CRT_SECURE_NO_DEPRECATE -D CONFIG="\"Debug\"" -D PROJECT_NAME="\"Phi Object\"" -D COMPANY_NAME="\"Darkwire Software\"" -D EXTENSION_VERSION=1 -D BUILD_DATE="\"2020-03-06T02:12:17.4201240+00:00\"" -D YEAR="\"2020\"" -D __ANDROID_API__=19 -x c++ -fvisibility=hidden -E
+"clang ORIG.exe" -xc++ "X:\tiny.cpp" -Wall -Dd -D "CONFIG=\\"Debug\\"" -D "PROJECT_NAME=\\"Phi Object\\"" -D "COMPANY_NAME=\\"Darkwire Software\\"" -D EXTENSION_VERSION=1 -D "BUILD_DATE=\\"2020-03-06T02:31:39.2466530+00:00\\"" -D "YEAR=\\"2020\\"" -x c++ -fvisibility=hidden -E
+
+ -D RUN_ONLY -D COXSDK -D HWABETA -D _CRT_SECURE_NO_WARNINGS -D _CRT_SECURE_NO_DEPRECATE -D "CONFIG=\\"Debug\\"" -D "PROJECT_NAME=\\"Phi Object\\"" -D "COMPANY_NAME=\\"Darkwire Software\\"" -D EXTENSION_VERSION=1 -D "BUILD_DATE=\\"2020-03-06T02:12:17.4201240+00:00\\"" -D "YEAR=\\"2020\\"" -D __ANDROID_API__=19 -x c++ -fvisibility=hidden -E
+ 
+CORRECT:
+-D PROJECT_NAME="\"Phi Object\""
+-D "PROJECT_NAME=\"Phi Object\""
+INCORRECT:
+-D "PROJECT_NAME=\\"Phi Object\\""
+-D PROJECT_NAME="\\"Phi Object\\""
+
+
+Str$(TestParamsFunc( "Phi MMF Params", 0, 2.4, "Wowie", 50.3, 16, -2003.0, "Apples are the hardiest material known to man", 17.5, 190.0001, "Heh. Incredible.", 1, -0.33333, "Open", 5555555555.03, 203, "Impossible!" ))
+
+float Extension::TestParamsFunc(int a, float b, const TCHAR * c, float d, int e, float f, const TCHAR * g, int h, float i,
+	const TCHAR * j, int k, float l, const TCHAR * m, float n, int o, const TCHAR * p)
+
+{
+	"Title": "TestParamsFunc(",
+	"Returns": "Float",
+	"Parameters": [
+		[ "Integer", "First int" ],
+		[ "Float", "Second float" ],
+		[ "Text", "StringC" ],
+		[ "Float", "FloatD" ],
+		[ "Integer", "IntE" ],
+		[ "Float", "FloatF" ],
+		[ "Text", "StringG" ],
+		[ "Integer", "IntH" ],
+		[ "Float", "FloatI" ],
+		[ "String", "StringJ" ],
+		[ "Integer", "IntK" ],
+		[ "Float", "FloatL" ],
+		[ "Text", "StringM" ],
+		[ "Float", "FloatN" ],
+		[ "Integer", "IntO" ],
+		[ "Text", "StringP" ]
+	]
+}

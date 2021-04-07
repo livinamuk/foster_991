@@ -1,0 +1,480 @@
+{
+	"Identifier": "EXMP",
+	"Dependencies": "",
+	"UK English": {
+		"About": {
+			"Name": "Dialog Engine v1.0",
+			"Author": "Chris Burrows",
+			"Copyright": "Copyright \u00A9 Joseph Foster",
+			"Comment": "Commisioned by Joseph Foster. Sub-version 1",
+			"Help": "",
+			"URL": "https://www.principiaprogrammatica.com/"
+		},
+		"ActionMenu": [
+			[
+				"Files",
+				[ 0, "Load Dialog File" ],
+				[ 1, "Load Quest File" ],
+				[ 2, "LoadPlayerDataFile" ],
+				[ 3, "SavePlayerDataFile" ]
+			],
+			[
+				"Dialog",
+				[ 4, "Show Dialog by ID" ],
+				[ 5, "Select Response By Index" ]
+			],
+			[
+				"Values",
+				[ 6, "Set value" ],
+				[ 7, "Set value minimum" ],
+				[ 8, "Set value maximum" ],
+				[ 9, "Add to value" ],
+				[ 10, "Subract from value" ]
+			],
+			[
+				"Flags",
+				[ 11, "Set Flag to TRUE" ],
+				[ 12, "Set Flag to FALSE" ],
+				[ 13, "Toggle Flag" ]
+			],
+			[
+				"Items",
+				[ 14, "Give Item" ],
+				[ 15, "Take Item" ]
+			],
+			[
+				"Fusion Action",
+				[ 16, "Trigger Fusion Action by Name" ]
+			],
+			[
+				"Quests",
+				[ 17, "Activate Quest by Name" ],
+				[ 18, "Complete Quest by Name" ],
+				[ 19, "Fail Quest by Name" ],
+				[ 20, "Check for Quest Completion" ]
+			],
+			[
+				"Clean up",
+				[ 21, "Clear All Data" ]
+			]
+		],
+		"ConditionMenu": [
+			[ 0, "Is there dialog to show" ],
+			[ 1, "Is current dialog over" ],
+			[ 2, "Is a reponse a special color" ],
+			[ 3, "Does value exist" ],
+			[ 4, "Does player have item" ],
+			[ 5, "Is Fusion Action triggered" ],
+			[ 6, "Is a response empty" ],
+			[ 7, "Compare dialog image name" ],
+			[ 8, "Is flag true" ],
+			[ 9, "Is flag false" ],
+			[ 10, "Is Quest active?" ],
+			[ 11, "Is Quest inactive?" ],
+			[ 12, "Are Quest requirements fullfilled" ],
+			[ 13, "Is Quest complete" ],
+			[ 14, "Is Quest failed" ],
+			[ 15, "Was any Quest just completed" ],
+			[ 16, "Was any Quest just failed" ]
+		],
+		"ExpressionMenu": [
+			[
+				"Dialog",
+				[ 0, "Get Current Dialog Text" ],
+				[ 1, "Get Current Dialog Image Name" ],
+				[ 2, "Get Response Text by Index" ],
+				[ 3, "Get Avaliable Reponse Count" ],
+				[ 4, "Get Last Selected Reponse Index" ]
+			],
+			[
+				"Values",
+				[ 5, "Get Game Value by Name" ],
+				[ 6, "Get Game Value Name by Index" ],
+				[ 7, "Get Total Game Value Count" ]
+			],
+			[
+				"Flags",
+				[ 8, "Get Game Flag State as String" ],
+				[ 9, "Get Game Flag Name by Index" ],
+				[ 10, "Get Total Game Flag Count" ]
+			],
+			[
+				"Items",
+				[ 11, "Get Game Item Quantity by Name" ],
+				[ 12, "Get Game Item Name by Index" ],
+				[ 13, "Get Total Game Items" ]
+			],
+			[
+				"Fusion Actions",
+				[ 14, "Get Fusion Action Name by Index" ],
+				[ 15, "Get Total Pending Fusion Actions" ]
+			],
+			[
+				"Quests",
+				[ 16, "Get Quest Name by Index" ],
+				[ 17, "Get Quest State as string by name" ],
+				[ 18, "Get Quest Decsription by name" ],
+				[ 19, "Get Total Quest Count" ]
+			]
+		],
+		"Actions": [
+			{
+				"Title": "Load Dialog File %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Load Quest File %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Load Player Data File %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Save Player Data File %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Show Dialog %0",
+				"Parameters": [
+					[ "Integer", "ID" ]
+				]
+			},
+			{
+				"Title": "Select Response %0",
+				"Parameters": [
+					[ "Integer", "Index" ]
+				]
+			},
+			{
+				"Title": "Set %0 to %1",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Float", "value" ]
+				]
+			},
+			{
+				"Title": "Set %0 minimum to %1",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Float", "value" ]
+				]
+			},
+			{
+				"Title": "Set %0 maximum to %1",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Float", "value" ]
+				]
+			},
+			{
+				"Title": "Add %1 to %0",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Float", "value" ]
+				]
+			},
+			{
+				"Title": "Subract %1 from %0",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Float", "value" ]
+				]
+			},
+			{
+				"Title": "Set %0 to TRUE",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Set %0 to FALSE",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Toggle %0",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Give player item: %1x %0",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Integer", "quantity" ]
+				]
+			},
+			{
+				"Title": "Take player item: %1x %0",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Integer", "quantity" ]
+				]
+			},
+			{
+				"Title": "Trigger Fusion Action %0",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Activate Quest %0",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Complete Quest %0",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Fail Quest %0",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "Check for Quest Completion"
+			},
+			{
+				"Title": "Clear All Data"
+			}
+		],
+		"Conditions": [
+			{
+				"Title": "%o : There Dialog to Show",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Current Dialog is Over",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Response %0 has special color",
+				"Triggered": false,
+				"Parameters": [
+					[ "Integer", "Index" ]
+				]
+			},
+			{
+				"Title": "%o : Value exists: %0",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Player has item: %0",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Fusion Action triggered: %0",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Is reponse %0 empty",
+				"Triggered": false,
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "%o : Image is %0",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 is true",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 is false",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 quest is active",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 quest is inactive",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 quest requirements are met",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 quest is complete",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : %0 quest is failed",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Was any quest just completed",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Was any quest just failed",
+				"Triggered": false
+			}
+		],
+		"Expressions": [
+			{
+				"Title": "GetDialogText$(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetDialogImageName$(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetResponse$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetResponseCount(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetLastResponseIndex(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetValueByName(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "GetValueNameByIndex$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetTotalValueCount(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetFlagStateAsString$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "GetFlagNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetTotalFlagCount(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetItemQuantity(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "GetItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetTotalItemCount(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetFusionActionNameByIndex$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetPendingFusionActionCount(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetQuestNameByIndex$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetQuestDescritption$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "GetQuestStateAsString$(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "GetTotalQuestCount(",
+				"Returns": "Integer"
+			}
+		]
+	}
+}

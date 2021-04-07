@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Lib\Shared\DarkEdif.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Lib\Shared\Edif.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Lib\Shared\Edif.General.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Lib\Shared\Edif.Runtime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Lib\Shared\json.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Lib\Shared\ObjectSelection.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Actions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Conditions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Expressions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Extension.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Runtime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFlag.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFloat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameItem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Util.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Quest.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\DarkEdif.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\Edif.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\json.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\ObjectSelection.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\Props.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Extension.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MultiThreading.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DarkExt.json" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\DialogEngine.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFlag.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFloat.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameItem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Header.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Util.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Quest.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{ab691c62-8926-432e-8cb1-77240265c577}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

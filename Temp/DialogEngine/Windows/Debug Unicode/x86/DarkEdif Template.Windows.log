@@ -1,0 +1,17 @@
+﻿  DarkEdif.cpp
+  Edif.cpp
+  Edif.General.cpp
+  Edif.Runtime.cpp
+  json.cpp
+  ObjectSelection.cpp
+  Actions.cpp
+  Conditions.cpp
+  Expressions.cpp
+  Extension.cpp
+  Runtime.cpp
+  Edif.Edittime.cpp
+  Edittime.cpp
+  General.cpp
+  Generating Code...
+     Creating object C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\Temp/DialogEngine/Windows/Debug Unicode/x86\DialogEngine.exp
+  DarkEdif Template.Windows.vcxproj -> C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\Temp/DialogEngine/Windows/Debug Unicode/x86\DialogEngine.mfx

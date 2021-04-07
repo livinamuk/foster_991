@@ -1,0 +1,17 @@
+﻿  ANDROID_HOME=C:\\Microsoft\AndroidSDK\25
+  ANT_HOME=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Apps\apache-ant-1.9.3
+  JAVA_HOME=C:\Program Files\Android\jdk\microsoft_dist_openjdk_1.8.0.25
+  NDK_ROOT=C:\\Microsoft\AndroidNDK64\android-ndk-r16b
+  Minifying JS and checking that ASM/jump table exists for this platform...
+  AltPlatformPreBuildTool: running for extension DialogEngine, plat Android:x86...
+  
+  Unhandled Exception: System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DarkEdif Template\DialogEngine\Extension.cpp'.
+     at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+     at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+     at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+     at System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+     at System.IO.File.InternalReadAllText(String path, Encoding encoding, Boolean checkHost)
+     at System.IO.File.ReadAllText(String path)
+     at AltPlatformPreBuildTool.Program.Main2(String[] args)
+     at AltPlatformPreBuildTool.Program.Main(String[] args)
+C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\Lib\FusionSDK.props(453,3): error MSB3073: The command ""..\AltPlatformPreBuildTool.exe" /ProjName="DialogEngine" /TargetPlat="Android" /TargetArch="x86" /MacroInputFile="../Lib/Shared/ACECallTable_Macro.cpp"  /MacroOutputFile="C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\/Temp/DialogEngine/Temp_ACECallTable.cpp" /JSONInputPathToMinify="C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DarkEdif Template\\DarkExt.json"" exited with code -532462766.

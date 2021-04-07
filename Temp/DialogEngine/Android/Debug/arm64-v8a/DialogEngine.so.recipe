@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <SOLibPaths>C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\Temp\DialogEngine\Android\Debug\arm64-v8a\DialogEngine.so;C:\Microsoft\AndroidNDK64\android-ndk-r16b\prebuilt\android-arm64\gdbserver\gdbserver;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\arm64-v8a\libandroid_support.a;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\arm64-v8a\libc++_static.a;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\arm64-v8a\libc++abi.a</SOLibPaths>
+  <AndroidLibPaths />
+  <OObjPaths>C:\Users\livinkorrupt\Desktop\Extension Development\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\Temp\DialogEngine\Android\Debug\arm64-v8a</OObjPaths>
+  <Configuration>Debug</Configuration>
+  <Platform>ARM64</Platform>
+  <AndroidArchitecture>arm64-v8a</AndroidArchitecture>
+  <!--links to other recipe files-->
+  <RecipeFiles />
+</project>
