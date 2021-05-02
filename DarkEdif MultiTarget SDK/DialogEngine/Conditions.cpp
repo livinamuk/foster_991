@@ -37,7 +37,7 @@ bool Extension::IsFusionActionTriggered(TCHAR* name)
 
 bool Extension::IsReponseEmpty(int index)
 {
-	if (index < 0 || index >= DialogEngine::s_avaliableResponses.size())
+	if (index < 0 || index >= (int)DialogEngine::s_avaliableResponses.size())
 		return true;
 
 	if (DialogEngine::s_avaliableResponses[index].m_text.length() > 0)

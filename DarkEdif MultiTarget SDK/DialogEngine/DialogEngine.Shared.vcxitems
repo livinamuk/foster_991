@@ -28,6 +28,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFloat.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\GameItem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Header.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\NPC.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Quest.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Util.h" />
   </ItemGroup>
@@ -52,8 +53,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFlag.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFloat.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\GameItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\NPC.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Quest.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Util.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Runtime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp" />
   </ItemGroup>
 </Project>

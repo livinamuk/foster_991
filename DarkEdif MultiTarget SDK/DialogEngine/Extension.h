@@ -59,6 +59,12 @@ public:
         numeric IDs in the class constructor (Extension.cpp)
     */
 
+    /*struct FixedValueTimer
+    {
+        int fixedValue;
+        int timer;
+    };
+    std::vector<FixedValueTimer> m_fixedValueTimers;*/
 
 
     /// Actions
@@ -92,6 +98,22 @@ public:
         void CheckForQuestCompletion();
 
         void ClearAllData();
+
+
+        void RegisterNPCFixedValue(TCHAR* name, int value);
+        void RegisterItemFixedValue(TCHAR* name, int value);
+        void PickedUpFusionItem(int fixedValue);
+        
+        void CheckNPCQuestDialog(int fixedValue);
+        void CheckNPCInWorldDialog(int fixedValue);
+        void CheckNPCInWorldQuestDialogText(int fixedValue);
+        void CheckNPCStandardDialogText(int fixedValue);
+        void LoadInWorldDialogFile(TCHAR* name);
+        //void AddFixedValueTimer(int fixedValue, int timerDuration);
+        
+
+        void UpdateEngine();
+        void SetTextTimerDuration(int duration);
 
 		
 	/// Conditions
@@ -141,6 +163,15 @@ public:
         const TCHAR* GetQuestNameByIndex(int index);
         int GetTotalQuestCount();
         const TCHAR* GetQuestDescriptionByName(TCHAR* name);
+       
+        //const TCHAR* GetCurrentInWorldDialogString();
+        int GetCurrentDialogID();
+
+       // int Get_FixedValueTimer_TimerByFixedValue(int fixedValue);
+        int GetNPCCount();
+        const TCHAR* GetNPCInWorldDialogStringByIndex(int index);
+        int GetNPCFixedValueByIndex(int index);
+       // int Get_FixedValueTimer_TimerByIndex(int index);
 
     /* These are called if there's no function linked to an ID */
 

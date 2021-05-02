@@ -12,24 +12,18 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Expressions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Extension.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Runtime.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFlag.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFloat.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameItem.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Util.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Quest.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFlag.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameFloat.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\GameItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\NPC.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Quest.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Util.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\DarkEdif.h" />
@@ -41,27 +35,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Extension.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MultiThreading.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DarkExt.json" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\DialogEngine.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFlag.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFloat.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameItem.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\Header.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\Util.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\Quest.h">
-      <Filter>src</Filter>
-    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\DialogEngine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFlag.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameFloat.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\GameItem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Header.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\NPC.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Quest.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Util.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

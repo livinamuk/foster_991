@@ -16,47 +16,60 @@
 				[ 0, "Load Dialog File" ],
 				[ 1, "Load Quest File" ],
 				[ 2, "LoadPlayerDataFile" ],
-				[ 3, "SavePlayerDataFile" ]
+				[ 3, "Load In-World Dialog File" ],
+				[ 4, "SavePlayerDataFile" ]
 			],
 			[
 				"Dialog",
-				[ 4, "Show Dialog by ID" ],
-				[ 5, "Select Response By Index" ]
+				[ 5, "Show Dialog by ID" ],
+				[ 6, "Select Response By Index" ]
 			],
 			[
 				"Values",
-				[ 6, "Set value" ],
-				[ 7, "Set value minimum" ],
-				[ 8, "Set value maximum" ],
-				[ 9, "Add to value" ],
-				[ 10, "Subract from value" ]
+				[ 7, "Set value" ],
+				[ 8, "Set value minimum" ],
+				[ 9, "Set value maximum" ],
+				[ 10, "Add to value" ],
+				[ 11, "Subract from value" ]
 			],
 			[
 				"Flags",
-				[ 11, "Set Flag to TRUE" ],
-				[ 12, "Set Flag to FALSE" ],
-				[ 13, "Toggle Flag" ]
+				[ 12, "Set Flag to TRUE" ],
+				[ 13, "Set Flag to FALSE" ],
+				[ 14, "Toggle Flag" ]
 			],
 			[
 				"Items",
-				[ 14, "Give Item" ],
-				[ 15, "Take Item" ]
+				[ 15, "Register Item" ],
+				[ 16, "Give Item" ],
+				[ 17, "Take Item" ],
+				[ 18, "Picked Up Fusion Item" ]
 			],
 			[
 				"Fusion Action",
-				[ 16, "Trigger Fusion Action by Name" ]
+				[ 19, "Trigger Fusion Action by Name" ]
 			],
 			[
 				"Quests",
-				[ 17, "Activate Quest by Name" ],
-				[ 18, "Complete Quest by Name" ],
-				[ 19, "Fail Quest by Name" ],
-				[ 20, "Check for Quest Completion" ]
+				[ 20, "Activate Quest by Name" ],
+				[ 21, "Complete Quest by Name" ],
+				[ 22, "Fail Quest by Name" ],
+				[ 23, "Check for Quest Completion" ]
+			],
+			[
+				"NPCs",
+				[ 24, "Register NPC" ],
+				[ 25, "Check All NPC Quest Dialog" ],
+				[ 26, "Check All NPC In-World Dialog" ],
+				[ 27, "Set Text Timer Duration" ],
+				[ 28, "Check NPC In-World Quest Dialog" ],
+				[ 29, "Check NPC Standard Dialog" ]
 			],
 			[
 				"Clean up",
-				[ 21, "Clear All Data" ]
-			]
+				[ 30, "Clear All Data" ]
+			],
+			[ 31, "Update Engine" ]
 		],
 		"ConditionMenu": [
 			[ 0, "Is there dialog to show" ],
@@ -84,37 +97,44 @@
 				[ 1, "Get Current Dialog Image Name" ],
 				[ 2, "Get Response Text by Index" ],
 				[ 3, "Get Avaliable Reponse Count" ],
-				[ 4, "Get Last Selected Reponse Index" ]
+				[ 4, "Get Last Selected Reponse Index" ],
+				[ 5, "Get Current Dialog ID" ]
 			],
 			[
 				"Values",
-				[ 5, "Get Game Value by Name" ],
-				[ 6, "Get Game Value Name by Index" ],
-				[ 7, "Get Total Game Value Count" ]
+				[ 6, "Get Game Value by Name" ],
+				[ 7, "Get Game Value Name by Index" ],
+				[ 8, "Get Total Game Value Count" ]
 			],
 			[
 				"Flags",
-				[ 8, "Get Game Flag State as String" ],
-				[ 9, "Get Game Flag Name by Index" ],
-				[ 10, "Get Total Game Flag Count" ]
+				[ 9, "Get Game Flag State as String" ],
+				[ 10, "Get Game Flag Name by Index" ],
+				[ 11, "Get Total Game Flag Count" ]
 			],
 			[
 				"Items",
-				[ 11, "Get Game Item Quantity by Name" ],
-				[ 12, "Get Game Item Name by Index" ],
-				[ 13, "Get Total Game Items" ]
+				[ 12, "Get Game Item Quantity by Name" ],
+				[ 13, "Get Game Item Name by Index" ],
+				[ 14, "Get Total Game Items" ]
 			],
 			[
 				"Fusion Actions",
-				[ 14, "Get Fusion Action Name by Index" ],
-				[ 15, "Get Total Pending Fusion Actions" ]
+				[ 15, "Get Fusion Action Name by Index" ],
+				[ 16, "Get Total Pending Fusion Actions" ]
 			],
 			[
 				"Quests",
-				[ 16, "Get Quest Name by Index" ],
-				[ 17, "Get Quest State as string by name" ],
-				[ 18, "Get Quest Decsription by name" ],
-				[ 19, "Get Total Quest Count" ]
+				[ 17, "Get Quest Name by Index" ],
+				[ 18, "Get Quest State as string by name" ],
+				[ 19, "Get Quest Decsription by name" ],
+				[ 20, "Get Total Quest Count" ]
+			],
+			[
+				"NPCs",
+				[ 21, "Get NPC Count" ],
+				[ 22, "Get NPC In-World Dialog String by Index" ],
+				[ 23, "Get NPC Fixed Value by Index" ]
 			]
 		],
 		"Actions": [
@@ -132,6 +152,12 @@
 			},
 			{
 				"Title": "Load Player Data File %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Load In-World Dialog File %0",
 				"Parameters": [
 					[ "Text", "filepath" ]
 				]
@@ -208,6 +234,13 @@
 				]
 			},
 			{
+				"Title": "Register Item %0 with fixed value %1",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Integer", "fixed value" ]
+				]
+			},
+			{
 				"Title": "Give player item: %1x %0",
 				"Parameters": [
 					[ "Text", "name" ],
@@ -219,6 +252,12 @@
 				"Parameters": [
 					[ "Text", "name" ],
 					[ "Integer", "quantity" ]
+				]
+			},
+			{
+				"Title": "Picked up Fusion Item with fixed value %0",
+				"Parameters": [
+					[ "Integer", "fixed value" ]
 				]
 			},
 			{
@@ -249,7 +288,47 @@
 				"Title": "Check for Quest Completion"
 			},
 			{
+				"Title": "Register NPC %0 with fixed value %1",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Integer", "fixed value" ]
+				]
+			},
+			{
+				"Title": "Check All NPC Quest Dialog %0",
+				"Parameters": [
+					[ "Integer", "fixed value" ]
+				]
+			},
+			{
+				"Title": "Check All NPC In-world Dialog %0",
+				"Parameters": [
+					[ "Integer", "fixed value" ]
+				]
+			},
+			{
+				"Title": "Set Text Timer Duration to %0",
+				"Parameters": [
+					[ "Integer", "Timer Duration" ]
+				]
+			},
+			{
+				"Title": "Check NPC In-World Quest Dialog %0",
+				"Parameters": [
+					[ "Integer", "fixed value" ]
+				]
+			},
+			{
+				"Title": "Check NPC Standard Dialog %0",
+				"Parameters": [
+					[ "Integer", "fixed value" ]
+				]
+			},
+			{
 				"Title": "Clear All Data"
+			},
+			{
+				"Title": "Update Engine"
 			}
 		],
 		"Conditions": [
@@ -386,6 +465,10 @@
 				"Returns": "Integer"
 			},
 			{
+				"Title": "GetCurrentDialogID(",
+				"Returns": "Integer"
+			},
+			{
 				"Title": "GetValueByName(",
 				"Returns": "Float",
 				"Parameters": [
@@ -474,6 +557,24 @@
 			{
 				"Title": "GetTotalQuestCount(",
 				"Returns": "Integer"
+			},
+			{
+				"Title": "GetNPCCount(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetNPCInWorldDialogByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetNPCFixedValueByIndex(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
 			}
 		]
 	}

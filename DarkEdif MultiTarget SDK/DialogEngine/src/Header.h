@@ -4,6 +4,16 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
+
+enum class SaveCategory {
+	NONE,
+	FLAGS,
+	VALUES,
+	ITEMS,
+	QUESTS
+};
+
 
 enum class QuestState {
 	INACTIVE,
@@ -13,10 +23,9 @@ enum class QuestState {
 	UNDEFINED
 };
 
-enum ConditionType {
+enum class ConditionType {
 	CONDITION_UNDEFINED,
 	HAVE_ITEM,
-	NO_ITEM,
 	BOOOL,
 	FLOAT_EQUAL,
 	FLOAT_LESS,
@@ -24,10 +33,14 @@ enum ConditionType {
 	FLOAT_LESS_OR_EQUAL,
 	FLOAT_GREATER_OR_EQUAL,
 	FLOAT_NOT_EQUAL,
-	QUEST_REQUIREMENTS_MET
+	QUEST_REQUIREMENTS_MET,
+	QUEST_FAILED,
+	QUEST_COMPLETE,
+	QUEST_ACTIVE,
+	QUEST_INACTIVE
 };
 
-enum ActionType {
+enum class ActionType {
 	ACTION_UNDEFINED,
 	SET_BOOL_TRUE,
 	SET_BOOL_FALSE,
@@ -38,10 +51,10 @@ enum ActionType {
 	TAKE_ITEM
 };
 
-struct ResponseCondition {
+struct MyCondition {
 public:
 	std::string m_conditionName = "";
-	ConditionType m_ConditionType;
+	ConditionType m_ConditionType = ConditionType::CONDITION_UNDEFINED;
 	float m_conditionComparisonValue = 0;
 	bool m_requiredConditionBoolState = false;
 };
@@ -49,8 +62,8 @@ public:
 struct ResponseAction {
 public:
 	std::string m_name;
-	ActionType m_actionType;
-	float m_modifierValue;
+	ActionType m_actionType = ActionType::ACTION_UNDEFINED;
+	float m_modifierValue = 0;
 };
 
 struct Response {
@@ -61,7 +74,7 @@ public:
 	std::vector<std::string> m_CompleteQuests;
 	std::vector<std::string> m_ActivateQuests;
 	std::vector<std::string> m_FailQuests;
-	std::vector<ResponseCondition> m_responseConditions;
+	std::vector<MyCondition> m_responseConditions;
 	std::vector<ResponseAction> m_responseActions;
 	bool m_isSpecialColor = false;
 	int m_gotoID = -1;
@@ -73,4 +86,12 @@ public:
 	std::string m_imageName = "NO IMAGE";
 	std::string m_text = "NO TEXT";
 	std::vector<Response> m_responses;
+	std::string m_npcTriggerName;
+	std::vector<MyCondition> m_conditions;
 };
+
+/*
+struct InWorldNPCDialogEntry {
+	std::string m_npcName = "UNDEFINED";
+	std::vector<std::string> m_replies;
+};*/

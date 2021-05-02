@@ -125,3 +125,25 @@ const TCHAR* Extension::GetQuestDescriptionByName(TCHAR* name)
 	std::string state = DialogEngine::GetQuestDescription(DarkEdif::TStringToUTF8(name));
 	return Runtime.CopyString(DarkEdif::UTF8ToTString(state).c_str());
 }
+
+int Extension::GetCurrentDialogID()
+{
+	return DialogEngine::s_currentDialog.m_ID;
+}
+
+int Extension::GetNPCCount()
+{
+	return DialogEngine::s_NPCs.size();
+}
+
+const TCHAR* Extension::GetNPCInWorldDialogStringByIndex(int index)
+{
+	std::string str = DialogEngine::GetNPCInWorldDialogStringByIndex(index);
+	std::tstring tstr = DarkEdif::UTF8ToTString(str);
+	return Runtime.CopyString(tstr.c_str());
+}
+
+int Extension::GetNPCFixedValueByIndex(int index)
+{
+	return DialogEngine::GetNPCFixedValueByIndex(index);
+}

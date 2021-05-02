@@ -6,13 +6,18 @@ std::vector<GameFlag> DialogEngine::s_gameFlags;
 std::vector<GameFloat> DialogEngine::s_gameFloats;
 std::vector<DialogEntry> DialogEngine::s_dialogEntries;
 std::vector<Response> DialogEngine::s_avaliableResponses;
-std::vector<std::string> DialogEngine::s_pendingFusionActions; // these aren't finished yet
+std::vector<std::string> DialogEngine::s_pendingFusionActions;
 DialogEntry DialogEngine::s_currentDialog;
 int DialogEngine::s_lastSelectedResponseIndex;
 std::vector<Quest> DialogEngine::s_Quests;
 bool DialogEngine::s_wasAnyQuestJustCompleted = false;
 bool DialogEngine::s_wasAnyQuestJustFailed = false;
+std::vector<NPC> DialogEngine::s_NPCs;
+std::map<int, std::string> DialogEngine::s_itemFixedValueMap;
+int DialogEngine::s_textDuration = 150;
+//std::string DialogEngine::s_currentInWorldDialogString = "";
 
+//std::vector<InWorldNPCDialogEntry> DialogEngine::s_inWorldNPCDialogEntries;
 
 ////////////////////////////////
 //                            //
@@ -27,6 +32,7 @@ void DialogEngine::SavePlayerFile(std::string filename)
 	std::ofstream MyFile(filename);
 
 	// Save flags
+	MyFile << "#FLAGS\n";
 	for (GameFlag& gameFlag : s_gameFlags) {
 		if (gameFlag.m_state)
 			MyFile << gameFlag.m_name << "=true\n";
@@ -35,14 +41,22 @@ void DialogEngine::SavePlayerFile(std::string filename)
 	}
 
 	// Save floats
+	MyFile << "\n#VALUES\n";
 	for (GameFloat& gameFloat : s_gameFloats) {
 		MyFile << gameFloat.m_name << "=" << (int)gameFloat.m_value << "\n";
 	}
 
 	// Save items
+	MyFile << "\n#ITEMS\n";
 	for (GameItem& gameItem : s_gameItems) {
-		MyFile << gameItem.m_name << "=give" << gameItem.m_quantity << "\n";
+		MyFile << gameItem.m_name << "=" << gameItem.m_quantity << "\n";
 	}
+	
+	// Quest status
+	MyFile << "\n#QUESTS\n";
+	for (Quest& quest : s_Quests)
+		MyFile << quest.m_name << "=" << DialogEngine::GetQuestStateAsString(quest.m_name) << "\n";
+
 
 	// Close the file
 	MyFile.close();
@@ -52,7 +66,12 @@ void DialogEngine::LoadQuestFile(std::string filename)
 {
 	std::ifstream file(filename);
 	std::string line;
-	Quest tempQuest = Quest();
+	Quest tempQuest = Quest(); 
+	NPC* npc = nullptr;
+	//std::string npcName;
+	NPCQuestData tempNPCQuestData;
+
+
 	while (getline(file, line))
 	{
 		// Found a new Quest? Reset and store name
@@ -68,13 +87,54 @@ void DialogEngine::LoadQuestFile(std::string filename)
 				tempQuest.m_requiredItems.clear();
 				tempQuest.m_rewardItems.clear();
 				tempQuest.m_rewardFloats.clear();
+				tempQuest.m_conditions.clear();
+
+				// add NPC quest data if this quest is associated with an NPC
+				if (npc != nullptr) {
+					npc->m_quests.push_back(tempNPCQuestData);
+				//	std::cout << "PUSHING QUEST DATA: " << tempNPCQuestData.m_questName << "\n";
+				}
+				npc = nullptr;
+				tempNPCQuestData = NPCQuestData();
 			}
 			tempQuest.m_name = Util::GetSubstringAfterColon(line);
 		}
 
+		// NPC?
+		else if (Util::StringContains(line, "NPC")) {
+			std::string npcName = Util::GetSubstringAfterColon(line);
+			npc = GetNPCAndCreateIfItDoesntExist(npcName);
+			tempNPCQuestData.m_questName = tempQuest.m_name;
+			//npc->m_HasQuest = true;
+		}
+		// quest in world dialog ids
+		else if (Util::StringContains(line, "INWORLD_DIALOG_TEXT_INACTIVE:"))
+			tempNPCQuestData.m_questInWorldDialogText.inactive = Util::GetSubstringAfterColon(line);
+		else if (Util::StringContains(line, "INWORLD_DIALOG_TEXT_ACTIVE:"))
+			tempNPCQuestData.m_questInWorldDialogText.active = Util::GetSubstringAfterColon(line);
+		else if (Util::StringContains(line, "INWORLD_DIALOG_TEXT_COMPLETED:") || Util::StringContains(line, "INWORLD_DIALOG_TEXT_COMPLETE:"))
+			tempNPCQuestData.m_questInWorldDialogText.complete = Util::GetSubstringAfterColon(line);
+		else if (Util::StringContains(line, "INWORLD_DIALOG_TEXT_FAILED:"))
+			tempNPCQuestData.m_questInWorldDialogText.failed = Util::GetSubstringAfterColon(line);
+		else if (Util::StringContains(line, "DIALOG_ID_EXP_TOO_LOW:"))
+			tempNPCQuestData.m_questInWorldDialogText.expTooLow = Util::GetSubstringAfterColon(line);
+
+		// quest dialog ids
+		else if (Util::StringContains(line, "DIALOG_ID_INACTIVE:"))
+			tempNPCQuestData.m_questDialogIDs.inactive = Util::StringToInt(Util::GetSubstringAfterColon(line));
+		else if (Util::StringContains(line, "DIALOG_ID_ACTIVE:"))
+			tempNPCQuestData.m_questDialogIDs.active = Util::StringToInt(Util::GetSubstringAfterColon(line));
+		else if (Util::StringContains(line, "DIALOG_ID_COMPLETED:") || Util::StringContains(line, "DIALOG_ID_COMPLETE:"))
+			tempNPCQuestData.m_questDialogIDs.complete = Util::StringToInt(Util::GetSubstringAfterColon(line));
+		else if (Util::StringContains(line, "DIALOG_ID_FAILED:"))
+			tempNPCQuestData.m_questDialogIDs.failed = Util::StringToInt(Util::GetSubstringAfterColon(line));
+		else if (Util::StringContains(line, "DIALOG_ID_EXP_TOO_LOW:"))
+			tempNPCQuestData.m_questDialogIDs.expTooLow = Util::StringToInt(Util::GetSubstringAfterColon(line));
+
+		// Quest description
 		else if (Util::StringContains(line, "DESCRIPTION:"))
 			tempQuest.m_description = Util::GetSubstringAfterColon(line);
-		
+
 		// Requirement flag
 		else if (Util::StringContains(line, "REQUIREMENT_FLAG_TRUE:"))
 			tempQuest.m_requiredFlags.push_back(GameFlag(Util::GetSubstringAfterColon(line), true));
@@ -96,7 +156,7 @@ void DialogEngine::LoadQuestFile(std::string filename)
 				quantity = 1;
 
 			tempQuest.m_rewardItems.push_back(GameItem(itemName, quantity));
-		//	std::cout << " " << itemName << " [" << quantity << "]\n";
+			//	std::cout << " " << itemName << " [" << quantity << "]\n";
 		}
 
 		// Reward Float		
@@ -104,17 +164,54 @@ void DialogEngine::LoadQuestFile(std::string filename)
 		{
 			std::string str = Util::GetSubstringAfterColon(line);
 			std::string valueName = Util::GetSubstringBeforeParentheses(str);
-			int quantity = (int)Util::GetFloatBetweenParentheses(str);
+			float quantity = Util::GetFloatBetweenParentheses(str);
 
 			tempQuest.m_rewardFloats.push_back(GameFloat(valueName, quantity));
 			//std::cout << " " << valueName << " " << "[" << quantity << "]\n";
 		}
+
+		// Conditions
+		else if (line.substr(0, 10) == "CONDITION:") {
+			std::string str = Util::ToUppercase(Util::GetSubstringAfterColon(line));
+			tempQuest.m_conditions.push_back(ConditionObjectFromString(str));
+		}
+
 	}
 
 	// You're at the end of file now, if you're working with a quest you haven't added yet, do so.
-	if (tempQuest.m_name != "UNDEFINED")
+	if (tempQuest.m_name != "UNDEFINED") {
 		s_Quests.push_back(tempQuest);
 
+		// add NPC quest data if this quest is associated with an NPC
+		if (npc != nullptr)
+			npc->m_quests.push_back(tempNPCQuestData);
+	}
+
+	file.close();
+}
+
+void DialogEngine::LoadInWorldDialogFile(std::string filename)
+{
+	std::ifstream file(filename);
+	std::string line;
+	std::string npcName;
+
+	while (getline(file, line))
+	{
+		// Found a new Quest? Reset and store name
+		if (Util::StringContains(line, "NPC:"))
+		{
+			npcName = Util::GetSubstringAfterColon(line);
+			NPC* npc = CreateNPC(npcName);
+		}
+
+		// TEXT???
+		else if (Util::StringContains(line, "TEXT:")) {
+			std::string text = Util::GetSubstringAfterColon(line);
+			GetNPCPointer(npcName)->m_inWorldDialogReplies.push_back(text);
+		}
+	}
+	// Close the file
 	file.close();
 }
 
@@ -122,9 +219,76 @@ void DialogEngine::LoadPlayerFile(std::string filename)
 {
 	std::ifstream file(filename);
 	std::string line;
+	SaveCategory saveCategory;
+	saveCategory = SaveCategory::NONE;
+
 	while (getline(file, line))
 	{
-		int colonPos = line.find('=');
+		//std::cout << line << "\n";
+
+		// Check for new category or empty line
+		if (Util::StringContains(line, "#FLAGS")) {
+			saveCategory = SaveCategory::FLAGS;
+			continue;
+		}
+		else if (Util::StringContains(line, "#VALUES")) {
+			saveCategory = SaveCategory::VALUES;
+			continue;
+		}
+		else if (Util::StringContains(line, "#ITEMS")) {
+			saveCategory = SaveCategory::ITEMS;
+			continue;
+		}
+		else if (Util::StringContains(line, "#QUESTS")) {
+			saveCategory = SaveCategory::QUESTS;
+			continue;
+		}
+		else if (!Util::StringContains(line, "="))
+			continue;
+
+		std::string name = Util::GetSubstringBeforeEquals(line);
+		std::string value = Util::GetSubstringAfterEquals(line);
+
+		// Quests
+		if (saveCategory == SaveCategory::QUESTS) {
+
+			if (value == "FAILED")
+				DialogEngine::FailQuestByName(name);
+			else if (value == "COMPLETED" || value == "COMPLETE")
+				DialogEngine::CompleteQuestByName(name);
+			else if (value == "ACTIVE")
+				DialogEngine::ActivateQuestByName(name);
+			else if (value == "INACTIVE")
+				DialogEngine::InactivateQuestByName(name);
+
+			//std::cout << "QUEST        " << name << "_" << value << "\n";
+		}
+
+		// Flags		
+		if (saveCategory == SaveCategory::FLAGS) {
+			if (value == "true")
+				SetGameFlag(name, true);
+			if (value == "false")
+				SetGameFlag(name, false);
+			//std::cout << "FLAG         " << name << "_" << value << "\n";
+		}
+
+		// Items		
+		if (saveCategory == SaveCategory::ITEMS) {
+			int quantity = Util::StringToInt(value);
+			s_gameItems.push_back(GameItem(name, quantity));
+			//std::cout << "ITEM         " << name << "_" << value << "\n";
+		}
+
+		// Values		
+		if (saveCategory == SaveCategory::VALUES) {
+			SetGameFloat(name, std::stof(value)); 
+			//std::cout << "VALUE        " << name << "_" << value << "\n";
+		}
+
+
+
+		/*int colonPos = line.find('=');
 		std::string name = line.substr(0, colonPos);
 		std::string value = line.substr(colonPos + 1); // everything after the =
 
@@ -137,7 +301,7 @@ void DialogEngine::LoadPlayerFile(std::string filename)
 				quantity = 1;
 
 			s_gameItems.push_back(GameItem(name, quantity));
-			continue;
+			//continue;
 		}
 		// Is it a boolean?
 		if (value.find("true") != std::string::npos)
@@ -147,8 +311,12 @@ void DialogEngine::LoadPlayerFile(std::string filename)
 		// Is it a float
 		else {
 			SetGameFloat(name, std::stof(value));
-		}
+		}*/
+
+
 	}
+
+	file.close();
 }
 
 
@@ -171,6 +339,8 @@ void DialogEngine::LoadDialogFile(std::string filename)
 				tempDialogEntry.m_imageName = "NO IMAGE";
 				tempDialogEntry.m_text = "NO TEXT";
 				tempDialogEntry.m_responses.clear();
+				tempDialogEntry.m_conditions.clear();
+				tempDialogEntry.m_npcTriggerName = "";
 			}
 
 			// ID
@@ -178,19 +348,29 @@ void DialogEngine::LoadDialogFile(std::string filename)
 			int ID = Util::StringToInt(ID_string);
 			tempDialogEntry.m_ID = ID;
 		}
+		// NPC Trigger
+		else if (Util::StringContains(line, "NPC_TRIGGER:")) {
+			tempDialogEntry.m_npcTriggerName = Util::GetSubstringAfterColon(line);
+		}
+		// Conitions
+		else if (line.substr(0, 10) == "CONDITION:") {
+			std::string str = Util::ToUppercase(Util::GetSubstringAfterColon(line));
+
+			tempDialogEntry.m_conditions.push_back(ConditionObjectFromString(str));
+		}
 
 		// Set image name
-		if (line.substr(0, 3) == "IMG") {
+		else if (line.substr(0, 3) == "IMG") {
 			tempDialogEntry.m_imageName = line.substr(5, line.length() - 1);
 		}
 
 		// Set text
-		if (line.substr(0, 4) == "TEXT") {
+		else if (line.substr(0, 4) == "TEXT") {
 			tempDialogEntry.m_text = line.substr(6, line.length() - 1);
 		}
 
 		// Add response
-		if (line.substr(0, 5) == "REPLY")
+		else if (line.substr(0, 5) == "REPLY")
 		{
 			std::string wholeLine = line.substr(7, line.length() - 1);
 			Response response;
@@ -223,13 +403,8 @@ void DialogEngine::LoadDialogFile(std::string filename)
 				// Now loop over those tags and "process" them
 				for (std::string tag : tags)
 				{
-					std::string leftSide = Util::GetSubstringBeforeColon(tag);
-					std::string rightSide = Util::GetSubstringAfterColon(tag);
-
-					//	std::cout << " " << commandName << '\n';
-
-						//if (commandName == "COMPLETE_QUEST" || commandName == "ACTIVATE_QUEST" || commandName == "FAIL_QUEST")
-						//	std::cout << " [" << commandName << "] [" << parameter << "]\n";
+					std::string leftSide = Util::ToUppercase(Util::GetSubstringBeforeColon(tag));
+					std::string rightSide = Util::ToUppercase(Util::GetSubstringAfterColon(tag));
 
 					if (leftSide == "COMPLETE_QUEST")
 						response.m_CompleteQuests.push_back(rightSide);
@@ -248,41 +423,39 @@ void DialogEngine::LoadDialogFile(std::string filename)
 					else if (leftSide == "ACTION")
 					{
 						std::string name = Util::GetSubstringBeforeEquals(rightSide);
-						std::string actionRightSide = Util::GetSubstringAfterEquals(rightSide);
+						std::string actionRightSide = Util::ToUppercase(Util::GetSubstringAfterEquals(rightSide));
 						int quantity = (int)Util::GetFloatBetweenParentheses(actionRightSide);
 
 						ResponseAction responseAction;
 						responseAction.m_name = name;
 
 						// Give item
-						if (Util::StringContains(actionRightSide, "give_item")) {
+						if (Util::StringContains(actionRightSide, "GIVE_ITEM")) {
 							if (quantity == 0)
 								quantity = 1;
 							responseAction.m_actionType = ActionType::GIVE_ITEM;
-							responseAction.m_modifierValue = quantity;
+							responseAction.m_modifierValue = (float)quantity;
 						}
 
 						// Take item
-						else if (Util::StringContains(actionRightSide, "take_item")) {
+						else if (Util::StringContains(actionRightSide, "TAKE_ITEM")) {
 							if (quantity == 0)
 								quantity = 99999;
 
 							responseAction.m_actionType = ActionType::TAKE_ITEM;
-							responseAction.m_modifierValue = quantity;
+							responseAction.m_modifierValue = (float)quantity;
 						}
 
 						// Bool action
-						else if (actionRightSide == "true")
+						else if (actionRightSide == "TRUE")
 							responseAction.m_actionType = ActionType::SET_BOOL_TRUE;
-						else if (actionRightSide == "false")
+						else if (actionRightSide == "FALSE")
 							responseAction.m_actionType = ActionType::SET_BOOL_FALSE;
 
 						// Set value. You can reuse your earlier "equals detection"
 						else if (Util::StringContains(rightSide, "=")) {
 							responseAction.m_modifierValue = Util::StringToFloat(actionRightSide);
 							responseAction.m_actionType = ActionType::SET_FLOAT;
-
-							//std::cout << " [" << name << "] = [" << responseAction.m_modifierValue << "]\n";
 						}
 						// Add to value
 						else if (Util::StringContains(rightSide, "+")) {
@@ -290,8 +463,6 @@ void DialogEngine::LoadDialogFile(std::string filename)
 							responseAction.m_name = name;
 							responseAction.m_modifierValue = Util::StringToFloat(Util::GetSubstringAfterChar(rightSide, '+'));
 							responseAction.m_actionType = ActionType::ADD_FLOAT;
-
-							//	std::cout << " [" << name << "] + [" << responseAction.m_modifierValue << "]\n";
 						}
 						// Subtract from value
 						else if (Util::StringContains(rightSide, "-")) {
@@ -299,90 +470,14 @@ void DialogEngine::LoadDialogFile(std::string filename)
 							responseAction.m_name = name;
 							responseAction.m_modifierValue = Util::StringToFloat(Util::GetSubstringAfterChar(rightSide, '-'));
 							responseAction.m_actionType = ActionType::SUBRACT_FLOAT;
-
-							//::cout << " [" << name << "] - [" << responseAction.m_modifierValue << "]\n";
 						}
 						response.m_responseActions.push_back(responseAction);
 					}
 
 					// Conditions
 					else if (leftSide == "CONDITION")
-					{
-						ResponseCondition responseCondition;
-						std::string name;
-
-						if (Util::StringContains(rightSide, "==")) {
-
-							responseCondition.m_conditionName = Util::GetSubstringBeforeSubstring(rightSide, "==");
-							std::string conditionParameter = Util::GetSubstringAfterSubstring(rightSide, "==");
-
-							// Bool
-							if (conditionParameter == "true") {
-								responseCondition.m_requiredConditionBoolState = true;
-								responseCondition.m_ConditionType = ConditionType::BOOOL;
-							}
-							else if (conditionParameter == "false") {
-								responseCondition.m_requiredConditionBoolState = false;
-								responseCondition.m_ConditionType = ConditionType::BOOOL;
-							}
-							// Quest requirements met
-							else if (conditionParameter == "fullfilled") {
-								responseCondition.m_requiredConditionBoolState = true;
-								responseCondition.m_ConditionType = ConditionType::QUEST_REQUIREMENTS_MET;
-							}
-							else if (conditionParameter == "not_fullfilled") {
-								responseCondition.m_requiredConditionBoolState = false;
-								responseCondition.m_ConditionType = ConditionType::QUEST_REQUIREMENTS_MET;
-							}
-							// Item check							
-							else if (conditionParameter == "have_item")
-								responseCondition.m_ConditionType = ConditionType::HAVE_ITEM;
-
-							else if (conditionParameter == "no_item")
-								responseCondition.m_ConditionType = ConditionType::NO_ITEM;
-
-							// Well if not then it's a float equality comparison
-							else {
-								responseCondition.m_ConditionType = ConditionType::FLOAT_EQUAL;
-								responseCondition.m_conditionComparisonValue = Util::StringToFloat(conditionParameter);
-							}
-
-						}
-						// Float not equal
-						else if (Util::StringContains(rightSide, "!=")) {
-
-							responseCondition.m_ConditionType = ConditionType::FLOAT_NOT_EQUAL;
-							responseCondition.m_conditionName = Util::GetSubstringBeforeSubstring(rightSide, "!=");
-							responseCondition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(rightSide, "!="));
-
-							//		std::cout << " [" << responseCondition.m_conditionName << "] != [" << responseCondition.m_conditionComparisonValue << "]\n";
-
-						}
-						else if (Util::StringContains(rightSide, "<=")) {
-
-							responseCondition.m_ConditionType = ConditionType::FLOAT_LESS_OR_EQUAL;
-							responseCondition.m_conditionName = Util::GetSubstringBeforeSubstring(rightSide, "<=");
-							responseCondition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(rightSide, "<="));
-						}
-						else if (Util::StringContains(rightSide, ">=")) {
-
-							responseCondition.m_ConditionType = ConditionType::FLOAT_GREATER_OR_EQUAL;
-							responseCondition.m_conditionName = Util::GetSubstringBeforeSubstring(rightSide, ">=");
-							responseCondition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(rightSide, ">="));
-						}
-						else if (Util::StringContains(rightSide, "<")) {
-
-							responseCondition.m_ConditionType = ConditionType::FLOAT_LESS;
-							responseCondition.m_conditionName = Util::GetSubstringBeforeSubstring(rightSide, "<");
-							responseCondition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(rightSide, "<"));
-						}
-						else if (Util::StringContains(rightSide, ">")) {
-
-							responseCondition.m_ConditionType = ConditionType::FLOAT_GREATER;
-							responseCondition.m_conditionName = Util::GetSubstringBeforeSubstring(rightSide, ">");
-							responseCondition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(rightSide, ">"));
-						}
-						response.m_responseConditions.push_back(responseCondition);
+					{			
+						response.m_responseConditions.push_back(ConditionObjectFromString(rightSide));
 					}
 
 					// Special color
@@ -451,11 +546,11 @@ std::string DialogEngine::GetCurrentDialogImageName()
 bool DialogEngine::EvaluateConditionalComparison(std::string name, ConditionType conditionType, float comparisonValue)
 {
 	// If item or value is not found, assume 0, and perform check...
-	int objectValue = 0;
+	float objectValue = 0;
 
 	// Otherwise, get the value
 	if (HasItem(name))
-		objectValue = GetItemQuantity(name);
+		objectValue = (float)GetItemQuantity(name);
 	if (GameFloatExists(name))
 		objectValue = GetGameFloat(name);
 
@@ -489,47 +584,8 @@ void DialogEngine::UpdateAvaliableResponses()
 	// Get avaliable responses
 	for (Response& response : s_currentDialog.m_responses)
 	{
-		// Check if all conditions are met
-		for (ResponseCondition& responseCondition : response.m_responseConditions)
-		{
-			// Bool conditions
-			if (responseCondition.m_ConditionType == ConditionType::BOOOL)
-			{
-				if (responseCondition.m_requiredConditionBoolState != DialogEngine::GetGameFlagState(responseCondition.m_conditionName))
-					goto loop_exit;
-			}
-			// Quest conditions
-			else if (responseCondition.m_ConditionType == ConditionType::QUEST_REQUIREMENTS_MET)
-			{
-				if (responseCondition.m_requiredConditionBoolState != DialogEngine::AreQuestRequirementsFullfilled(responseCondition.m_conditionName))
-					goto loop_exit;
-			}
-			// Could be an item check
-			else if (responseCondition.m_ConditionType == ConditionType::HAVE_ITEM)
-			{
-				if (!DialogEngine::HasItem(responseCondition.m_conditionName))
-					goto loop_exit;
-			}
-			else if (responseCondition.m_ConditionType == ConditionType::NO_ITEM)
-			{
-				if (DialogEngine::HasItem(responseCondition.m_conditionName))
-					goto loop_exit;
-			}
-			// Must be a value or item comparison
-			else
-			{
-				std::string name = responseCondition.m_conditionName;
-				ConditionType type = responseCondition.m_ConditionType;
-				float value = responseCondition.m_conditionComparisonValue;
-
-				if (!DialogEngine::EvaluateConditionalComparison(name, type, value)) {
-					//std::cout << "FAILED CHECK: " << response.m_text << "\n";
-					goto loop_exit;
-				}
-			}
-		}
-		// It's good then
-		s_avaliableResponses.push_back(response);
+		if (IsConditionListSatisfied(response.m_responseConditions))
+			s_avaliableResponses.push_back(response);
 
 	loop_exit:;
 	}
@@ -545,7 +601,7 @@ bool DialogEngine::IsDialogOver()
 
 std::string DialogEngine::GetResponseTextByIndex(int index)
 {
-	if (index < 0 || index >= s_avaliableResponses.size())
+	if (index < 0 || index >= (int)s_avaliableResponses.size())
 		return "out_of_range";
 
 	return s_avaliableResponses[index].m_text;
@@ -557,7 +613,7 @@ void DialogEngine::SelectResponse(int index)
 	s_lastSelectedResponseIndex = index;
 
 	// Did something fuck up and you need to bail early?
-	if (index < 0 || index >= s_avaliableResponses.size())
+	if (index < 0 || index >= (int)s_avaliableResponses.size())
 		return;
 
 	// Otherwise begin
@@ -577,13 +633,15 @@ void DialogEngine::SelectResponse(int index)
 	for (std::string& quest : selectedRespone.m_FailQuests)
 		FailQuestByName(quest);
 
+	//std::cout << "COUNT: " << selectedRespone.m_ActivateQuests.size() << "\n";
+
 	// Perform any other actions
 	for (ResponseAction& responseAction : selectedRespone.m_responseActions)
 	{
 		// First you gotta find the GameValue based on the name.
 		for (GameFloat& gameFloat : DialogEngine::s_gameFloats)
 		{
-			if (responseAction.m_name == gameFloat.m_name)
+			if (Util::CaselessEquality(responseAction.m_name, gameFloat.m_name))
 			{
 				if (responseAction.m_actionType == ActionType::SUBRACT_FLOAT) {
 					gameFloat.Subract(responseAction.m_modifierValue);
@@ -606,10 +664,10 @@ void DialogEngine::SelectResponse(int index)
 
 		// Ok but what if it's a GameItem kinda thing
 		if (responseAction.m_actionType == ActionType::GIVE_ITEM) {
-			DialogEngine::GiveItem(responseAction.m_name, responseAction.m_modifierValue);
+			DialogEngine::GiveItem(responseAction.m_name, (int)responseAction.m_modifierValue);
 		}
 		if (responseAction.m_actionType == ActionType::TAKE_ITEM) {
-			DialogEngine::TakeItem(responseAction.m_name, responseAction.m_modifierValue);
+			DialogEngine::TakeItem(responseAction.m_name, (int)responseAction.m_modifierValue);
 		}
 	}
 
@@ -619,7 +677,7 @@ void DialogEngine::SelectResponse(int index)
 
 bool DialogEngine::IsResponseSpecialColored(int index)
 {
-	if (index < 0 || index >= s_avaliableResponses.size())
+	if (index < 0 || index >= (int)s_avaliableResponses.size())
 		return false;
 	else
 		return s_avaliableResponses[index].m_isSpecialColor;;
@@ -632,9 +690,9 @@ void DialogEngine::AddFusionAction(std::string name)
 
 bool DialogEngine::TriggerFusionAction(std::string name)
 {
-	for (int i = 0; i < s_pendingFusionActions.size(); i++)
+	for (size_t i = 0; i < s_pendingFusionActions.size(); i++)
 	{
-		if (s_pendingFusionActions[i] == name)
+		if (Util::CaselessEquality(s_pendingFusionActions[i], name))
 		{
 			s_pendingFusionActions.erase(s_pendingFusionActions.begin() + i);
 			return true;
@@ -645,7 +703,7 @@ bool DialogEngine::TriggerFusionAction(std::string name)
 
 std::string DialogEngine::GetFusionActionNameByIndex(int index)
 {
-	if (index < 0 || index >= s_pendingFusionActions.size())
+	if (index < 0 || index >= (int)s_pendingFusionActions.size())
 		return "out_of_range";
 
 	return s_pendingFusionActions[index];
@@ -668,6 +726,24 @@ void DialogEngine::ClearAllData()
 	s_wasAnyQuestJustCompleted = false;
 	s_wasAnyQuestJustFailed = false;
 	s_currentDialog.m_ID = -1;
+	s_NPCs.clear();
+}
+
+void DialogEngine::UpdateEngine()
+{
+	// NPC text timers
+	for (NPC& npc : s_NPCs)
+	{
+		if (npc.m_inWorldDialogTextTimer == 0)
+			npc.m_inWorldDialogString = "";
+		else
+			npc.m_inWorldDialogTextTimer--;
+	}
+}
+
+void DialogEngine::SetTextDuration(int duration)
+{
+	s_textDuration = duration;
 }
 
 void DialogEngine::CheckQuestRequirementsAndPayOuts()
@@ -694,8 +770,17 @@ void DialogEngine::CheckQuestRequirementsAndPayOuts()
 void DialogEngine::ActivateQuestByName(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query && quest.m_questState == QuestState::INACTIVE) {
+		if (Util::CaselessEquality(quest.m_name, query) && quest.m_questState == QuestState::INACTIVE) {
 			quest.m_questState = QuestState::ACTIVE;
+			return;
+		}
+}
+
+void DialogEngine::InactivateQuestByName(std::string query)
+{
+	for (Quest& quest : s_Quests)
+		if (Util::CaselessEquality(quest.m_name, query)) {
+			quest.m_questState = QuestState::INACTIVE;
 			return;
 		}
 }
@@ -703,7 +788,7 @@ void DialogEngine::ActivateQuestByName(std::string query)
 void DialogEngine::CompleteQuestByName(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query && quest.m_questState != QuestState::COMPLETE) {
+		if (Util::CaselessEquality(quest.m_name, query) && quest.m_questState != QuestState::COMPLETE) {
 			quest.m_questState = QuestState::COMPLETE;
 			s_wasAnyQuestJustCompleted = true;
 			return;
@@ -713,7 +798,7 @@ void DialogEngine::CompleteQuestByName(std::string query)
 void DialogEngine::FailQuestByName(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query && quest.m_questState != QuestState::FAILED) {
+		if (Util::CaselessEquality(quest.m_name, query) && quest.m_questState != QuestState::FAILED) {
 			quest.m_questState = QuestState::FAILED;
 			s_wasAnyQuestJustFailed = true;
 			return;
@@ -727,7 +812,7 @@ int DialogEngine::GetQuestCount()
 
 std::string DialogEngine::GetQuestNameByIndex(int index)
 {
-	if (index < 0 || index >= s_Quests.size())
+	if (index < 0 || index >= (int)s_Quests.size())
 		return "out_of_range";
 
 	return s_Quests[index].m_name;
@@ -735,7 +820,7 @@ std::string DialogEngine::GetQuestNameByIndex(int index)
 
 QuestState DialogEngine::GetQuestStateByIndex(int index)
 {
-	if (index < 0 || index >= s_Quests.size())
+	if (index < 0 || index >= (int)s_Quests.size())
 		return QuestState::UNDEFINED;
 
 	return s_Quests[index].m_questState;
@@ -754,7 +839,7 @@ bool DialogEngine::WasIfAnyQuestWasJustCompleted()
 bool DialogEngine::IsQuestActive(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_questState == QuestState::ACTIVE);
 	return false;
 }
@@ -762,7 +847,7 @@ bool DialogEngine::IsQuestActive(std::string query)
 bool DialogEngine::IsQuestInactive(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_questState == QuestState::INACTIVE);
 	return false;
 }
@@ -770,7 +855,7 @@ bool DialogEngine::IsQuestInactive(std::string query)
 std::string DialogEngine::GetQuestStateAsString(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 		{
 			if (quest.m_questState == QuestState::ACTIVE) return "ACTIVE";
 			if (quest.m_questState == QuestState::INACTIVE) return "INACTIVE";
@@ -784,22 +869,492 @@ std::string DialogEngine::GetQuestStateAsString(std::string query)
 std::string DialogEngine::GetQuestDescription(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return quest.m_description;
 	return "";
 }
 
+
+NPC* DialogEngine::CreateNPC(std::string name)
+{
+	NPC npc;
+	npc.m_name = name;
+	s_NPCs.push_back(npc);
+	return &s_NPCs[s_NPCs.size() - 1];
+}
+
+NPC* DialogEngine::GetNPCAndCreateIfItDoesntExist(std::string name)
+{
+	// check if it exists already
+	for (NPC& npc : s_NPCs) {
+		if (Util::CaselessEquality(npc.m_name, name)) {
+			return &npc;
+		}
+	}
+	// if not create it
+	return CreateNPC(name);
+}
+
+NPC* DialogEngine::GetNPCPointerByFixedValue(int fixedValue)
+{
+	// Search for it and return pointer if you find it
+	for (NPC& npc : s_NPCs) {
+		if (npc.m_fixedValue == fixedValue) {
+			return &npc;
+		}
+	}
+	// Otherwise return null
+	return nullptr;
+}
+
+NPC* DialogEngine::GetNPCPointer(std::string name)
+{
+	// Search for it and return pointer if you find it
+	for (NPC& npc : s_NPCs)
+		if (Util::CaselessEquality(npc.m_name, name))
+			return &npc;
+	// Otherwise return null
+	return nullptr;
+}
+
+void DialogEngine::RegisterNPC(std::string name, int fixedValue)
+{
+	for (NPC& npc : s_NPCs)
+		if (Util::CaselessEquality(npc.m_name, name)) {
+			npc.m_fixedValue = fixedValue;
+			return;
+		}
+
+	// If it doesn't already exist then u gotta create it.
+	NPC npc;
+	npc.m_name = name;
+	npc.m_fixedValue = fixedValue;
+	s_NPCs.push_back(npc);
+}
+
+void DialogEngine::RegisterItem(std::string name, int fixedValue)
+{
+	s_itemFixedValueMap.insert({ fixedValue, name });
+}
+
+void DialogEngine::PickedUpFusionItem(int fixedValue)
+{
+	if (s_itemFixedValueMap.find(fixedValue) == s_itemFixedValueMap.end()) {
+		return;
+	}
+	else {
+		std::string itemName = s_itemFixedValueMap[fixedValue];
+		GiveItem(itemName, 1);
+	}
+}
+
+MyCondition DialogEngine::ConditionObjectFromString(std::string str)
+{
+	MyCondition condition;
+	if (Util::StringContains(str, "==")) {
+
+		condition.m_conditionName = Util::GetSubstringBeforeSubstring(str, "==");
+		std::string conditionParameter = Util::GetSubstringAfterSubstring(str, "==");
+
+		// Bool
+		if (conditionParameter == "TRUE") {
+			condition.m_requiredConditionBoolState = true;
+			condition.m_ConditionType = ConditionType::BOOOL;
+		}
+		else if (conditionParameter == "FALSE") {
+			condition.m_requiredConditionBoolState = false;
+			condition.m_ConditionType = ConditionType::BOOOL;
+		}
+		// Quest requirements met
+		else if (conditionParameter == "FULLFILLED") {
+			condition.m_requiredConditionBoolState = true;
+			condition.m_ConditionType = ConditionType::QUEST_REQUIREMENTS_MET;
+		}
+		else if (conditionParameter == "NOT_FULLFILLED") {
+			condition.m_requiredConditionBoolState = false;
+			condition.m_ConditionType = ConditionType::QUEST_REQUIREMENTS_MET;
+		}
+		// Item check							
+		else if (conditionParameter == "HAVE_ITEM") {
+			condition.m_ConditionType = ConditionType::HAVE_ITEM;
+			condition.m_requiredConditionBoolState = true;
+		}
+		else if (conditionParameter == "NO_ITEM") {
+			condition.m_ConditionType = ConditionType::HAVE_ITEM;
+			condition.m_requiredConditionBoolState = false;
+		}
+		// Quset
+		else if (conditionParameter == "ACTIVE") {
+			condition.m_ConditionType = ConditionType::QUEST_ACTIVE;
+			condition.m_requiredConditionBoolState = true;
+		}
+		else if (conditionParameter == "INACTIVE") {
+			condition.m_ConditionType = ConditionType::QUEST_INACTIVE;
+			condition.m_requiredConditionBoolState = true;
+		}
+		else if (conditionParameter == "COMPLETE" || conditionParameter == "COMPLETED") {
+			condition.m_ConditionType = ConditionType::QUEST_COMPLETE;
+			condition.m_requiredConditionBoolState = true;
+		}
+		else if (conditionParameter == "FAILED") {
+			condition.m_ConditionType = ConditionType::QUEST_FAILED;
+			condition.m_requiredConditionBoolState = true;
+		}
+		// Well if not then it's a float equality comparison
+		else {
+			//std::cout << "CONDQUEST: " << str << "\n";
+			condition.m_ConditionType = ConditionType::FLOAT_EQUAL;
+			condition.m_conditionComparisonValue = Util::StringToFloat(conditionParameter);
+		}
+	}
+	// not equal
+	else if (Util::StringContains(str, "!=")) {
+
+		condition.m_conditionName = Util::GetSubstringBeforeSubstring(str, "!=");
+		std::string conditionParameter = Util::GetSubstringAfterSubstring(str, "!=");
+		// items
+		if (conditionParameter == "HAVE_ITEM") {
+			condition.m_ConditionType = ConditionType::HAVE_ITEM;
+			condition.m_requiredConditionBoolState = false;
+		}
+		else if (conditionParameter == "NO_ITEM") {
+			condition.m_ConditionType = ConditionType::HAVE_ITEM;
+			condition.m_requiredConditionBoolState = true;
+		}
+		// Quset
+		else if (conditionParameter == "ACTIVE") {
+			condition.m_ConditionType = ConditionType::QUEST_ACTIVE;
+			condition.m_requiredConditionBoolState = false;
+		}
+		else if (conditionParameter == "INACTIVE") {
+			condition.m_ConditionType = ConditionType::QUEST_INACTIVE;
+			condition.m_requiredConditionBoolState = false;
+		}
+		else if (conditionParameter == "COMPLETE" || conditionParameter == "COMPLETED") {
+			condition.m_ConditionType = ConditionType::QUEST_COMPLETE;
+			condition.m_requiredConditionBoolState = false;
+		}
+		else if (conditionParameter == "FAILED") {
+			condition.m_ConditionType = ConditionType::QUEST_FAILED;
+			condition.m_requiredConditionBoolState = false;
+		}
+		// floats. (it must be)
+		else {
+			condition.m_ConditionType = ConditionType::FLOAT_NOT_EQUAL;
+			condition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(str, "!="));
+		}
+	}
+	// this is all floats
+	else if (Util::StringContains(str, "<=")) {
+
+		condition.m_ConditionType = ConditionType::FLOAT_LESS_OR_EQUAL;
+		condition.m_conditionName = Util::GetSubstringBeforeSubstring(str, "<=");
+		condition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(str, "<="));
+	}
+	else if (Util::StringContains(str, ">=")) {
+
+		condition.m_ConditionType = ConditionType::FLOAT_GREATER_OR_EQUAL;
+		condition.m_conditionName = Util::GetSubstringBeforeSubstring(str, ">=");
+		condition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(str, ">="));
+	}
+	else if (Util::StringContains(str, "<")) {
+
+		condition.m_ConditionType = ConditionType::FLOAT_LESS;
+		condition.m_conditionName = Util::GetSubstringBeforeSubstring(str, "<");
+		condition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(str, "<"));
+	}
+	else if (Util::StringContains(str, ">")) {
+
+		condition.m_ConditionType = ConditionType::FLOAT_GREATER;
+		condition.m_conditionName = Util::GetSubstringBeforeSubstring(str, ">");
+		condition.m_conditionComparisonValue = Util::StringToFloat(Util::GetSubstringAfterSubstring(str, ">"));
+	}
+	return condition;
+}
+
+bool DialogEngine::IsConditionListSatisfied(std::vector<MyCondition>& conidtionList)
+{
+	// Check if all conditions are met
+	for (MyCondition& responseCondition : conidtionList)
+	{
+		// Bool conditions
+		if (responseCondition.m_ConditionType == ConditionType::BOOOL)
+		{
+			//std::cout << "MADE IT HERE\n";
+			if (responseCondition.m_requiredConditionBoolState != DialogEngine::GetGameFlagState(responseCondition.m_conditionName))
+				return false;
+		}
+		// Quest conditions
+		else if (responseCondition.m_ConditionType == ConditionType::QUEST_REQUIREMENTS_MET)
+		{
+			if (responseCondition.m_requiredConditionBoolState != DialogEngine::AreQuestRequirementsFullfilled(responseCondition.m_conditionName))
+				return false;
+		}
+		// Could be an item check
+		else if (responseCondition.m_ConditionType == ConditionType::HAVE_ITEM)
+		{
+			//std::cout << "FOUND A HAVE_ITEM " << responseCondition.m_conditionName << " with state " << responseCondition.m_requiredConditionBoolState << " and actual state is " << DialogEngine::HasItem(responseCondition.m_conditionName) << "\n";
+			if (responseCondition.m_requiredConditionBoolState != DialogEngine::HasItem(responseCondition.m_conditionName))
+				//if (!DialogEngine::HasItem(responseCondition.m_conditionName))
+				return false;
+		}
+		// Could be an quest check
+		else if (responseCondition.m_ConditionType == ConditionType::QUEST_COMPLETE)
+		{
+			Quest* quest = GetQuestByName(responseCondition.m_conditionName);
+			if (responseCondition.m_requiredConditionBoolState != (quest->m_questState == QuestState::COMPLETE))
+				return false;
+		}
+		else if (responseCondition.m_ConditionType == ConditionType::QUEST_FAILED)
+		{
+			Quest* quest = GetQuestByName(responseCondition.m_conditionName);
+			if (responseCondition.m_requiredConditionBoolState != (quest->m_questState == QuestState::FAILED))
+				return false;
+		}
+		else if (responseCondition.m_ConditionType == ConditionType::QUEST_ACTIVE)
+		{
+			Quest* quest = GetQuestByName(responseCondition.m_conditionName);
+			if (responseCondition.m_requiredConditionBoolState != (quest->m_questState == QuestState::ACTIVE))
+				return false;
+		}
+		else if (responseCondition.m_ConditionType == ConditionType::QUEST_INACTIVE)
+		{
+			Quest* quest = GetQuestByName(responseCondition.m_conditionName);
+			if (responseCondition.m_requiredConditionBoolState != (quest->m_questState == QuestState::INACTIVE))
+				return false;
+		}
+		// Must be a value or item comparison
+		else
+		{
+			std::string name = responseCondition.m_conditionName;
+			ConditionType type = responseCondition.m_ConditionType;
+			float value = responseCondition.m_conditionComparisonValue;
+
+			if (!DialogEngine::EvaluateConditionalComparison(name, type, value)) {
+				//std::cout << "FAILED CHECK: " << response.m_text << "\n";
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+int DialogEngine::GetQuestDialogIDFromNPCFixedValue(int fixedValue)
+{
+	// First you gotta get the NPC
+	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
+	if (!npc)
+		return -1;
+
+	// Iterate over each quest and stop at the first one that passes the condition list
+	for (NPCQuestData& questData : npc->m_quests)
+	{
+		Quest* quest = GetQuestByName(questData.m_questName);
+
+		if (IsConditionListSatisfied(quest->m_conditions))
+		{
+			if (quest->m_questState == QuestState::ACTIVE && questData.m_questDialogIDs.active != -1)
+				return questData.m_questDialogIDs.active;
+			else if (quest->m_questState == QuestState::INACTIVE && questData.m_questDialogIDs.inactive != -1)
+				return questData.m_questDialogIDs.inactive;
+			else if (quest->m_questState == QuestState::FAILED && questData.m_questDialogIDs.failed != -1)
+				return questData.m_questDialogIDs.failed;
+			else if (quest->m_questState == QuestState::COMPLETE && questData.m_questDialogIDs.complete != -1)
+				return questData.m_questDialogIDs.complete;
+		}
+	}
+	std::cout << "NONE PASSED\n";
+	return -1;
+}
+
+void DialogEngine::CheckNPCStandardDialogText(int fixedValue)
+{
+	// First you gotta get the NPC
+	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
+	if (!npc)
+		return;
+
+
+	// Now iterate over the dialog entries and find the first that satisfies all conditions
+	for (DialogEntry& dialogEntry : s_dialogEntries)
+	{
+		// Find matching name
+		if (Util::CaselessEquality(dialogEntry.m_npcTriggerName, npc->m_name))
+		{
+			std::cout << "dialog: " << dialogEntry.m_ID << " " << dialogEntry.m_conditions.size() << " conditions" << "\n";
+
+			// BAIL if condition not met
+			for (MyCondition& responseCondition : dialogEntry.m_conditions)
+			{
+				// Bool conditions
+				if (responseCondition.m_ConditionType == ConditionType::BOOOL) {
+
+
+					//	std::cout << "bool: " << dialogEntry.m_ID << "\n";
+
+					if (responseCondition.m_requiredConditionBoolState != DialogEngine::GetGameFlagState(responseCondition.m_conditionName))
+						goto loop_exit;
+				}
+				// Quest conditions
+				else if (responseCondition.m_ConditionType == ConditionType::QUEST_REQUIREMENTS_MET) {
+					if (responseCondition.m_requiredConditionBoolState != DialogEngine::AreQuestRequirementsFullfilled(responseCondition.m_conditionName))
+						goto loop_exit;
+				}
+				// Could be an item check
+				else if (responseCondition.m_ConditionType == ConditionType::HAVE_ITEM) {
+					if (responseCondition.m_requiredConditionBoolState != DialogEngine::HasItem(responseCondition.m_conditionName))
+						goto loop_exit;
+				}
+				// Must be a value or item comparison
+				else
+				{
+					std::string name = responseCondition.m_conditionName;
+					ConditionType type = responseCondition.m_ConditionType;
+					float value = responseCondition.m_conditionComparisonValue;
+
+					if (!DialogEngine::EvaluateConditionalComparison(name, type, value))
+						goto loop_exit;
+				}
+			}
+			// It's good then
+			SetCurrentDialogByID(dialogEntry.m_ID);
+			return;
+		}
+		loop_exit:;
+		//std::cout << "dialog: " << dialogEntry.m_ID << " failed \n";
+	}
+	//std::cout << "all failed \n";
+}
+
+void DialogEngine::CheckNPCInWorldQuestDialogText(int fixedValue)
+{
+	// First you gotta get the NPC
+	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
+	if (!npc) {
+		return;
+	}
+
+	// Iterate over each quest and stop at the first one that passes the condition list
+	for (NPCQuestData& questData : npc->m_quests)
+	{
+		Quest* quest = GetQuestByName(questData.m_questName);
+
+		if (IsConditionListSatisfied(quest->m_conditions))
+		{
+			if (quest->m_questState == QuestState::ACTIVE && questData.m_questInWorldDialogText.active != "") {
+				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.active;
+				npc->m_inWorldDialogTextTimer = s_textDuration;
+				return;
+			}
+			else if (quest->m_questState == QuestState::INACTIVE && questData.m_questInWorldDialogText.inactive != "") {
+				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.inactive;
+				npc->m_inWorldDialogTextTimer = s_textDuration;
+				return;
+			}
+			else if (quest->m_questState == QuestState::FAILED && questData.m_questInWorldDialogText.failed != "") {
+				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.failed;
+				npc->m_inWorldDialogTextTimer = s_textDuration;
+				return;
+			}
+			else if (quest->m_questState == QuestState::COMPLETE && questData.m_questInWorldDialogText.complete != "") {
+				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.complete;
+				npc->m_inWorldDialogTextTimer = s_textDuration;
+				return;
+			}
+		}
+	}
+//	std::cout << "NOTHING PASSSED HERE INWORLD\n";
+	return;
+}
+
+std::string DialogEngine::GetRandomInWorldDialogFromNPCFixedValue(int fixedValue)
+{
+	// First you gotta get the NPC
+	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
+
+	if (npc)
+	{
+		// Find a random in world dialog text if there is any
+		if (npc->m_inWorldDialogReplies.size() > 1) {
+
+			npc->m_inWorldDialogString = npc->m_inWorldDialogReplies[0]; // store it
+			npc->m_inWorldDialogReplies.erase(npc->m_inWorldDialogReplies.begin() + 0); // erase it
+			int randomIndex = Util::RandomInt(1, (int)npc->m_inWorldDialogReplies.size()); // get random index
+			npc->m_inWorldDialogReplies.insert(npc->m_inWorldDialogReplies.begin() + randomIndex, npc->m_inWorldDialogString); // reinsert it
+			npc->m_inWorldDialogTextTimer = s_textDuration;
+			return npc->m_inWorldDialogString; // return it
+		}
+		else if (npc->m_inWorldDialogReplies.size() == 1)
+		{
+			npc->m_inWorldDialogString = npc->m_inWorldDialogReplies[0]; // store it
+			npc->m_inWorldDialogTextTimer = s_textDuration;
+			return npc->m_inWorldDialogString; // return it
+		}
+	}
+	return "";
+}
+
+Quest* DialogEngine::GetQuestByName(std::string name)
+{
+	for (Quest& quest : s_Quests)
+		if (Util::CaselessEquality(quest.m_name, name))
+			return &quest;
+
+	return nullptr;
+}
+
+void DialogEngine::CheckNPCQuestDialog(int fixedValue)
+{
+	SetCurrentDialogByID(GetQuestDialogIDFromNPCFixedValue(fixedValue));
+}
+
+void DialogEngine::CheckNPCInWorldDialog(int fixedValue)
+{
+	GetRandomInWorldDialogFromNPCFixedValue(fixedValue);
+}
+std::string DialogEngine::GetNPCInWorldDialogStringByIndex(int index)
+{
+	if (index < 0 || index >= (int)s_NPCs.size())
+		return "out_of_range";
+
+	return s_NPCs[index].m_inWorldDialogString;
+}
+
+int DialogEngine::GetNPCFixedValueByIndex(int index)
+{
+	if (index < 0 || index >= (int)s_NPCs.size())
+		return -1;
+
+	return s_NPCs[index].m_fixedValue;
+}
+
+
+/*
+void DialogEngine::CheckNPCInWorldDialog(int fixedValue)
+{
+	std::string str = GetQuestInWorldDialogTextFromNPCFixedValue(fixedValue);
+	if (str != "")
+		s_currentInWorldDialogString = str;
+}*/
+
+/*std::string DialogEngine::GetCurrentInWorldDialogString()
+{
+	std::string temp = s_currentInWorldDialogString;
+	s_currentInWorldDialogString = "";
+	return temp;
+}*/
+
 bool DialogEngine::AreQuestRequirementsFullfilled(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_requirementsFullfiled);
 	return false;
 
 }bool DialogEngine::IsQuestCompleted(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_questState == QuestState::COMPLETE);
 	return false;
 }
@@ -807,7 +1362,7 @@ bool DialogEngine::AreQuestRequirementsFullfilled(std::string query)
 bool DialogEngine::IsQuestFailed(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_questState == QuestState::FAILED);
 	return false;
 }
@@ -836,7 +1391,7 @@ void DialogEngine::SetGameFloat(std::string name, float value)
 	// check if float exists
 	for (GameFloat& gameValue : s_gameFloats) {
 
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.SetTo(value);
 			return;
 		}
@@ -848,7 +1403,7 @@ void DialogEngine::SetGameFloat(std::string name, float value)
 bool DialogEngine::DoesFlagExist(std::string name)
 {
 	for (GameFlag& flag : s_gameFlags)
-		if (flag.m_name == name)
+		if (Util::CaselessEquality(flag.m_name, name))
 			return true;
 	return false;
 }
@@ -856,7 +1411,7 @@ bool DialogEngine::DoesFlagExist(std::string name)
 void DialogEngine::SetGameFloatMin(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.SetMin(value);
 			return;
 		}
@@ -865,7 +1420,7 @@ void DialogEngine::SetGameFloatMin(std::string name, float value)
 void DialogEngine::SetGameFloatMax(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.SetMax(value);
 			return;
 		}
@@ -874,7 +1429,7 @@ void DialogEngine::SetGameFloatMax(std::string name, float value)
 void DialogEngine::AddToGameFloat(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.m_value += value;
 			return;
 		}
@@ -883,7 +1438,7 @@ void DialogEngine::AddToGameFloat(std::string name, float value)
 void DialogEngine::SubractFromGameFloat(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.m_value -= value;
 			return;
 		}
@@ -894,7 +1449,7 @@ float DialogEngine::GetGameFloat(std::string flagName)
 {
 	// Look for the fucking flag
 	for (GameFloat& gamevalue : s_gameFloats) {
-		if (gamevalue.m_name == flagName) {
+		if (Util::CaselessEquality(gamevalue.m_name, flagName)) {
 			return gamevalue.m_value;
 		}
 	}
@@ -906,14 +1461,14 @@ float DialogEngine::GetGameFloat(std::string flagName)
 bool DialogEngine::GameFloatExists(std::string name)
 {
 	for (GameFloat& value : s_gameFloats)
-		if (value.m_name == name)
+		if (Util::CaselessEquality(value.m_name, name))
 			return true;
 	return false;
 }
 
 std::string DialogEngine::GetGameFloatNameByIndex(int index)
 {
-	if (index < 0 || index >= s_gameFloats.size())
+	if (index < 0 || index >= (int)s_gameFloats.size())
 		return "out_of_range";
 
 	return s_gameFloats[index].m_name;
@@ -932,7 +1487,7 @@ void DialogEngine::SetGameFlag(std::string flagName, bool state)
 	for (GameFlag& gameFlag : s_gameFlags) {
 
 		//  if (TCharCompare(gameFlag.m_name.c_str(), flagName)) {
-		if (gameFlag.m_name == flagName) {
+		if (Util::CaselessEquality(gameFlag.m_name, flagName)) {
 			gameFlag.m_state = state;
 			return;
 		}
@@ -945,7 +1500,7 @@ bool DialogEngine::GetGameFlagState(std::string flagName)
 {
 	// Look for the fucking flag
 	for (GameFlag& gameFlag : s_gameFlags) {
-		if (gameFlag.m_name == flagName) {
+		if (Util::CaselessEquality(gameFlag.m_name, flagName)) {
 			return gameFlag.m_state;
 		}
 	}
@@ -957,7 +1512,7 @@ void DialogEngine::ToggleGameFlag(std::string flagName)
 {
 	// Look for the fucking flag
 	for (GameFlag& gameFlag : s_gameFlags) {
-		if (gameFlag.m_name == flagName) {
+		if (Util::CaselessEquality(gameFlag.m_name, flagName)) {
 			gameFlag.Toggle();
 		}
 	}
@@ -965,7 +1520,7 @@ void DialogEngine::ToggleGameFlag(std::string flagName)
 
 std::string DialogEngine::GetGameFlagNameByIndex(int index)
 {
-	if (index < 0 || index >= s_gameFlags.size())
+	if (index < 0 || index >= (int)s_gameFlags.size())
 		return "out_of_range";
 
 	return s_gameFlags[index].m_name;
@@ -982,9 +1537,9 @@ std::string DialogEngine::GetGameFlagNameByIndex(int index)
 
 void DialogEngine::TakeItem(std::string name, int quantity)
 {
-	for (int i = 0; i < s_gameItems.size(); i++) {
+	for (size_t i = 0; i < s_gameItems.size(); i++) {
 		// Find the item
-		if (s_gameItems[i].m_name == name) {
+		if (Util::CaselessEquality(s_gameItems[i].m_name, name)) {
 			// Subract from the item's quantity
 			s_gameItems[i].m_quantity -= quantity;
 			// If quanitity is 0 then remove it
@@ -998,9 +1553,9 @@ void DialogEngine::TakeItem(std::string name, int quantity)
 
 void DialogEngine::GiveItem(std::string name, int quantity)
 {
-	for (int i = 0; i < s_gameItems.size(); i++) {
+	for (size_t i = 0; i < s_gameItems.size(); i++) {
 		// Find the item
-		if (s_gameItems[i].m_name == name) {
+		if (Util::CaselessEquality(s_gameItems[i].m_name, name)) {
 			// Add to the item's quantity
 			s_gameItems[i].m_quantity += quantity;
 			return;
@@ -1013,7 +1568,7 @@ void DialogEngine::GiveItem(std::string name, int quantity)
 int DialogEngine::GetItemQuantity(std::string name)
 {
 	for (GameItem& gameItem : s_gameItems)
-		if (gameItem.m_name == name) {
+		if (Util::CaselessEquality(gameItem.m_name, name)) {
 			return gameItem.m_quantity;
 		}
 	return -1;
@@ -1022,14 +1577,14 @@ int DialogEngine::GetItemQuantity(std::string name)
 bool DialogEngine::HasItem(std::string name)
 {
 	for (GameItem& item : DialogEngine::s_gameItems)
-		if (item.m_name == name)
+		if (Util::CaselessEquality(item.m_name, name))
 			return true;
 	return false;
 }
 
 std::string DialogEngine::GetGameItemNameByIndex(int index)
 {
-	if (index < 0 || index >= s_gameItems.size())
+	if (index < 0 || index >= (int)s_gameItems.size())
 		return "out_of_range";
 
 	return s_gameItems[index].m_name;

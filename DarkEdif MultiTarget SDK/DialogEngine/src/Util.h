@@ -2,12 +2,18 @@
 #include <string>
 #include <sstream> 
 #include <vector>
+#include <random>
+#include <algorithm>
 
 class Util
 {
 public:
 
     // Static Methods
+    static bool CaselessEquality(std::string strA, std::string strB);
+    static std::string ToUppercase(std::string str);
+    static std::string ToLowercase(std::string str);
+    static int RandomInt(int low, int high);
     static int StringToInt(std::string str);
     static float StringToFloat(std::string str);
     static std::string RemoveFromBeginning(std::string str, int numberOfCharacters);

@@ -95,6 +95,64 @@ void Extension::ClearAllData()
 	DialogEngine::ClearAllData();
 }
 
+void Extension::RegisterNPCFixedValue(TCHAR* name, int value)
+{
+	DialogEngine::RegisterNPC(DarkEdif::TStringToUTF8(name), value);
+}
+
+void Extension::RegisterItemFixedValue(TCHAR* name, int value)
+{
+	DialogEngine::RegisterItem(DarkEdif::TStringToUTF8(name), value);
+}
+
+void Extension::PickedUpFusionItem(int fixedValue)
+{
+	DialogEngine::PickedUpFusionItem(fixedValue);
+}
+
+void Extension::CheckNPCQuestDialog(int fixedValue)
+{
+	DialogEngine::CheckNPCQuestDialog(fixedValue);
+}
+
+void Extension::CheckNPCInWorldDialog(int fixedValue)
+{
+	DialogEngine::CheckNPCInWorldDialog(fixedValue);
+}
+
+void Extension::CheckNPCInWorldQuestDialogText(int fixedValue)
+{
+	DialogEngine::CheckNPCInWorldQuestDialogText(fixedValue);
+}
+
+void Extension::CheckNPCStandardDialogText(int fixedValue)
+{
+	DialogEngine::CheckNPCStandardDialogText(fixedValue);
+}
+
+void Extension::LoadInWorldDialogFile(TCHAR* name)
+{
+	DialogEngine::LoadInWorldDialogFile(DarkEdif::TStringToUTF8(name));
+}
+
+/*void Extension::AddFixedValueTimer(int fixedValue, int timerDuration)
+{
+	FixedValueTimer timer;
+	timer.fixedValue = fixedValue;
+	timer.timer = timerDuration;
+	m_fixedValueTimers.push_back(timer);
+}*/
+
+void Extension::UpdateEngine()
+{
+	DialogEngine::UpdateEngine();
+}
+
+void Extension::SetTextTimerDuration(int duration)
+{
+	DialogEngine::SetTextDuration(duration);
+}
+
 void Extension::ActivateQuestByName(TCHAR* name)
 {
 	DialogEngine::ActivateQuestByName(DarkEdif::TStringToUTF8(name));

@@ -7,6 +7,10 @@ void Quest::CheckRequirements(std::vector<GameFlag>& engineFlags, std::vector<Ga
 	// First reset to false. Because player could sell item or put it in inventory or who knows. Gotta allow.
 	m_requirementsFullfiled = false;
 
+	std::cout << "     CHECKING " << this->m_name << "\n";
+	std::cout << "     " << m_requiredFlags.size() << "\n";
+	std::cout << "     " << m_requiredItems.size() << "\n";
+
 	// Check if the quest requirment flag states match the corresponding flags in the engine.
 	// By looping over every frag, checking for name equality, and comparing states.
 	for (GameFlag& questFlag : m_requiredFlags)

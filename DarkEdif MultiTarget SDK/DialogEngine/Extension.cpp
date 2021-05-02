@@ -21,26 +21,41 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkAction(0, LoadDialogFile);
 	LinkAction(1, LoadQuestFile);
 	LinkAction(2, LoadPlayerDataFile);
-	LinkAction(3, SavePlayerDataFile);
-	LinkAction(4, ShowDialogByID);
-	LinkAction(5, SelectResponseByIndex);
-	LinkAction(6, SetGameValue);
-	LinkAction(7, SetGameValueMin);
-	LinkAction(8, SetGameValueMax);
-	LinkAction(9, AddToGameValue);
-	LinkAction(10, SubtractFromValue);
-	LinkAction(11, SetGameFlagToTrue);
-	LinkAction(12, SetGameFlagToFalse);
-	LinkAction(13, ToggleGameFlag);
-	LinkAction(14, GiveItem);
-	LinkAction(15, TakeItem);
-	LinkAction(16, TriggerFusionActionByName);
-	LinkAction(17, ActivateQuestByName);
-	LinkAction(18, CompleteQuestByName);
-	LinkAction(19, FailQuestByName);
-	LinkAction(20, CheckForQuestCompletion);
-	LinkAction(21, ClearAllData);
+	LinkAction(3, LoadInWorldDialogFile);
+	LinkAction(4, SavePlayerDataFile);
 
+	LinkAction(5, ShowDialogByID);
+	LinkAction(6, SelectResponseByIndex);
+	LinkAction(7, SetGameValue);
+	LinkAction(8, SetGameValueMin);
+	LinkAction(9, SetGameValueMax);
+	LinkAction(10, AddToGameValue);
+	LinkAction(11, SubtractFromValue);
+	LinkAction(12, SetGameFlagToTrue);
+	LinkAction(13, SetGameFlagToFalse);
+	LinkAction(14, ToggleGameFlag);
+
+	LinkAction(15, RegisterItemFixedValue);
+	LinkAction(16, GiveItem);
+	LinkAction(17, TakeItem);
+	LinkAction(18, PickedUpFusionItem);
+
+	LinkAction(19, TriggerFusionActionByName);
+
+	LinkAction(20, ActivateQuestByName);
+	LinkAction(21, CompleteQuestByName);
+	LinkAction(22, FailQuestByName);
+	LinkAction(23, CheckForQuestCompletion);
+
+	LinkAction(24, RegisterNPCFixedValue);
+	LinkAction(25, CheckNPCQuestDialog);
+	LinkAction(26, CheckNPCInWorldDialog);
+	LinkAction(27, SetTextTimerDuration);
+	LinkAction(28, CheckNPCInWorldQuestDialogText);
+	LinkAction(29, CheckNPCStandardDialogText);
+
+	LinkAction(30, ClearAllData);
+	LinkAction(31, UpdateEngine);
 
 	LinkCondition(0, IsThereDialogToShow);
 	LinkCondition(1, IsDialogOver);
@@ -66,22 +81,28 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkExpression(2, GetResponseTextByIndex);
 	LinkExpression(3, GetAvaliableReponseCount);
 	LinkExpression(4, GetLastSelectedResponseIndex);
-	LinkExpression(5, GetGameValueByName);
-	LinkExpression(6, GetGameValueNameByIndex);
-	LinkExpression(7, GetTotalGameValueCount);
-	LinkExpression(8, GetGameFlagStateAsString);
-	LinkExpression(9, GetGameFlagNameByIndex);
-	LinkExpression(10, GetTotalGameFlagCount);
-	LinkExpression(11, GetGameItemQuantityByName);
-	LinkExpression(12, GetGameItemNameByIndex);
-	LinkExpression(13, GetTotalGameItems);
-	LinkExpression(14, GetFusionActionNameIndex);
-	LinkExpression(15, GetTotalPendingFusionActions);
+	LinkExpression(5, GetCurrentDialogID);
+	LinkExpression(6, GetGameValueByName);
+	LinkExpression(7, GetGameValueNameByIndex);
+	LinkExpression(8, GetTotalGameValueCount);
+	LinkExpression(9, GetGameFlagStateAsString);
+	LinkExpression(10, GetGameFlagNameByIndex);
+	LinkExpression(11, GetTotalGameFlagCount);
+	LinkExpression(12, GetGameItemQuantityByName);
+	LinkExpression(13, GetGameItemNameByIndex);
+	LinkExpression(14, GetTotalGameItems);
+	LinkExpression(15, GetFusionActionNameIndex);
+	LinkExpression(16, GetTotalPendingFusionActions);
 	//
-	LinkExpression(16, GetQuestNameByIndex);
-	LinkExpression(17, GetQuestStateAsString);
-	LinkExpression(18, GetQuestDescriptionByName);
-	LinkExpression(19, GetTotalQuestCount);
+	LinkExpression(17, GetQuestNameByIndex);
+	LinkExpression(18, GetQuestStateAsString);
+	LinkExpression(19, GetQuestDescriptionByName);
+	LinkExpression(20, GetTotalQuestCount);
+
+	LinkExpression(21, GetNPCCount);
+	LinkExpression(22, GetNPCInWorldDialogStringByIndex);
+	LinkExpression(23, GetNPCFixedValueByIndex);
+
 	/*
    
 	{
