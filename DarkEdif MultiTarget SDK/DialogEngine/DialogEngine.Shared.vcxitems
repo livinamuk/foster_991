@@ -57,6 +57,5 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Quest.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Util.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Runtime.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp" />
   </ItemGroup>
 </Project>
