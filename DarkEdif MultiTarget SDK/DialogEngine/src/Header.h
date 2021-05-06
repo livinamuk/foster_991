@@ -6,15 +6,6 @@
 #include <vector>
 #include <map>
 
-enum class SaveCategory {
-	NONE,
-	FLAGS,
-	VALUES,
-	ITEMS,
-	QUESTS
-};
-
-
 enum class QuestState {
 	INACTIVE,
 	ACTIVE,
@@ -50,6 +41,14 @@ enum class ActionType {
 	GIVE_ITEM,
 	TAKE_ITEM
 };
+/*
+struct ResponseCondition {
+public:
+	std::string m_conditionName = "";
+	ConditionType m_ConditionType = ConditionType::CONDITION_UNDEFINED;
+	float m_conditionComparisonValue = 0;
+	bool m_requiredConditionBoolState = false;
+};*/
 
 struct MyCondition {
 public:
@@ -58,6 +57,7 @@ public:
 	float m_conditionComparisonValue = 0;
 	bool m_requiredConditionBoolState = false;
 };
+
 
 struct ResponseAction {
 public:
@@ -90,8 +90,104 @@ public:
 	std::vector<MyCondition> m_conditions;
 };
 
+#define INVENTORY_SIZE_LIMIT 42
+//#define CONTAINER_SIZE 18
+#define EMPTY_SLOT "empty"
+
+struct PlayerInventoryItem {
+	std::string m_name;
+	int m_quantity;
+
+	PlayerInventoryItem() {
+		m_name = EMPTY_SLOT;
+		m_quantity = 0;
+	}
+	PlayerInventoryItem(std::string name, int quantity) {
+		m_name = name;
+		m_quantity = quantity;
+	}
+};
+
+struct Container {
+	std::string name;
+	std::string iconName;
+	//PlayerInventoryItem contents[CONTAINER_SIZE];
+	std::vector<PlayerInventoryItem> contentsVector;
+};
+
 /*
-struct InWorldNPCDialogEntry {
-	std::string m_npcName = "UNDEFINED";
-	std::vector<std::string> m_replies;
+enum class EquipLocation {
+	NOT_EQUIPPED,
+	HEAD,
+	UPPER_BODY,
+	LOWER_BODY,
+	HANDS,
+	FEET,
+	EQUIP_SLOT
 };*/
+
+enum ReturnValue {
+	UNDEFINED,
+	SUCCESS,
+	FAILURE,
+	OVERWEIGHT,
+	COULD_NOT_FIND_CONTAINER_NAME,
+	COULD_NOT_FIND_ITEM_IN_CONTAINER,
+	NO_FREE_SLOTS,
+	UNDEFINED_ITEM
+};
+
+enum class CompanionType {
+	DONKEY, 
+	CAT,
+	DOG
+};
+
+struct Companion {
+	std::string name;
+	CompanionType type;
+};
+
+enum class InventoryBagType {
+	GENERAL,
+	WEARABLE,
+	EQUIPABLE,
+	MATERIAL,
+	CONSUMABLE,
+	QUEST
+};
+
+enum class InventoryType { 
+	UNDEFINED, 
+	WEARABLE_HEAD,
+	WEARABLE_UPPER_BODY,
+	WEARABLE_LOWER_BODY,
+	WEARABLE_BELT,
+	WEARABLE_HANDS,
+	WEARABLE_FEET,
+	EQUIPABLE,
+	MATERIAL,
+	CONSUMABLE, 
+	GENERAL, 
+	QUEST
+};
+
+enum ModifierType {
+	NONE,
+	SPEED,
+	LOCK_PICKING
+};
+
+struct Modifier {
+	ModifierType m_type;
+	int m_value;
+};
+
+struct InventoryItemData {
+	std::string m_name = "UNDEFINED";
+	InventoryType m_type = InventoryType::UNDEFINED;
+	float m_weight = 0;
+	std::string m_description;
+	int m_price;
+	std::vector< Modifier> m_modifiers;
+};

@@ -57,6 +57,38 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkAction(30, ClearAllData);
 	LinkAction(31, UpdateEngine);
 
+
+	// inventory
+	LinkAction(32, LoadItemDatabase);
+	LinkAction(33, DespositItemIntoContainer);
+	LinkAction(34, WithdrawItemFromContainer);
+	LinkAction(35, MoveInventoryItem);
+	LinkAction(36, MoveContaineryItem);
+	LinkAction(37, SetInventoryBagGeneralSize);
+	LinkAction(38, SetInventoryBagWearableSize);
+	LinkAction(39, SetInventoryBagEquipableSize);
+	LinkAction(40, SetInventoryBagMaterialSize);
+	LinkAction(41, SetInventoryBagConsumableSize);
+	LinkAction(42, SetInventoryBagQuestSize);
+	LinkAction(43, ShowContainerInventory);
+	LinkAction(44, ShowCompanionInventory);
+	LinkAction(45, setCurrentBagToGeneral);
+	LinkAction(46, setCurrentBagToWearable);
+	LinkAction(47, setCurrentBagToEquipable);
+	LinkAction(48, setCurrentBagToMaterial);
+	LinkAction(49, setCurrentBagToConsumable);
+	LinkAction(50, setCurrentBagToQuest);
+	LinkAction(51, SetCurrentContainerByName);
+	LinkAction(52, SetCurrentCompanionByName);
+	LinkAction(53, EquipToHead);
+	LinkAction(54, EquipToUpperBody);
+	LinkAction(55, EquipToLowerBody);
+	LinkAction(56, EquipToFeet);
+	LinkAction(57, EquipToHands);
+	LinkAction(58, EquipToBelt);
+	LinkAction(59, EquipToEquipSlot);
+
+
 	LinkCondition(0, IsThereDialogToShow);
 	LinkCondition(1, IsDialogOver);
 	LinkCondition(2, IsReponseASpecialColor);
@@ -76,6 +108,17 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkCondition(15, WasAnyQuestJustCompleted);
 	LinkCondition(16, WasAnyQuestJustFailed);
 
+	// inventory        
+	LinkCondition(17, IsCurrentBagGeneral);
+	LinkCondition(18, IsCurrentBagWearable);
+	LinkCondition(19, IsCurrentBagEquipable);
+	LinkCondition(20, IsCurrentBagMaterial);
+	LinkCondition(21, IsCurrentBagConsumable);
+	LinkCondition(22, IsCurrentBagQuest);
+
+
+
+
 	LinkExpression(0, GetCurrentDialogText);
 	LinkExpression(1, GetcurrentDialogImageName);
 	LinkExpression(2, GetResponseTextByIndex);
@@ -89,8 +132,11 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkExpression(10, GetGameFlagNameByIndex);
 	LinkExpression(11, GetTotalGameFlagCount);
 	LinkExpression(12, GetGameItemQuantityByName);
-	LinkExpression(13, GetGameItemNameByIndex);
-	LinkExpression(14, GetTotalGameItems);
+
+	LinkExpression(13, GetResponseTextByIndex);	// dummy. delete m ee.
+	LinkExpression(14, GetAvaliableReponseCount);	// dummy . delete meee
+//	LinkExpression(13, GetGameItemNameByIndex);
+//	LinkExpression(14, GetTotalGameItems);
 	LinkExpression(15, GetFusionActionNameIndex);
 	LinkExpression(16, GetTotalPendingFusionActions);
 	//
@@ -103,26 +149,51 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkExpression(22, GetNPCInWorldDialogStringByIndex);
 	LinkExpression(23, GetNPCFixedValueByIndex);
 
-	/*
-   
-	{
-		LinkAction(0, FirstAction);
-		LinkAction(1, SecondAction);
-		LinkAction(2, AllParamsAction);
-	}
-	{
-		LinkCondition(0, AlwaysTrue);
-		LinkCondition(1, AlwaysFalse);
-		LinkCondition(2, ConditionWithParams);
-		LinkCondition(3, CondWithAllParams);
-	}
-	{
-		LinkExpression(0, TextExpression);
-		LinkExpression(1, IntegerExpression);
-		LinkExpression(2, FloatExpression);
-		LinkExpression(3, AllParamsRetInt);
-	}
-    */
+
+	// Inventory
+	LinkExpression(24, GetInventoryBagGeneralSize);
+	LinkExpression(25, GetInventoryBagWearableSize);
+	LinkExpression(26, GetInventoryBagEquipableSize);
+	LinkExpression(27, GetInventoryBagMaterialSize);
+	LinkExpression(28, GetInventoryBagConsumableSize);
+	LinkExpression(29, GetInventoryBagQuestsize);
+
+	LinkExpression(30, GetGeneralBagItemNameByIndex);
+	LinkExpression(31, GetWearableBagItemNameByIndex);
+	LinkExpression(32, GetMaterialItemNameByIndex);
+	LinkExpression(33, GetConsumableBagItemNameByIndex);
+	LinkExpression(34, GetEquipableBagItemNameByIndex);
+	LinkExpression(35, GetQuestBagItemNameByIndex);
+
+	LinkExpression(36, GetCurrentCompanionName);
+	LinkExpression(37, GetCurrentContainerName);
+	LinkExpression(38, GetSizeOfContainerByName);
+
+	LinkExpression(39, GetItemTypeAsStringByName);
+	LinkExpression(40, GetItemWeightByName);
+	LinkExpression(41, GetItemDescriptionByName);
+	LinkExpression(42, GetItemNumberOfModifierEffectsByName);
+	LinkExpression(43, GetItemModiferEffectNameByIndex);
+	LinkExpression(44, GetItemModiferEffectValueByIndex);
+	LinkExpression(45, GetCurrentBagItemNameByIndex);
+	LinkExpression(46, GetCurrentBagIteQuantityByIndex);
+	LinkExpression(47, GetCurrentBagSize);
+
+	LinkExpression(48, GetCurrentContainerName);
+	LinkExpression(49, GetCurrentContainerSize);
+	LinkExpression(50, GetCurrentContainerItemNameByIndex);
+	LinkExpression(51, GetCurrentContainerItemQuanityByIndex);
+	LinkExpression(52, GetCurrentContainerIconName);
+
+	LinkExpression(53, GetItemNameEquippedToHead);
+	LinkExpression(54, GetItemNameEquippedToUpperBody);
+	LinkExpression(55, GetItemNameEquippedToLowerBody);
+	LinkExpression(56, GetItemNameEquippedToFeet);
+	LinkExpression(57, GetItemNameEquippedToHands);
+	LinkExpression(58, GetItemNameEquippedToBelt);
+	LinkExpression(59, GetItemNameEquippedToEquipSlot);
+	
+
 	/*
         This is where you'd do anything you'd do in CreateRunObject in the original SDK
 

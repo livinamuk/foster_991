@@ -1,6 +1,44 @@
 #pragma once
 #include "Util.h"
 
+std::string Util::GetModifierTypeNameAsString(ModifierType type)
+{
+    if (type == ModifierType::LOCK_PICKING)
+        return "LOCK_PICKING";
+    else if (type == ModifierType::SPEED)
+        return "SPEED";
+    else
+        return "UNDEFINED";
+}
+
+std::string Util::GetItemTypeAsString(InventoryType type)
+{
+    if (type == InventoryType::CONSUMABLE)
+        return "CONSUMABLE";
+    else if (type == InventoryType::EQUIPABLE)
+        return "EQUIPABLE";
+    else if (type == InventoryType::GENERAL)
+        return "GENERAL";
+    else if (type == InventoryType::MATERIAL)
+        return "MATERIAL";
+    else if (type == InventoryType::QUEST)
+        return "QUEST";
+    else if (type == InventoryType::WEARABLE_BELT)
+        return "WEARABLE_BELT";
+    else if (type == InventoryType::WEARABLE_FEET)
+        return "WEARABLE_FEET";
+    else if (type == InventoryType::WEARABLE_HANDS)
+        return "WEARABLE_HANDS";
+    else if (type == InventoryType::WEARABLE_HEAD)
+        return "WEARABLE_HEAD";
+    else if (type == InventoryType::WEARABLE_LOWER_BODY)
+        return "WEARABLE_LOWER_BODY";
+    else if (type == InventoryType::WEARABLE_UPPER_BODY)
+        return "WEARABLE_UPPER_BODY";
+    else
+        return "UNDEFINED";
+}
+
 bool Util::CaselessEquality(std::string strA, std::string strB)
 {
     return ToUppercase(strA) == ToUppercase(strB);

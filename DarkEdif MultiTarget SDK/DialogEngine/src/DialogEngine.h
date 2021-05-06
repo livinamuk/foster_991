@@ -7,13 +7,13 @@
 #include "GameFloat.h"
 #include "Quest.h"
 #include "NPC.h"
+#include "Inventory/Inventory.h"
 
 class DialogEngine {
 public:
 
 	// Static Variables
-
-	static std::vector<GameItem> s_gameItems;
+	//static std::vector<GameItem> s_gameItems;
 	static std::vector<GameFlag> s_gameFlags;
 	static std::vector<GameFloat> s_gameFloats;
 	static std::vector<DialogEntry> s_dialogEntries;
@@ -24,12 +24,8 @@ public:
 	static std::vector<Quest> s_Quests;
 	static bool s_wasAnyQuestJustCompleted;
 	static bool s_wasAnyQuestJustFailed;
-	static int s_textDuration;
-	//static std::string s_currentInWorldDialogString;
-
-	//static std::vector<InWorldNPCDialogEntry> s_inWorldNPCDialogEntries;
-
 	static std::vector<NPC> s_NPCs;
+	static int s_textDuration;
 	static std::map<int, std::string> s_itemFixedValueMap;
 
 	// Static functions
@@ -39,17 +35,12 @@ public:
 	static void LoadQuestFile(std::string filename);
 	static void LoadInWorldDialogFile(std::string filename);
 
-	static void TakeItem(std::string name, int quantity);
-	static void GiveItem(std::string name, int quantity);
-	static int GetItemQuantity(std::string name);
-	static bool HasItem(std::string name);
-	static std::string GetGameItemNameByIndex(int index);
-
 	static void SetGameFlag(std::string flagName, bool state);
 	static bool GetGameFlagState(std::string flagName);
 	static void ToggleGameFlag(std::string flagName);
 	static std::string GetGameFlagNameByIndex(int index);
 	static bool DoesFlagExist(std::string name);
+
 
 	static void SetGameFloat(std::string name, float value);
 	static void SetGameFloatMin(std::string name, float value);
@@ -84,7 +75,6 @@ public:
 	// Quests 
 	static void CheckQuestRequirementsAndPayOuts();
 	static void ActivateQuestByName(std::string query);
-	static void InactivateQuestByName(std::string query);
 	static void CompleteQuestByName(std::string query);
 	static void FailQuestByName(std::string query);
 	static int GetQuestCount();
@@ -99,7 +89,8 @@ public:
 	static bool IsQuestFailed(std::string query);
 	static std::string GetQuestStateAsString(std::string query);
 	static std::string GetQuestDescription(std::string query);
-
+	//static NPC* GetNPCPointer(std::string name);\
+		
 	// NPC abstraction
 	static NPC* CreateNPC(std::string name);
 	static NPC* GetNPCAndCreateIfItDoesntExist(std::string name);

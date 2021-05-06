@@ -8,14 +8,14 @@ struct QuestDialogIDs
     int complete = -1;
     int failed = -1;
     int expTooLow = -1;
-}; 
+};
 
 struct QuestInWorldDialogText
 {
     std::string active;
     std::string inactive;
     std::string complete;
-    std::string failed ;
+    std::string failed;
     std::string expTooLow;
 };
 

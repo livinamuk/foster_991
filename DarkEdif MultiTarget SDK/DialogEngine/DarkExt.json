@@ -69,7 +69,38 @@
 				"Clean up",
 				[ 30, "Clear All Data" ]
 			],
-			[ 31, "Update Engine" ]
+			[ 31, "Update Engine" ],
+			[
+				"Inventory",
+				[ 32, "Load Item Database" ],
+				[ 33, "Desposit Item Into Container" ],
+				[ 34, "Withdraw Item From Container" ],
+				[ 35, "Move Inventory Item" ],
+				[ 36, "Move Containery Item" ],
+				[ 37, "Set Inventory Bag General Size" ],
+				[ 38, "Set Inventory Bag Wearable Size" ],
+				[ 39, "Set Inventory Bag Equipable Size" ],
+				[ 40, "Set Inventory Bag Material Size" ],
+				[ 41, "Set Inventory Bag Consumable Size" ],
+				[ 42, "Set Inventory Bag Quest Size" ],
+				[ 43, "Show Container Inventory" ],
+				[ 44, "Show Companion Inventory" ],
+				[ 45, "Set Current Bag To General" ],
+				[ 46, "Set Current Bag To Wearable" ],
+				[ 47, "Set Current Bag To Equipable" ],
+				[ 48, "Set Current Bag To Material" ],
+				[ 49, "Set Current Bag To Consumable" ],
+				[ 50, "Set Current Bag To Quest" ],
+				[ 51, "Set Current Container By Name" ],
+				[ 52, "Set Current Companion By Name" ],
+				[ 53, "Equip Item To Head" ],
+				[ 54, "Equip Item To Upper Body" ],
+				[ 55, "Equip Item To Lower Body" ],
+				[ 56, "Equip Item To Feet" ],
+				[ 57, "Equip Item To Hands" ],
+				[ 58, "Equip Item To Belt" ],
+				[ 59, "Equip Item To Equip Slot" ]
+			]
 		],
 		"ConditionMenu": [
 			[ 0, "Is there dialog to show" ],
@@ -88,7 +119,13 @@
 			[ 13, "Is Quest complete" ],
 			[ 14, "Is Quest failed" ],
 			[ 15, "Was any Quest just completed" ],
-			[ 16, "Was any Quest just failed" ]
+			[ 16, "Was any Quest just failed" ],
+			[ 17, "Is Current Bag General" ],
+			[ 18, "Is Current Bag Wearable" ],
+			[ 19, "Is Current Bag Equipable" ],
+			[ 20, "Is Current Bag Material" ],
+			[ 21, "Is Current Bag Consumable" ],
+			[ 22, "Is Current Bag Quest" ]
 		],
 		"ExpressionMenu": [
 			[
@@ -135,6 +172,45 @@
 				[ 21, "Get NPC Count" ],
 				[ 22, "Get NPC In-World Dialog String by Index" ],
 				[ 23, "Get NPC Fixed Value by Index" ]
+			],
+			[
+				"Inventory",
+				[ 24, "GetInventoryBagGeneralSize" ],
+				[ 25, "GetInventoryBagWearableSize" ],
+				[ 26, "GetInventoryBagEquipableSize" ],
+				[ 27, "GetInventoryBagMaterialSize" ],
+				[ 28, "GetInventoryBagConsumableSize" ],
+				[ 29, "GetInventoryBagQuestsize" ],
+				[ 30, "GetGeneralBagItemNameByIndex" ],
+				[ 31, "GetWearableBagItemNameByIndex" ],
+				[ 32, "GetMaterialItemNameByIndex" ],
+				[ 33, "GetConsumableBagItemNameByIndex" ],
+				[ 34, "GetEquipableBagItemNameByIndex" ],
+				[ 35, "GetQuestBagItemNameByIndex" ],
+				[ 36, "GetCurrentCompanionName" ],
+				[ 37, "GetCurrentContainerName" ],
+				[ 38, "GetSizeOfContainerByName" ],
+				[ 39, "GetItemTypeAsStringByName" ],
+				[ 40, "GetItemWeightByName" ],
+				[ 41, "GetItemDescriptionByName" ],
+				[ 42, "GetItemNumberOfModifierEffectsByName" ],
+				[ 43, "GetItemModiferEffectNameByIndex" ],
+				[ 44, "GetItemModiferEffectValueByIndex" ],
+				[ 45, "Get Current Bag Item Name By Index" ],
+				[ 46, "Get Current Bag Item Quantity By Index" ],
+				[ 47, "Get Current Bag Size" ],
+				[ 48, "Get Current Container Name" ],
+				[ 49, "Get Current Container Size" ],
+				[ 50, "Get Current Container Item Name By Index" ],
+				[ 51, "Get Current Container Item Quantity By Index" ],
+				[ 52, "Get Current Container Icon Name" ],
+				[ 53, "Get Item Name Equipped To Head" ],
+				[ 54, "Get Item Name Equipped To Upper Body" ],
+				[ 55, "Get Item Name Equipped To Lower Body" ],
+				[ 56, "Get Item Name Equipped To Feet" ],
+				[ 57, "Get Item Name Equipped To Hands" ],
+				[ 58, "Get Item Name Equipped To Belt" ],
+				[ 59, "Get Item Name Equipped To Equip Slot" ]
 			]
 		],
 		"Actions": [
@@ -329,6 +405,158 @@
 			},
 			{
 				"Title": "Update Engine"
+			},
+			{
+				"Title": "Load Item Database %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Desposit item %1 (quantity %2) into Container %0 at spot %3",
+				"Parameters": [
+					[ "Text", "container name" ],
+					[ "Text", "item" ],
+					[ "Integer", "quantity" ],
+					[ "Integer", "location" ]
+				]
+			},
+			{
+				"Title": "Withdraw item %1 (quantity %2) from Container %0 into inventory spot %3",
+				"Parameters": [
+					[ "Text", "container name" ],
+					[ "Text", "item" ],
+					[ "Integer", "quantity" ],
+					[ "Integer", "location" ]
+				]
+			},
+			{
+				"Title": "Move inventory item 0 into spot %1",
+				"Parameters": [
+					[ "Text", "item" ],
+					[ "Integer", "location" ]
+				]
+			},
+			{
+				"Title": "Move container item 0 into spot %1",
+				"Parameters": [
+					[ "Text", "item" ],
+					[ "Integer", "location" ]
+				]
+			},
+			{
+				"Title": "Set general bag size to %0",
+				"Parameters": [
+					[ "Integer", "size" ]
+				]
+			},
+			{
+				"Title": "Set wearable bag size to %0",
+				"Parameters": [
+					[ "Integer", "size" ]
+				]
+			},
+			{
+				"Title": "Set equipable bag size to %0",
+				"Parameters": [
+					[ "Integer", "size" ]
+				]
+			},
+			{
+				"Title": "Set material bag size to %0",
+				"Parameters": [
+					[ "Integer", "size" ]
+				]
+			},
+			{
+				"Title": "Set consumable bag size to %0",
+				"Parameters": [
+					[ "Integer", "size" ]
+				]
+			},
+			{
+				"Title": "Set quest bag size to %0",
+				"Parameters": [
+					[ "Integer", "size" ]
+				]
+			},
+			{
+				"Title": "Show container inventory"
+			},
+			{
+				"Title": "Show companion inventory"
+			},
+			{
+				"Title": "Set current bag to general"
+			},
+			{
+				"Title": "Set current bag to wearable"
+			},
+			{
+				"Title": "Set current bag to equipable"
+			},
+			{
+				"Title": "Set current bag to material"
+			},
+			{
+				"Title": "Set current bag to consumable"
+			},
+			{
+				"Title": "Set current bag to quest"
+			},
+			{
+				"Title": "Set Current Container To %0",
+				"Parameters": [
+					[ "Text", "Container Name" ]
+				]
+			},
+			{
+				"Title": "Set Current Companion To %0",
+				"Parameters": [
+					[ "Text", "Container Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Head",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Upper Body",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Lower Body",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Feet",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Hands",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Belt",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Equip %0 To Equip Slot",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
 			}
 		],
 		"Conditions": [
@@ -437,6 +665,30 @@
 			},
 			{
 				"Title": "%o : Was any quest just failed",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is Current Bag General Bag?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is Current Bag Wearable Bag?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is Current Bag Equipable Bag?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is Current Bag Material Bag?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is Current Bag Consumable Bag?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is Current Bag Quest Bag?",
 				"Triggered": false
 			}
 		],
@@ -575,6 +827,203 @@
 				"Parameters": [
 					[ "Integer", "index" ]
 				]
+			},
+			{
+				"Title": "GetInventoryBagGeneralSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetInventoryBagWearableSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetInventoryBagEquipableSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetInventoryBagMaterialSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetInventoryBagConsumableSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetInventoryBagQuestsize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetGeneralBagItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetWearableBagItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetMaterialItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetConsumableBagItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetEquipableBagItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetQuestBagItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetCurrentCompanionName(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetCurrentContainerName(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetSizeOfContainerByName(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text", "Container Name" ]
+				]
+			},
+			{
+				"Title": "GetItemTypeAsStringByName(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "GetItemWeightByName(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "GetItemDescriptionByName(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "GetItemNumberOfModifierEffectsByName(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "GetItemModiferEffectNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "Item Name" ],
+					[ "Integer", "Index" ]
+				]
+			},
+			{
+				"Title": "GetItemModiferEffectValueByIndex(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text", "Item Name" ],
+					[ "Integer", "Index" ]
+				]
+			},
+			{
+				"Title": "GetCurrentBagItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetCurrentBagItemQuantityByIndex(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetCurrentBagSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetCurrentContainerName(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetCurrentContainerSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetCurrentContainerItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetCurrentContainerItemQuanityByIndex(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetCurrentContainerIconName(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToHead(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToUpperBody(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToLowerBody(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToFeet(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToHands(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToBelt(",
+				"Returns": "Text"
+			},
+			{
+				"Title": "GetItemNameEquippedToEquipSlot(",
+				"Returns": "Text"
 			}
 		]
 	}

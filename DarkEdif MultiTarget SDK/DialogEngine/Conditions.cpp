@@ -26,7 +26,7 @@ bool Extension::DoesValueExist(TCHAR* name)
 bool Extension::DoesPlayerHaveItem(TCHAR* name)
 {
 	std::string str = DarkEdif::TStringToUTF8(name);
-	return DialogEngine::HasItem(str);
+	return Inventory::HasItem(str);
 }
 
 bool Extension::IsFusionActionTriggered(TCHAR* name)
@@ -95,8 +95,29 @@ bool Extension::WasAnyQuestJustCompleted()
 	return DialogEngine::WasIfAnyQuestWasJustCompleted();
 }
 
-bool Extension::WasAnyQuestJustFailed() 
+bool Extension::WasAnyQuestJustFailed()
 {
 	return DialogEngine::WasIfAnyQuestWasJustFailed();
 
 }
+
+bool Extension::IsCurrentBagGeneral() {
+	return Inventory::IsGeneralInventoryBagOpen();
+}
+bool Extension::IsCurrentBagWearable() {
+	return Inventory::IsWearableInventoryBagOpen();
+}
+bool Extension::IsCurrentBagEquipable() {
+	return Inventory::IsEquipableInventoryBagOpen();
+}
+bool Extension::IsCurrentBagMaterial() {
+	return Inventory::IsMaterialInventoryBagOpen();
+}
+bool Extension::IsCurrentBagConsumable() {
+	return Inventory::IsConsumableInventoryBagOpen();
+}
+bool Extension::IsCurrentBagQuest() {
+	return Inventory::IsQuestInventoryBagOpen();
+}
+
+

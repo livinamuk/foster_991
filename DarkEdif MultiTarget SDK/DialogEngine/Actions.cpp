@@ -77,12 +77,12 @@ void Extension::ToggleGameFlag(TCHAR* name)
 
 void Extension::GiveItem(TCHAR* name, int quanitity)
 {
-	DialogEngine::GiveItem(DarkEdif::TStringToUTF8(name), quanitity);
+	Inventory::GiveItem(DarkEdif::TStringToUTF8(name), quanitity);
 }
 
 void Extension::TakeItem(TCHAR* name, int quanitity)
 {
-	DialogEngine::TakeItem(DarkEdif::TStringToUTF8(name), quanitity);
+	Inventory::TakeItem(DarkEdif::TStringToUTF8(name), quanitity);
 }
 
 void Extension::TriggerFusionActionByName(TCHAR* name)
@@ -172,4 +172,145 @@ void Extension::FailQuestByName(TCHAR* name)
 void Extension::CheckForQuestCompletion()
 {
 	DialogEngine::CheckQuestRequirementsAndPayOuts();
+}
+
+
+
+
+
+
+
+
+
+
+void Extension::LoadItemDatabase(TCHAR* filename)
+{
+	// replace with loading from a file soon u dummy
+	Inventory::InitDefaults();
+}
+
+void Extension::DespositItemIntoContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom)
+{
+	Inventory::DepositItemsIntoContainer(DarkEdif::TStringToUTF8(containerName), DarkEdif::TStringToUTF8(itemName), itemQuanitity, gridLocatiom);
+}
+
+void Extension::WithdrawItemFromContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom)
+{
+	Inventory::WithdrawItemsFromContainer(DarkEdif::TStringToUTF8(containerName), DarkEdif::TStringToUTF8(itemName), itemQuanitity, gridLocatiom);
+}
+
+void Extension::SetInventoryBagGeneralSize(int size)
+{
+	Inventory::m_max_general_slots = size;
+}
+void Extension::SetInventoryBagWearableSize(int size)
+{
+	Inventory::m_max_wearable_slots = size;
+}
+void Extension::SetInventoryBagEquipableSize(int size)
+{
+	Inventory::m_max_equipable_slots = size;
+}
+void Extension::SetInventoryBagMaterialSize(int size)
+{
+	Inventory::m_max_material_slots = size;
+}
+void Extension::SetInventoryBagConsumableSize(int size)
+{
+	Inventory::m_max_consumable_slots = size;
+}
+void Extension::SetInventoryBagQuestSize(int size)
+{
+	Inventory::m_max_quest_slots = size;
+}
+void Extension::MoveInventoryItem(TCHAR* itemName, int gridLocatiom)
+{
+	Inventory::MoveInventoryItem(DarkEdif::TStringToUTF8(itemName), gridLocatiom);
+}
+void Extension::MoveContaineryItem(TCHAR* itemName, int gridLocatiom)
+{
+	Inventory::MoveContainerItem(DarkEdif::TStringToUTF8(itemName), gridLocatiom);
+}
+void Extension::SetCurrentContainerByName(TCHAR* containerName)
+{
+	Inventory::SetCurrentContainerByName(DarkEdif::TStringToUTF8(containerName));
+}
+void Extension::SetCurrentCompanionByName(TCHAR* companionName)
+{
+	Inventory::SetCurrentCompanionByName(DarkEdif::TStringToUTF8(companionName));
+}
+void Extension::ShowCompanionInventory()
+{
+	Inventory::ShowCompanion();
+}
+void Extension::ShowContainerInventory()
+{
+	Inventory::ShowContainer();
+}
+void Extension::setCurrentBagToGeneral()
+{
+	Inventory::SetCurrentInventoryBagToGeneral();
+}
+void Extension::setCurrentBagToWearable()
+{
+	Inventory::SetCurrentInventoryBagToWearable();
+}
+void Extension::setCurrentBagToEquipable()
+{
+	Inventory::SetCurrentInventoryBagToEquipable();
+}
+void Extension::setCurrentBagToMaterial()
+{
+	Inventory::SetCurrentInventoryBagToMaterial();
+}
+void Extension::setCurrentBagToConsumable()
+{
+	Inventory::SetCurrentInventoryBagToConsumeable();
+}
+void Extension::setCurrentBagToQuest()
+{
+	Inventory::SetCurrentInventoryBagToQuest();
+}
+
+void Extension::EquipToHead(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToHead(item);
+}
+
+void Extension::EquipToUpperBody(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToUpperBody(item);
+}
+
+void Extension::EquipToLowerBody(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToLowerBody(item);
+}
+
+void Extension::EquipToHands(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToHands(item);
+}
+
+void Extension::EquipToFeet(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToFeet(item);
+}
+
+void Extension::EquipToBelt(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToBelt(item);
+//	Inventory::s_equippedItems.m_belt = "Utility Belt";
+}
+
+void Extension::EquipToEquipSlot(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipToEquipSlot(item);
 }

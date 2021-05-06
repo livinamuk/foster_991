@@ -4,12 +4,15 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include "Header.h"
 
 class Util
 {
 public:
 
     // Static Methods
+    static std::string GetModifierTypeNameAsString(ModifierType type);
+    static std::string GetItemTypeAsString(InventoryType type);
     static bool CaselessEquality(std::string strA, std::string strB);
     static std::string ToUppercase(std::string str);
     static std::string ToLowercase(std::string str);

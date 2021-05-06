@@ -6,23 +6,40 @@
   ObjectSelection.cpp
   Actions.cpp
   Conditions.cpp
-D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\Conditions.cpp(40): warning C4018: '>=': signed/unsigned mismatch
   Expressions.cpp
   Extension.cpp
   DialogEngine.cpp
-c1xx : fatal error C1083: Cannot open source file: 'D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\MyShit\DialogEngine.cpp': No such file or directory
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\DialogEngine.cpp(482): warning C4102: 'loop_exit': unreferenced label
   GameFlag.cpp
-c1xx : fatal error C1083: Cannot open source file: 'D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\MyShit\GameFlag.cpp': No such file or directory
   GameFloat.cpp
-c1xx : fatal error C1083: Cannot open source file: 'D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\MyShit\GameFloat.cpp': No such file or directory
   GameItem.cpp
-c1xx : fatal error C1083: Cannot open source file: 'D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\MyShit\GameItem.cpp': No such file or directory
+  Inventory.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(227): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(231): warning C4018: '>=': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(247): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(295): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(313): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(376): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(563): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(628): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(635): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(699): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(710): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(723): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(733): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(743): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(987): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(993): warning C4018: '<': signed/unsigned mismatch
+  NPC.cpp
   Quest.cpp
-c1xx : fatal error C1083: Cannot open source file: 'D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\MyShit\Quest.cpp': No such file or directory
   Util.cpp
-c1xx : fatal error C1083: Cannot open source file: 'D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\MyShit\Util.cpp': No such file or directory
   Runtime.cpp
   Edif.Edittime.cpp
+  Generating Code...
+  Compiling...
   Edittime.cpp
   General.cpp
   Generating Code...
+  LINK : program database D:\Github Repos\foster_991\MFX\Extensions\Unicode\DialogEngine_Full.pdb missing; performing full link
+     Creating object D:\Github Repos\foster_991\Temp/DialogEngine/Windows/Debug Unicode/x86\DialogEngine.exp
+  DialogEngine.Windows.vcxproj -> D:\Github Repos\foster_991\Temp/DialogEngine/Windows/Debug Unicode/x86\DialogEngine.mfx

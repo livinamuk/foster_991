@@ -5,15 +5,15 @@
 class Extension
 {
 public:
-	// Hide stuff requiring other headers
-	//SaveExtInfo threadData; // Must be first variable in Extension class
+    // Hide stuff requiring other headers
+    //SaveExtInfo threadData; // Must be first variable in Extension class
 
 #ifdef _WIN32
-	RUNDATA * rdPtr;
-	RunHeader * rhPtr;
+    RUNDATA* rdPtr;
+    RunHeader* rhPtr;
 #elif defined(__ANDROID__)
-	RuntimeFunctions &runFuncs;
-	global<jobject> javaExtPtr;
+    RuntimeFunctions& runFuncs;
+    global<jobject> javaExtPtr;
 #else
     RuntimeFunctions& runFuncs;
     void* javaExtPtr;
@@ -24,13 +24,13 @@ public:
     static const int MinimumBuild = 251;
     static const int Version = 1;
 
-	static const OEFLAGS OEFLAGS = OEFLAGS::NEVER_KILL | OEFLAGS::NEVER_SLEEP; // Use OEFLAGS namespace
+    static const OEFLAGS OEFLAGS = OEFLAGS::NEVER_KILL | OEFLAGS::NEVER_SLEEP; // Use OEFLAGS namespace
     static const OEPREFS OEPREFS = OEPREFS::GLOBAL; // Use OEPREFS namespace
-    
+
     static const int WindowProcPriority = 100;
 
 #ifdef _WIN32
-    Extension(RUNDATA * rdPtr, EDITDATA * edPtr, CreateObjectInfo * cobPtr);
+    Extension(RUNDATA* rdPtr, EDITDATA* edPtr, CreateObjectInfo* cobPtr);
 #else
     Extension(RuntimeFunctions& runFuncs, EDITDATA* edPtr, jobject javaExtPtr);
 #endif
@@ -39,16 +39,16 @@ public:
 
     /*  Add any data you want to store in your extension to this class
         (eg. what you'd normally store in rdPtr).
-		
-		For those using multi-threading, any variables that are modified
-		by the threads should be in SaveExtInfo.
-		See MultiThreading.h.
+
+        For those using multi-threading, any variables that are modified
+        by the threads should be in SaveExtInfo.
+        See MultiThreading.h.
 
         Unlike rdPtr, you can store real C++ objects with constructors
         and destructors, without having to call them manually or store
         a pointer.
     */
-	
+
     // int MyVariable;
 
     /*  Add your actions, conditions and expressions as real class member
@@ -69,52 +69,84 @@ public:
 
     /// Actions
 
-        void LoadDialogFile(TCHAR* name);
-        void LoadQuestFile(TCHAR* name);
-        void LoadPlayerDataFile(TCHAR* name);
-        void SavePlayerDataFile(TCHAR* name);
+    void LoadDialogFile(TCHAR* name);
+    void LoadQuestFile(TCHAR* name);
+    void LoadPlayerDataFile(TCHAR* name);
+    void SavePlayerDataFile(TCHAR* name);
 
-        void ShowDialogByID(int ID);
-        void SelectResponseByIndex(int index);
+    void ShowDialogByID(int ID);
+    void SelectResponseByIndex(int index);
 
-        void SetGameValue(TCHAR* name, float value);
-        void SetGameValueMin(TCHAR* name, float value);
-        void SetGameValueMax(TCHAR* name, float value);
-        void AddToGameValue(TCHAR* name, float value);
-        void SubtractFromValue(TCHAR* name, float value);
+    void SetGameValue(TCHAR* name, float value);
+    void SetGameValueMin(TCHAR* name, float value);
+    void SetGameValueMax(TCHAR* name, float value);
+    void AddToGameValue(TCHAR* name, float value);
+    void SubtractFromValue(TCHAR* name, float value);
 
-        void SetGameFlagToTrue(TCHAR* name);
-        void SetGameFlagToFalse(TCHAR* name);
-        void ToggleGameFlag(TCHAR* name);
+    void SetGameFlagToTrue(TCHAR* name);
+    void SetGameFlagToFalse(TCHAR* name);
+    void ToggleGameFlag(TCHAR* name);
 
-        void GiveItem(TCHAR* name, int quanitity);
-        void TakeItem(TCHAR* name, int quanitity);
+    void GiveItem(TCHAR* name, int quanitity);
+    void TakeItem(TCHAR* name, int quanitity);
 
-        void TriggerFusionActionByName(TCHAR* name);
+    void TriggerFusionActionByName(TCHAR* name);
 
-        void ActivateQuestByName(TCHAR* name);
-        void CompleteQuestByName(TCHAR* name);
-        void FailQuestByName(TCHAR* name);
-        void CheckForQuestCompletion();
+    void ActivateQuestByName(TCHAR* name);
+    void CompleteQuestByName(TCHAR* name);
+    void FailQuestByName(TCHAR* name);
+    void CheckForQuestCompletion();
 
-        void ClearAllData();
+    void ClearAllData();
 
 
-        void RegisterNPCFixedValue(TCHAR* name, int value);
-        void RegisterItemFixedValue(TCHAR* name, int value);
-        void PickedUpFusionItem(int fixedValue);
-        
-        void CheckNPCQuestDialog(int fixedValue);
-        void CheckNPCInWorldDialog(int fixedValue);
-        void CheckNPCInWorldQuestDialogText(int fixedValue);
-        void CheckNPCStandardDialogText(int fixedValue);
-        void LoadInWorldDialogFile(TCHAR* name);
-        //void AddFixedValueTimer(int fixedValue, int timerDuration);
-        
+    void RegisterNPCFixedValue(TCHAR* name, int value);
+    void RegisterItemFixedValue(TCHAR* name, int value);
+    void PickedUpFusionItem(int fixedValue);
 
-        void UpdateEngine();
-        void SetTextTimerDuration(int duration);
+    void CheckNPCQuestDialog(int fixedValue);
+    void CheckNPCInWorldDialog(int fixedValue);
+    void CheckNPCInWorldQuestDialogText(int fixedValue);
+    void CheckNPCStandardDialogText(int fixedValue);
+    void LoadInWorldDialogFile(TCHAR* name);
+    //void AddFixedValueTimer(int fixedValue, int timerDuration);
 
+
+    void UpdateEngine();
+    void SetTextTimerDuration(int duration);
+
+
+    // new with inventory 
+    //{
+        void LoadItemDatabase(TCHAR* filename);
+        void DespositItemIntoContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom);
+        void WithdrawItemFromContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom);
+        void SetInventoryBagGeneralSize(int size);
+        void SetInventoryBagWearableSize(int size);
+        void SetInventoryBagEquipableSize(int size);
+        void SetInventoryBagMaterialSize(int size);
+        void SetInventoryBagConsumableSize(int size);
+        void SetInventoryBagQuestSize(int size);
+        void MoveInventoryItem(TCHAR* itemName, int gridLocatiom);
+        void MoveContaineryItem(TCHAR* itemName, int gridLocatiom);
+        void SetCurrentContainerByName(TCHAR* containerName);
+        void SetCurrentCompanionByName(TCHAR* companionName);
+        void ShowCompanionInventory();
+        void ShowContainerInventory();
+        void setCurrentBagToGeneral();
+        void setCurrentBagToWearable();
+        void setCurrentBagToEquipable();
+        void setCurrentBagToMaterial();
+        void setCurrentBagToConsumable();
+        void setCurrentBagToQuest();
+        void EquipToHead(TCHAR* itemName);
+        void EquipToUpperBody(TCHAR* itemName);
+        void EquipToLowerBody(TCHAR* itemName);
+        void EquipToHands(TCHAR* itemName);
+        void EquipToFeet(TCHAR*  itemName);
+        void EquipToBelt(TCHAR* itemName);
+        void EquipToEquipSlot(TCHAR* itemName);
+    //}
 		
 	/// Conditions
 
@@ -137,6 +169,16 @@ public:
         bool WasAnyQuestJustCompleted();
         bool WasAnyQuestJustFailed();
 
+        // new with inventory
+        //
+        bool IsCurrentBagGeneral();
+        bool IsCurrentBagWearable();
+        bool IsCurrentBagEquipable();
+        bool IsCurrentBagMaterial();
+        bool IsCurrentBagConsumable();
+        bool IsCurrentBagQuest();
+            //
+
     /// Expressions
         const TCHAR* GetCurrentDialogText();
         const TCHAR* GetcurrentDialogImageName();
@@ -152,8 +194,8 @@ public:
         int GetTotalGameFlagCount();
 
         int GetGameItemQuantityByName(TCHAR* name);
-        const TCHAR* GetGameItemNameByIndex(int index);
-        int GetTotalGameItems();
+        //const TCHAR* GetGameItemNameByIndex(int index);
+       // int GetTotalGameItems();
 
         const TCHAR* GetFusionActionNameIndex(int index);
         int GetTotalPendingFusionActions();
@@ -172,6 +214,54 @@ public:
         const TCHAR* GetNPCInWorldDialogStringByIndex(int index);
         int GetNPCFixedValueByIndex(int index);
        // int Get_FixedValueTimer_TimerByIndex(int index);
+
+
+
+        /// new with inventory
+        int GetInventoryBagGeneralSize();
+        int GetInventoryBagWearableSize();
+        int GetInventoryBagEquipableSize();
+        int GetInventoryBagMaterialSize();
+        int GetInventoryBagConsumableSize();
+        int GetInventoryBagQuestsize();
+        const TCHAR* GetGeneralBagItemNameByIndex(int index);
+        const TCHAR* GetWearableBagItemNameByIndex(int index);
+        const TCHAR* GetMaterialItemNameByIndex(int index);
+        const TCHAR* GetConsumableBagItemNameByIndex(int index);
+        const TCHAR* GetEquipableBagItemNameByIndex(int index);
+        const TCHAR* GetQuestBagItemNameByIndex(int index);
+        const TCHAR* GetCurrentCompanionName();
+        const TCHAR* GetCurrentContainerName();
+        int GetSizeOfContainerByName(TCHAR* name);
+        const TCHAR* GetGeneralInventoryItemNameByIndex(int index);
+        const TCHAR* GetWearableInventoryItemNameByIndex(int index);
+        const TCHAR* GetEquipableInventoryItemNameByIndex(int index);
+        const TCHAR* GetMaterialInventoryItemNameByIndex(int index);
+        const TCHAR* GetConsumableInventoryItemNameByIndex(int index);
+        const TCHAR* GetQuestInventoryItemNameByIndex(int index);
+        const TCHAR* GetItemTypeAsStringByName(const TCHAR* itemName);
+        float GetItemWeightByName(const TCHAR* itemName);
+        const TCHAR* GetItemDescriptionByName(const TCHAR* itemName);
+        int GetItemNumberOfModifierEffectsByName(const TCHAR* itemName);
+        const TCHAR* GetItemModiferEffectNameByIndex(const TCHAR* itemName, int effectIndex);
+        int GetItemModiferEffectValueByIndex(const TCHAR* itemName, int effectIndex);
+        const TCHAR* GetCurrentBagItemNameByIndex(int index);
+        int GetCurrentBagIteQuantityByIndex(int index);
+        int GetCurrentBagSize();
+        int GetCurrentContainerSize();
+        const TCHAR* GetCurrentContainerItemNameByIndex(int index);
+        int GetCurrentContainerItemQuanityByIndex(int index);
+        const TCHAR* GetCurrentContainerIconName();
+
+        const TCHAR* GetItemNameEquippedToHead();
+        const TCHAR* GetItemNameEquippedToUpperBody();
+        const TCHAR* GetItemNameEquippedToLowerBody();
+        const TCHAR* GetItemNameEquippedToFeet();
+        const TCHAR* GetItemNameEquippedToHands();
+        const TCHAR* GetItemNameEquippedToBelt();
+        const TCHAR* GetItemNameEquippedToEquipSlot();
+
+
 
     /* These are called if there's no function linked to an ID */
 

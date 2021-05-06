@@ -24,6 +24,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Quest.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Util.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\DialogEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Inventory\Inventory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\Inc\Shared\DarkEdif.h" />
@@ -43,6 +44,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\NPC.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Quest.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Util.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Inventory\Inventory.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

@@ -70,20 +70,20 @@ int Extension::GetTotalGameFlagCount()
 int Extension::GetGameItemQuantityByName(TCHAR* name)
 {
 	std::string str = DarkEdif::TStringToUTF8(name);
-	return DialogEngine::GetItemQuantity(str);
+	return Inventory::GetItemQuantity(str);
 }
 
-const TCHAR* Extension::GetGameItemNameByIndex(int index)
+/*onst TCHAR* Extension::GetGameItemNameByIndex(int index)
 {
 	std::string str = DialogEngine::GetGameItemNameByIndex(index);
 	std::tstring tstr = DarkEdif::UTF8ToTString(str);
 	return Runtime.CopyString(tstr.c_str());
-}
+}*/
 
-int Extension::GetTotalGameItems()
+/*int Extension::GetTotalGameItems()
 {
 	return DialogEngine::s_gameItems.size();
-}
+}*/
 
 const TCHAR* Extension::GetFusionActionNameIndex(int index)
 {
@@ -146,4 +146,239 @@ const TCHAR* Extension::GetNPCInWorldDialogStringByIndex(int index)
 int Extension::GetNPCFixedValueByIndex(int index)
 {
 	return DialogEngine::GetNPCFixedValueByIndex(index);
+}
+
+
+
+
+
+
+
+
+
+// inventory new stuff
+
+int Extension::GetInventoryBagGeneralSize()
+{
+	return Inventory::m_max_general_slots;
+}
+int Extension::GetInventoryBagWearableSize()
+{
+	return Inventory::m_max_wearable_slots;
+}
+int Extension::GetInventoryBagEquipableSize()
+{
+	return Inventory::m_max_equipable_slots;
+}
+int Extension::GetInventoryBagMaterialSize()
+{
+	return Inventory::m_max_material_slots;
+}
+int Extension::GetInventoryBagConsumableSize()
+{
+	return Inventory::m_max_consumable_slots;
+}
+
+int Extension::GetInventoryBagQuestsize()
+{
+	return Inventory::m_max_quest_slots;
+}
+
+
+const TCHAR* Extension::GetGeneralBagItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_general_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_general[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
+const TCHAR* Extension::GetWearableBagItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_wearable_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_wearable[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
+const TCHAR* Extension::GetMaterialItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_material_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_material[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
+const TCHAR* Extension::GetConsumableBagItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_consumable_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_consumable[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
+const TCHAR* Extension::GetEquipableBagItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_equipable_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_equipable[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
+const TCHAR* Extension::GetQuestBagItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_quest_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_quest[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
+const TCHAR* Extension::GetCurrentCompanionName()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_currentCompanionName).c_str());
+}
+
+const TCHAR* Extension::GetCurrentContainerName()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentContainerName()).c_str());
+}
+
+int Extension::GetSizeOfContainerByName(TCHAR* name)
+{
+	return Inventory::GetContainerSizeByName(DarkEdif::TStringToUTF8(name));
+}
+
+const TCHAR* Extension::GetGeneralInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_general[index].m_name).c_str());
+}
+
+const TCHAR* Extension::GetWearableInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_wearable[index].m_name).c_str());
+}
+
+const TCHAR* Extension::GetEquipableInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_equipable [index] .m_name).c_str());
+}
+
+const TCHAR* Extension::GetMaterialInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_material[index].m_name).c_str());
+}
+
+const TCHAR* Extension::GetConsumableInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_consumable[index].m_name).c_str());
+}
+
+const TCHAR* Extension::GetQuestInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_quest[index].m_name).c_str());
+}
+
+const TCHAR* Extension::GetItemTypeAsStringByName(const TCHAR* itemName)
+{
+	std::string itemType = Inventory::GetItemTypeAsStringByName(DarkEdif::TStringToUTF8(itemName));
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(itemType).c_str());
+}
+
+float Extension::GetItemWeightByName(const TCHAR* itemName)
+{
+	return Inventory::GetWeightByItemName(DarkEdif::TStringToUTF8(itemName));
+}
+
+const TCHAR* Extension::GetItemDescriptionByName(const TCHAR* itemName)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetItemDescriptionByName(DarkEdif::TStringToUTF8(itemName))).c_str());
+}
+
+int Extension::GetItemNumberOfModifierEffectsByName(const TCHAR* itemName)
+{
+	return Inventory::GetItemNumberOfModifierEffectsByName(DarkEdif::TStringToUTF8(itemName));
+}
+const TCHAR* Extension::GetItemModiferEffectNameByIndex(const TCHAR* itemName, int effectIndex)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetItemModiferEffectNameByIndex(DarkEdif::TStringToUTF8(itemName), effectIndex)).c_str());
+}
+
+int Extension::GetItemModiferEffectValueByIndex(const TCHAR* itemName, int effectIndex)
+{
+	return Inventory::GetItemModiferEffectValueByIndex(DarkEdif::TStringToUTF8(itemName), effectIndex);
+}
+
+const TCHAR* Extension::GetCurrentBagItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentBagItemNameByIndex(index)).c_str());
+}
+int  Extension::GetCurrentBagIteQuantityByIndex(int index)
+{
+	return Inventory::GetCurrentBagIteQuantityByIndex(index);
+}
+
+int Extension::GetCurrentBagSize()
+{
+	if (Inventory::IsGeneralInventoryBagOpen())
+		return Inventory::m_max_general_slots;
+	else if (Inventory::IsConsumableInventoryBagOpen())
+		return Inventory::m_max_consumable_slots;
+	else if (Inventory::IsEquipableInventoryBagOpen())
+		return Inventory::m_max_equipable_slots;
+	else if (Inventory::IsMaterialInventoryBagOpen())
+		return Inventory::m_max_material_slots;
+	else if (Inventory::IsWearableInventoryBagOpen())
+		return Inventory::m_max_wearable_slots;
+	else if (Inventory::IsQuestInventoryBagOpen())
+		return Inventory::m_max_quest_slots;
+	else return -1;
+}
+
+
+int Extension::GetCurrentContainerSize()
+{
+	return Inventory::p_displayedContainer->contentsVector.size();
+}
+const TCHAR* Extension::GetCurrentContainerItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentContainerItemNameByIndex(index)).c_str());
+}
+
+int Extension::GetCurrentContainerItemQuanityByIndex(int index)
+{
+	return Inventory::GetCurrentContainerItemQuantityByIndex(index);
+}
+
+const TCHAR* Extension::GetCurrentContainerIconName()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentContainerIconName()).c_str());
+}
+
+const TCHAR* Extension::GetItemNameEquippedToHead()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_head).c_str());
+}
+const TCHAR* Extension::GetItemNameEquippedToUpperBody()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_upperBody).c_str());
+}
+const TCHAR* Extension::GetItemNameEquippedToLowerBody()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_lowerBody).c_str());
+}
+const TCHAR* Extension::GetItemNameEquippedToFeet()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_feet).c_str());
+}
+const TCHAR* Extension::GetItemNameEquippedToHands()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_hands).c_str());
+}
+const TCHAR* Extension::GetItemNameEquippedToBelt()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_belt).c_str());
+}
+const TCHAR* Extension::GetItemNameEquippedToEquipSlot()
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_equipped).c_str());
 }
