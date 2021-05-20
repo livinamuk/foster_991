@@ -154,7 +154,8 @@ enum class InventoryBagType {
 	EQUIPABLE,
 	MATERIAL,
 	CONSUMABLE,
-	QUEST
+	QUEST,
+	SKILL
 };
 
 enum class InventoryType { 
@@ -169,8 +170,9 @@ enum class InventoryType {
 	MATERIAL,
 	CONSUMABLE, 
 	GENERAL, 
-	QUEST
-};
+	QUEST,
+	SKILL
+};	
 
 enum ModifierType {
 	NONE,
@@ -190,4 +192,7 @@ struct InventoryItemData {
 	std::string m_description;
 	int m_price;
 	std::vector< Modifier> m_modifiers;
+	int m_minXP = 0;
+	bool m_usable = false;
 };
+

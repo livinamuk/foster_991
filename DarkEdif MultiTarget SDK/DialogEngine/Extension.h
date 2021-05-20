@@ -99,17 +99,21 @@ public:
 
     void ClearAllData();
 
+    //void CheckNPCForQuest(TCHAR* npcName);
+    void CheckNPCForInworldQuestDialog(TCHAR* npcName);
+    void CheckNPCForStandardDialogAndQuests(TCHAR* npcName);
+    void CheckNPCForInWorldDialog(TCHAR* npcName);
 
-    void RegisterNPCFixedValue(TCHAR* name, int value);
+    /*void RegisterNPCFixedValue(TCHAR* name, int value);
     void RegisterItemFixedValue(TCHAR* name, int value);
-    void PickedUpFusionItem(int fixedValue);
+    void PickedUpFusionItem(int fixedValue);*/
 
-    void CheckNPCQuestDialog(int fixedValue);
+    /*void CheckNPCQuestDialog(int fixedValue);
     void CheckNPCInWorldDialog(int fixedValue);
     void CheckNPCInWorldQuestDialogText(int fixedValue);
-    void CheckNPCStandardDialogText(int fixedValue);
+    void CheckNPCStandardDialogText(int fixedValue);*/
+
     void LoadInWorldDialogFile(TCHAR* name);
-    //void AddFixedValueTimer(int fixedValue, int timerDuration);
 
 
     void UpdateEngine();
@@ -127,6 +131,9 @@ public:
         void SetInventoryBagMaterialSize(int size);
         void SetInventoryBagConsumableSize(int size);
         void SetInventoryBagQuestSize(int size);
+
+        void SetInventoryBagSkillsSize(int size); // new
+
         void MoveInventoryItem(TCHAR* itemName, int gridLocatiom);
         void MoveContaineryItem(TCHAR* itemName, int gridLocatiom);
         void SetCurrentContainerByName(TCHAR* containerName);
@@ -139,6 +146,9 @@ public:
         void setCurrentBagToMaterial();
         void setCurrentBagToConsumable();
         void setCurrentBagToQuest();
+
+        void setCurrentBagToSkills(); // new
+
         void EquipToHead(TCHAR* itemName);
         void EquipToUpperBody(TCHAR* itemName);
         void EquipToLowerBody(TCHAR* itemName);
@@ -146,6 +156,13 @@ public:
         void EquipToFeet(TCHAR*  itemName);
         void EquipToBelt(TCHAR* itemName);
         void EquipToEquipSlot(TCHAR* itemName);
+        void EquipItemByName(TCHAR* itemName);
+        void DequipItemByName(TCHAR* itemName);
+        void UseItemByName(TCHAR* itemName);
+
+        void SetCurrentContainerToNone();
+        void SetCurrentCompanionToNone();
+
     //}
 		
 	/// Conditions
@@ -163,7 +180,7 @@ public:
 
         bool IsQuestActive(TCHAR* name);
         bool IsQuestInactive(TCHAR* name);
-        bool AreQuestRequirementsFullfilled(TCHAR* name);
+      //  bool AreQuestRequirementsFullfilled(TCHAR* name);
         bool IsQuestComplete(TCHAR* name); 
         bool IsQuestFailed(TCHAR* name);
         bool WasAnyQuestJustCompleted();
@@ -177,7 +194,16 @@ public:
         bool IsCurrentBagMaterial();
         bool IsCurrentBagConsumable();
         bool IsCurrentBagQuest();
-            //
+        bool IsCurrentBagSkills(); // new
+        //
+        bool IsItemUsable(TCHAR* name);
+        bool IsItemWearable(TCHAR* name);
+        bool IsItemEquipped(TCHAR* name);
+        bool WasItemUsed(TCHAR* name);
+        bool IsPlayerAtContainer();
+        bool PlayerHasCompanion();
+
+
 
     /// Expressions
         const TCHAR* GetCurrentDialogText();
@@ -212,7 +238,8 @@ public:
        // int Get_FixedValueTimer_TimerByFixedValue(int fixedValue);
         int GetNPCCount();
         const TCHAR* GetNPCInWorldDialogStringByIndex(int index);
-        int GetNPCFixedValueByIndex(int index);
+        
+        const TCHAR* GetNPCNameByIndex(int index);
        // int Get_FixedValueTimer_TimerByIndex(int index);
 
 
@@ -224,12 +251,16 @@ public:
         int GetInventoryBagMaterialSize();
         int GetInventoryBagConsumableSize();
         int GetInventoryBagQuestsize();
+        int GetInventoryBagSkillssize(); // new
+
         const TCHAR* GetGeneralBagItemNameByIndex(int index);
         const TCHAR* GetWearableBagItemNameByIndex(int index);
         const TCHAR* GetMaterialItemNameByIndex(int index);
         const TCHAR* GetConsumableBagItemNameByIndex(int index);
         const TCHAR* GetEquipableBagItemNameByIndex(int index);
         const TCHAR* GetQuestBagItemNameByIndex(int index);
+        const TCHAR* GetSkillBagItemNameByIndex(int index);  // new
+
         const TCHAR* GetCurrentCompanionName();
         const TCHAR* GetCurrentContainerName();
         int GetSizeOfContainerByName(TCHAR* name);
@@ -239,6 +270,9 @@ public:
         const TCHAR* GetMaterialInventoryItemNameByIndex(int index);
         const TCHAR* GetConsumableInventoryItemNameByIndex(int index);
         const TCHAR* GetQuestInventoryItemNameByIndex(int index);
+
+        const TCHAR* GetSkillInventoryItemNameByIndex(int index); // new
+
         const TCHAR* GetItemTypeAsStringByName(const TCHAR* itemName);
         float GetItemWeightByName(const TCHAR* itemName);
         const TCHAR* GetItemDescriptionByName(const TCHAR* itemName);
@@ -248,10 +282,11 @@ public:
         const TCHAR* GetCurrentBagItemNameByIndex(int index);
         int GetCurrentBagIteQuantityByIndex(int index);
         int GetCurrentBagSize();
-        int GetCurrentContainerSize();
-        const TCHAR* GetCurrentContainerItemNameByIndex(int index);
-        int GetCurrentContainerItemQuanityByIndex(int index);
-        const TCHAR* GetCurrentContainerIconName();
+
+        int GetContainerSize(const TCHAR* containerName);
+        const TCHAR* GetContainerItemNameByIndex(const TCHAR* containerName, int index);
+        int GetContainerItemQuanityByIndex(const TCHAR* containerName, int index);
+        const TCHAR* GetContainerIconName(const TCHAR* containerName);
 
         const TCHAR* GetItemNameEquippedToHead();
         const TCHAR* GetItemNameEquippedToUpperBody();
@@ -260,6 +295,13 @@ public:
         const TCHAR* GetItemNameEquippedToHands();
         const TCHAR* GetItemNameEquippedToBelt();
         const TCHAR* GetItemNameEquippedToEquipSlot();
+
+        float GetCurrentWeight();
+        float GetMaxWeight();
+
+        int GetItemPositionInInventoryByItemName(const TCHAR* itemName);
+        int GetItemPositionInContainerByItemName(const TCHAR* itemName);
+
 
 
 

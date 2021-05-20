@@ -40,10 +40,10 @@
 			],
 			[
 				"Items",
-				[ 15, "Register Item" ],
+				[ 15, "OBSELETE Register Item" ],
 				[ 16, "Give Item" ],
 				[ 17, "Take Item" ],
-				[ 18, "Picked Up Fusion Item" ]
+				[ 18, "OBSELETE Picked Up Fusion Item" ]
 			],
 			[
 				"Fusion Action",
@@ -58,12 +58,12 @@
 			],
 			[
 				"NPCs",
-				[ 24, "Register NPC" ],
-				[ 25, "Check All NPC Quest Dialog" ],
-				[ 26, "Check All NPC In-World Dialog" ],
+				[ 24, "OBSELETE Register NPC" ],
+				[ 25, "Check NPC For Dialog and Quests" ],
+				[ 26, "Check NPC In-World Dialog" ],
 				[ 27, "Set Text Timer Duration" ],
 				[ 28, "Check NPC In-World Quest Dialog" ],
-				[ 29, "Check NPC Standard Dialog" ]
+				[ 29, "OBSELETE Check NPC Standard Dialog" ]
 			],
 			[
 				"Clean up",
@@ -99,7 +99,14 @@
 				[ 56, "Equip Item To Feet" ],
 				[ 57, "Equip Item To Hands" ],
 				[ 58, "Equip Item To Belt" ],
-				[ 59, "Equip Item To Equip Slot" ]
+				[ 59, "Equip Item To Equip Slot" ],
+				[ 60, "Set Skills Bag Size" ],
+				[ 61, "Set Current Bag To Skills" ],
+				[ 62, "Equip Item By Name" ],
+				[ 63, "Dequip Item By Name" ],
+				[ 64, "Use Item By Name" ],
+				[ 65, "Set current container to none" ],
+				[ 66, "Set current companion to none" ]
 			]
 		],
 		"ConditionMenu": [
@@ -115,7 +122,7 @@
 			[ 9, "Is flag false" ],
 			[ 10, "Is Quest active?" ],
 			[ 11, "Is Quest inactive?" ],
-			[ 12, "Are Quest requirements fullfilled" ],
+			//[ 12, "Are Quest requirements fullfilled" ],      fix
 			[ 13, "Is Quest complete" ],
 			[ 14, "Is Quest failed" ],
 			[ 15, "Was any Quest just completed" ],
@@ -125,7 +132,14 @@
 			[ 19, "Is Current Bag Equipable" ],
 			[ 20, "Is Current Bag Material" ],
 			[ 21, "Is Current Bag Consumable" ],
-			[ 22, "Is Current Bag Quest" ]
+			[ 22, "Is Current Bag Quest" ],
+			[ 23, "Is Item Usable" ],
+			[ 24, "Is Item Wearable" ],
+			[ 25, "Is Item Equipped" ],
+			[ 26, "Was Item Used" ],
+			[ 27, "Is Current Bag the Skills bag?" ],
+			[ 28, "Is Player At Container?" ],
+			[ 29, "Dose Play Have A Companion?" ]
 		],
 		"ExpressionMenu": [
 			[
@@ -171,7 +185,7 @@
 				"NPCs",
 				[ 21, "Get NPC Count" ],
 				[ 22, "Get NPC In-World Dialog String by Index" ],
-				[ 23, "Get NPC Fixed Value by Index" ]
+				[ 23, "Get NPC Name by Index" ]
 			],
 			[
 				"Inventory",
@@ -200,17 +214,23 @@
 				[ 46, "Get Current Bag Item Quantity By Index" ],
 				[ 47, "Get Current Bag Size" ],
 				[ 48, "Get Current Container Name" ],
-				[ 49, "Get Current Container Size" ],
-				[ 50, "Get Current Container Item Name By Index" ],
-				[ 51, "Get Current Container Item Quantity By Index" ],
-				[ 52, "Get Current Container Icon Name" ],
+				[ 49, "Get Container Size" ],
+				[ 50, "Get Container Item Name By Index" ],
+				[ 51, "Get Container Item Quantity By Index" ],
+				[ 52, "Get Container Icon Name" ],
 				[ 53, "Get Item Name Equipped To Head" ],
 				[ 54, "Get Item Name Equipped To Upper Body" ],
 				[ 55, "Get Item Name Equipped To Lower Body" ],
 				[ 56, "Get Item Name Equipped To Feet" ],
 				[ 57, "Get Item Name Equipped To Hands" ],
 				[ 58, "Get Item Name Equipped To Belt" ],
-				[ 59, "Get Item Name Equipped To Equip Slot" ]
+				[ 59, "Get Item Name Equipped To Equip Slot" ],
+				[ 60, "Get Current Weight" ],
+				[ 61, "Get Max Weight" ],
+				[ 62, "Get Skills Bag Size" ],
+				[ 63, "Get Skill Bag Item Name By Index" ],
+				[ 64, "Get Item Position In Inventory By Item Name" ],
+				[ 65, "Get Item Position In Current Container By Item Name" ]
 			]
 		],
 		"Actions": [
@@ -317,7 +337,7 @@
 				]
 			},
 			{
-				"Title": "Give player item: %1x %0",
+				"Title": "Give item: %0 quantity: %1",
 				"Parameters": [
 					[ "Text", "name" ],
 					[ "Integer", "quantity" ]
@@ -371,15 +391,15 @@
 				]
 			},
 			{
-				"Title": "Check All NPC Quest Dialog %0",
+				"Title": "Check NPC For Dialog and Quests %0",
 				"Parameters": [
-					[ "Integer", "fixed value" ]
+					[ "Text", "npc name" ]
 				]
 			},
 			{
-				"Title": "Check All NPC In-world Dialog %0",
+				"Title": "Check NPC In-world Dialog %0",
 				"Parameters": [
-					[ "Integer", "fixed value" ]
+					[ "Text", "npc name" ]
 				]
 			},
 			{
@@ -391,13 +411,13 @@
 			{
 				"Title": "Check NPC In-World Quest Dialog %0",
 				"Parameters": [
-					[ "Integer", "fixed value" ]
+					[ "Text", "npc name" ]
 				]
 			},
 			{
 				"Title": "Check NPC Standard Dialog %0",
 				"Parameters": [
-					[ "Integer", "fixed value" ]
+					[ "Text", "npc name" ]
 				]
 			},
 			{
@@ -557,6 +577,39 @@
 				"Parameters": [
 					[ "Text", "Item Name" ]
 				]
+			},
+			{
+				"Title": "Set Skill Bag Size To %0",
+				"Parameters": [
+					[ "Integer", "Size" ]
+				]
+			},
+			{
+				"Title": "Set Current Bag To Skills"
+			},
+			{
+				"Title": "Equip %0",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Deequip %0",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Use item: %0",
+				"Parameters": [
+					[ "Text", "Item Name" ]
+				]
+			},
+			{
+				"Title": "Set current container to none"
+			},
+			{
+				"Title": "Set current companion to none"
 			}
 		],
 		"Conditions": [
@@ -639,7 +692,7 @@
 				]
 			},
 			{
-				"Title": "%o : %0 quest requirements are met",
+				"Title": "%o : %0 quest requirements are met OBSELETE DO NOT USE",
 				"Triggered": false,
 				"Parameters": [
 					[ "Text", "name" ]
@@ -689,6 +742,46 @@
 			},
 			{
 				"Title": "%o : Is Current Bag Quest Bag?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is %0 usable?",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Is %0 wearable?",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Is %0 equipped?",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Was item used: %0",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
+			},
+			{
+				"Title": "%o : Is the Skills bag open?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Is player at container?",
+				"Triggered": false
+			},
+			{
+				"Title": "%o : Does player have a companion?",
 				"Triggered": false
 			}
 		],
@@ -822,8 +915,8 @@
 				]
 			},
 			{
-				"Title": "GetNPCFixedValueByIndex(",
-				"Returns": "Integer",
+				"Title": "GetNPCNameByIndex(",
+				"Returns": "Text",
 				"Parameters": [
 					[ "Integer", "index" ]
 				]
@@ -976,26 +1069,34 @@
 				"Returns": "Text"
 			},
 			{
-				"Title": "GetCurrentContainerSize(",
-				"Returns": "Integer"
-			},
-			{
-				"Title": "GetCurrentContainerItemNameByIndex(",
-				"Returns": "Text",
-				"Parameters": [
-					[ "Integer", "index" ]
-				]
-			},
-			{
-				"Title": "GetCurrentContainerItemQuanityByIndex(",
+				"Title": "GetContainerSize(",
 				"Returns": "Integer",
 				"Parameters": [
-					[ "Integer", "index" ]
+					[ "Text", "Container Name" ]
 				]
 			},
 			{
-				"Title": "GetCurrentContainerIconName(",
-				"Returns": "Text"
+				"Title": "GeContainerItemNameByIndex(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "Container Name" ],
+					[ "Integer", "Index" ]
+				]
+			},
+			{
+				"Title": "GetContainerItemQuanityByIndex(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text", "Container Name" ],
+					[ "Integer", "Index" ]
+				]
+			},
+			{
+				"Title": "GetContainerIconName(",
+				"Returns": "Text",
+				"Parameters": [
+					[ "Text", "Container Name" ]
+				]
 			},
 			{
 				"Title": "GetItemNameEquippedToHead(",
@@ -1024,6 +1125,39 @@
 			{
 				"Title": "GetItemNameEquippedToEquipSlot(",
 				"Returns": "Text"
+			},
+			{
+				"Title": "GetCurrentWeight(",
+				"Returns": "Float"
+			},
+			{
+				"Title": "GetMaxWeight(",
+				"Returns": "Float"
+			},
+			{
+				"Title": "GetSkillsBagSize(",
+				"Returns": "Integer"
+			},
+			{
+				"Title": "GetSkillBagItemNameByIndex(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "index" ]
+				]
+			},
+			{
+				"Title": "GetItemPositionInInventoryByItemName(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text" ]
+				]
+			},
+			{
+				"Title": "GetItemPositionInContainerByItemName(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Text" ]
+				]
 			}
 		]
 	}

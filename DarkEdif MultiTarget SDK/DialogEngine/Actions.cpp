@@ -95,6 +95,26 @@ void Extension::ClearAllData()
 	DialogEngine::ClearAllData();
 }
 
+
+/*
+void Extension::CheckNPCForQuest(TCHAR* npcName)
+{
+	DialogEngine::CheckNPCForQuest(DarkEdif::TStringToUTF8(npcName));
+}*/
+void Extension::CheckNPCForInworldQuestDialog(TCHAR* npcName)
+{
+	DialogEngine::CheckNPCForInworldQuestDialog(DarkEdif::TStringToUTF8(npcName));
+}
+void Extension::CheckNPCForStandardDialogAndQuests(TCHAR* npcName)
+{
+	DialogEngine::CheckNPCForStandardDialogAndQuests(DarkEdif::TStringToUTF8(npcName));
+}
+void Extension::CheckNPCForInWorldDialog(TCHAR* npcName)
+{
+	DialogEngine::CheckNPCForInWorldDialog(DarkEdif::TStringToUTF8(npcName));
+}
+
+/*
 void Extension::RegisterNPCFixedValue(TCHAR* name, int value)
 {
 	DialogEngine::RegisterNPC(DarkEdif::TStringToUTF8(name), value);
@@ -108,8 +128,8 @@ void Extension::RegisterItemFixedValue(TCHAR* name, int value)
 void Extension::PickedUpFusionItem(int fixedValue)
 {
 	DialogEngine::PickedUpFusionItem(fixedValue);
-}
-
+}*/
+/*
 void Extension::CheckNPCQuestDialog(int fixedValue)
 {
 	DialogEngine::CheckNPCQuestDialog(fixedValue);
@@ -128,7 +148,7 @@ void Extension::CheckNPCInWorldQuestDialogText(int fixedValue)
 void Extension::CheckNPCStandardDialogText(int fixedValue)
 {
 	DialogEngine::CheckNPCStandardDialogText(fixedValue);
-}
+}*/
 
 void Extension::LoadInWorldDialogFile(TCHAR* name)
 {
@@ -186,6 +206,7 @@ void Extension::CheckForQuestCompletion()
 void Extension::LoadItemDatabase(TCHAR* filename)
 {
 	// replace with loading from a file soon u dummy
+	Inventory::LoadInventoryDatabase(DarkEdif::TStringToUTF8(filename));
 	Inventory::InitDefaults();
 }
 
@@ -222,6 +243,10 @@ void Extension::SetInventoryBagConsumableSize(int size)
 void Extension::SetInventoryBagQuestSize(int size)
 {
 	Inventory::m_max_quest_slots = size;
+}
+void Extension::SetInventoryBagSkillsSize(int size)
+{
+	Inventory::m_max_skill_slots = size;
 }
 void Extension::MoveInventoryItem(TCHAR* itemName, int gridLocatiom)
 {
@@ -272,6 +297,11 @@ void Extension::setCurrentBagToQuest()
 	Inventory::SetCurrentInventoryBagToQuest();
 }
 
+void Extension::setCurrentBagToSkills()
+{
+	Inventory::SetCurrentInventoryBagToSkills();
+}
+
 void Extension::EquipToHead(TCHAR* itemName)
 {
 	std::string item = DarkEdif::TStringToUTF8(itemName);
@@ -313,4 +343,32 @@ void Extension::EquipToEquipSlot(TCHAR* itemName)
 {
 	std::string item = DarkEdif::TStringToUTF8(itemName);
 	Inventory::EquipToEquipSlot(item);
+}
+
+void Extension::EquipItemByName(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::EquipItemByName(item);
+}
+
+void Extension::DequipItemByName(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::DequipItemByName(item);
+}
+
+void Extension::UseItemByName(TCHAR* itemName)
+{
+	std::string item = DarkEdif::TStringToUTF8(itemName);
+	Inventory::UseItem(item);
+}
+
+void Extension::SetCurrentContainerToNone()
+{
+	Inventory::SetCurrentContainerToNone();
+}
+
+void Extension::SetCurrentCompanionToNone()
+{
+	Inventory::SetCurrentCompanionToNone();
 }

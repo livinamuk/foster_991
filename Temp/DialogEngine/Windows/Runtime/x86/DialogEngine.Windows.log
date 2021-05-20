@@ -1,4 +1,1 @@
-﻿  Minifying JS and checking that ASM/jump table exists for this platform...
-  '"..\AltPlatformPreBuildTool.exe"' is not recognized as an internal or external command,
-  operable program or batch file.
-D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\Lib\FusionSDK.props(453,3): error MSB3073: The command ""..\AltPlatformPreBuildTool.exe" /ProjName="DialogEngine" /TargetPlat="Windows" /TargetArch="x86" /MacroInputFile="../Lib/Shared/ACECallTable_Macro.cpp"  /MacroOutputFile="D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\/Temp/DialogEngine/Temp_ACECallTable.cpp" /JSONInputPathToMinify="D:\Extension Development\JosephExtension\DarkEdif_MultiTarget_SDK_private_build_6_Stochastic_with_minimiser\DarkEdif MultiTarget SDK\DialogEngine\\DarkExt.json"" exited with code 9009.
+﻿

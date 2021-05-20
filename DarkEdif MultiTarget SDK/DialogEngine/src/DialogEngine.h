@@ -26,7 +26,7 @@ public:
 	static bool s_wasAnyQuestJustFailed;
 	static std::vector<NPC> s_NPCs;
 	static int s_textDuration;
-	static std::map<int, std::string> s_itemFixedValueMap;
+	//static std::map<int, std::string> s_itemFixedValueMap;
 
 	// Static functions
 	static void LoadPlayerFile(std::string filename);
@@ -84,7 +84,7 @@ public:
 	static bool WasIfAnyQuestWasJustFailed();
 	static bool IsQuestActive(std::string query);
 	static bool IsQuestInactive(std::string query);
-	static bool AreQuestRequirementsFullfilled(std::string query);
+	//static bool AreQuestRequirementsFullfilled(std::string query);
 	static bool IsQuestCompleted(std::string query);
 	static bool IsQuestFailed(std::string query);
 	static std::string GetQuestStateAsString(std::string query);
@@ -94,22 +94,49 @@ public:
 	// NPC abstraction
 	static NPC* CreateNPC(std::string name);
 	static NPC* GetNPCAndCreateIfItDoesntExist(std::string name);
-	static NPC* GetNPCPointerByFixedValue(int fixedValue);
 	static NPC* GetNPCPointer(std::string name);
-	static void RegisterNPC(std::string name, int fixedValue);
-	static int GetQuestDialogIDFromNPCFixedValue(int fixedValue);
-	static std::string GetRandomInWorldDialogFromNPCFixedValue(int fixedValue);
+
+	//static int GetNextQuestDialogIDFromNPCName(std::string npcName);
+
+	//static void CheckNPCForQuest(std::string npcName);
+	static void CheckNPCForInworldQuestDialog(std::string npcName);
+	static void CheckNPCForStandardDialogAndQuests(std::string npcName);
+	static void CheckNPCForInWorldDialog(std::string npcName);
+
+	//static std::string GetQuestInWorldDialogFromNPCName(std::string npcName);
+	//static std::string GetRandomNPCInWorldDialogFromNPCName(std::string npcName);
+
+
+	//static void CheckNPCQuestDialog(int fixedValue);
+//static void CheckNPCInWorldDialog(int fixedValue);
+//static void CheckNPCInWorldQuestDialogText(int fixedValue);
+//static void CheckNPCStandardDialogText(int fixedValue);
+
+	static std::string GetNPCNameByIndex(int index);
+
+	//static NPC* GetNPCPointerByFixedValue(int fixedValue);
+	//static void RegisterNPC(std::string name, int fixedValue);
+	//static int GetQuestDialogIDFromNPCFixedValue(int fixedValue);
+
+
+	//static std::string GetRandomInWorldDialogFromNPCFixedValue(int fixedValue);
 	static Quest* GetQuestByName(std::string name);
-	static void CheckNPCQuestDialog(int fixedValue);
-	static void CheckNPCInWorldDialog(int fixedValue);
-	static void CheckNPCInWorldQuestDialogText(int fixedValue);
-	static void CheckNPCStandardDialogText(int fixedValue);
-	static std::string GetNPCInWorldDialogStringByIndex(int index);
-	static int GetNPCFixedValueByIndex(int index);
+
+
+
+
+
+	//static int CheckNPCForQuest(std::string npcName);
+	//static void CheckNPCQuestDialog(int fixedValue);
+	//static void CheckNPCInWorldDialog(int fixedValue);
+	//static void CheckNPCInWorldQuestDialogText(int fixedValue);
+	//static void CheckNPCStandardDialogText(int fixedValue);
+	//static std::string GetNPCInWorldDialogStringByIndex(int index);
+	//static int GetNPCFixedValueByIndex(int index);
 
 	// Item abstraction
-	static void RegisterItem(std::string name, int fixedValue);
-	static void PickedUpFusionItem(int fixedValue);
+	//static void RegisterItem(std::string name, int fixedValue);
+	//static void PickedUpFusionItem(int fixedValue);
 
 	static MyCondition ConditionObjectFromString(std::string line);
 	static bool IsConditionListSatisfied(std::vector<MyCondition>& conidtionList);

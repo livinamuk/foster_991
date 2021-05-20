@@ -1,6 +1,13 @@
 #pragma once
 #include "Util.h"
 
+void Util::Log(std::string text)
+{
+    std::ofstream outfile;
+    outfile.open("log.txt", std::ios_base::app); // append instead of overwrite
+    outfile << text << "\n";
+}
+
 std::string Util::GetModifierTypeNameAsString(ModifierType type)
 {
     if (type == ModifierType::LOCK_PICKING)
@@ -35,8 +42,40 @@ std::string Util::GetItemTypeAsString(InventoryType type)
         return "WEARABLE_LOWER_BODY";
     else if (type == InventoryType::WEARABLE_UPPER_BODY)
         return "WEARABLE_UPPER_BODY";
+    else if (type == InventoryType::SKILL)
+        return "SKILL";
     else
         return "UNDEFINED";
+}
+
+InventoryType Util::GetItemTypeFromString(std::string type)
+{
+    if (type == "CONSUMABLE")
+        return InventoryType::CONSUMABLE;
+    else if (type == "EQUIPABLE")
+        return InventoryType::EQUIPABLE;
+    else if (type == "GENERAL")
+        return InventoryType::GENERAL;
+    else if (type == "MATERIAL")
+        return InventoryType::MATERIAL;
+    else if (type == "QUEST")
+        return InventoryType::QUEST;
+    else if (type == "WEARABLE_BELT")
+        return InventoryType::WEARABLE_BELT;
+    else if (type == "WEARABLE_FEET")
+        return InventoryType::WEARABLE_FEET;
+    else if (type == "WEARABLE_HANDS")
+        return InventoryType::WEARABLE_HANDS;
+    else if (type == "WEARABLE_HEAD")
+        return InventoryType::WEARABLE_HEAD;
+    else if (type == "WEARABLE_LOWER_BODY")
+        return InventoryType::WEARABLE_LOWER_BODY;
+    else if (type == "WEARABLE_UPPER_BODY")
+        return InventoryType::WEARABLE_UPPER_BODY; 
+    else if (type == "SKILL")
+        return InventoryType::SKILL;
+    else
+        return InventoryType::UNDEFINED;
 }
 
 bool Util::CaselessEquality(std::string strA, std::string strB)
@@ -170,7 +209,7 @@ std::string Util::GetSubstringAfterSecondQuote(std::string str)
 }
 
 std::string Util::RemoveWhitespace(std::string str)
-{    
+{
     return trim(str);
 }
 
@@ -202,7 +241,7 @@ float Util::GetValueAfterOperator(std::string str)
     std::string opperatorStr = GetOperator(cleanStr);
     std::string valueStr = cleanStr.substr(opperatorStr.length());
     std::string cleanValueStr = RemoveWhitespace(valueStr);
-  
+
     if (cleanValueStr.length() == 0)
         return 0.0f;
 

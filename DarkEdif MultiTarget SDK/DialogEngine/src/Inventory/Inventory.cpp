@@ -2,7 +2,9 @@
 #include "Inventory.h"
 #include <algorithm>
 
+std::vector<std::string> Inventory::s_pendingUsedItems;
 std::vector<InventoryItemData> Inventory::s_InventoryDatabase;
+InventoryState Inventory::s_inventoryState;
 
 PlayerInventoryItem* Inventory::p_currentInventory;
 PlayerInventoryItem Inventory::s_playerInventory_wearable[INVENTORY_SIZE_LIMIT] = {};
@@ -11,6 +13,7 @@ PlayerInventoryItem Inventory::s_playerInventory_material[INVENTORY_SIZE_LIMIT] 
 PlayerInventoryItem Inventory::s_playerInventory_consumable[INVENTORY_SIZE_LIMIT] = {};
 PlayerInventoryItem Inventory::s_playerInventory_general[INVENTORY_SIZE_LIMIT] = {};
 PlayerInventoryItem Inventory::s_playerInventory_quest[INVENTORY_SIZE_LIMIT] = {};
+PlayerInventoryItem Inventory::s_playerInventory_skills[INVENTORY_SIZE_LIMIT] = {};
 
 Inventory::EquippedItems Inventory::s_equippedItems;
 
@@ -20,112 +23,53 @@ int Inventory::m_max_material_slots;
 int Inventory::m_max_consumable_slots;
 int Inventory::m_max_general_slots;
 int Inventory::m_max_quest_slots;
+int Inventory::m_max_skill_slots;
 
 float Inventory::s_maxWeight;
 
 std::vector<Container> Inventory::s_containers;
 InventoryBagType Inventory::s_currentInventoryBagType;
 std::vector<Companion> Inventory::s_compainions;
-std::string Inventory::s_currentCompanionName;
-std::string Inventory::s_currentContainerName;
+//std::string Inventory::s_currentCompanionName;
+//std::string Inventory::s_currentContainerName;
 Container* Inventory::p_displayedContainer;
 
+#pragma warning (disable : 4996)
 
-void Inventory::SetCurrentInventoryBagToGeneral() {
-	s_currentInventoryBagType = InventoryBagType::GENERAL;
-	p_currentInventory = s_playerInventory_general;
-}
-void Inventory::SetCurrentInventoryBagToWearable() {
-	s_currentInventoryBagType = InventoryBagType::WEARABLE;
-	p_currentInventory = s_playerInventory_wearable;
-}
-void Inventory::SetCurrentInventoryBagToEquipable() {
-	s_currentInventoryBagType = InventoryBagType::EQUIPABLE;
-	p_currentInventory = s_playerInventory_equipable;
-}
-void Inventory::SetCurrentInventoryBagToMaterial() {
-	s_currentInventoryBagType = InventoryBagType::MATERIAL;
-	p_currentInventory = s_playerInventory_material;
-}
-void Inventory::SetCurrentInventoryBagToQuest() {
-	s_currentInventoryBagType = InventoryBagType::QUEST;
-	p_currentInventory = s_playerInventory_quest;
-}
-void Inventory::SetCurrentInventoryBagToConsumeable() {
-	s_currentInventoryBagType = InventoryBagType::CONSUMABLE;
-	p_currentInventory = s_playerInventory_consumable;
-}
-int Inventory::GetCurrentInventoryBagSize() {
-	if (s_currentInventoryBagType == InventoryBagType::GENERAL)
-		return m_max_general_slots;
-	else if (s_currentInventoryBagType == InventoryBagType::WEARABLE)
-		return m_max_wearable_slots;
-	else if (s_currentInventoryBagType == InventoryBagType::EQUIPABLE)
-		return m_max_equipable_slots;
-	else if (s_currentInventoryBagType == InventoryBagType::MATERIAL)
-		return m_max_material_slots;
-	else if (s_currentInventoryBagType == InventoryBagType::QUEST)
-		return m_max_quest_slots;
-	else if (s_currentInventoryBagType == InventoryBagType::CONSUMABLE)
-		return m_max_consumable_slots;
-	else
-		return 0;
-}
-
-std::string Inventory::GetCurrentContainerName()
+void Inventory::LoadInventoryDatabase(std::string filepath)
 {
-	if (!p_displayedContainer)
-		return "NO CONTAINER SELECTED";
-	else
-		return p_displayedContainer->name;
+	std::string fileName = filepath;
+	FILE* pFile = fopen(fileName.c_str(), "rb");
+	char buffer[65536];
+	rapidjson::FileReadStream is(pFile, buffer, sizeof(buffer));
+	rapidjson::Document document;
+	document.ParseStream<0, rapidjson::UTF8<>, rapidjson::FileReadStream>(is);
+
+	// Check for errors
+	if (document.HasParseError())
+		std::cout << "Error  : " << document.GetParseError() << '\n' << "Offset : " << document.GetErrorOffset() << '\n';
+
+
+	const rapidjson::Value& a = document["InventoryDatabase"];
+	assert(a.IsArray());
+	for (rapidjson::SizeType i = 0; i < a.Size(); i++)
+	{
+		auto element = a[i].GetObject();
+		std::string name = element["Name"].GetString();
+		std::string description = element["Description"].GetString();
+		float weight = element["Weight"].GetFloat();
+		std::string type = element["Type"].GetString();
+		int price = element["Price"].GetInt();
+		std::vector< Modifier> modifiers;
+		bool usable = false;
+
+		if (element.HasMember("Usable"))
+			usable = element["Usable"].GetBool();
+
+		NewInventoryItem(name, Util::GetItemTypeFromString(type), weight, description, price, usable, modifiers);
+	}
 }
 
-std::string Inventory::GetCurrentContainerIconName()
-{
-	if (!p_displayedContainer)
-		return "NO CONTAINER SELECTED";
-	else
-		return p_displayedContainer->iconName;
-}
-
-void Inventory::ShowContainer()
-{
-	for (Container& container : s_containers)
-		if (container.name == s_currentContainerName) {
-			p_displayedContainer = &container;
-			//s_currentCompanionName = container.name;
-		}
-}
-
-void Inventory::ShowCompanion()
-{
-	for (Container& container : s_containers)
-		if (container.name == s_currentCompanionName) {
-			//s_currentContainerName = s_currentCompanionName;
-			p_displayedContainer = &container;
-			return;
-		}
-}
-
-void Inventory::SetCurrentContainerByName(std::string name)
-{
-	for (Container& container : s_containers)
-		if (container.name == name) {
-			p_displayedContainer = &container;
-			s_currentContainerName = name;
-			return;
-		}
-}
-
-void Inventory::SetCurrentCompanionByName(std::string name)
-{
-	for (Container& container : s_containers)
-		if (container.name == name) {
-			p_displayedContainer = &container;
-			s_currentCompanionName = name;
-			return;
-		}
-}
 
 struct by_name {
 	bool operator()(InventoryItemData const& a, InventoryItemData const& b) const {
@@ -133,7 +77,7 @@ struct by_name {
 	}
 };
 
-void Inventory::NewInventoryItem(std::string name, InventoryType type, float weight, std::string description, int price, std::vector<Modifier> modifers = std::vector<Modifier>())
+void Inventory::NewInventoryItem(std::string name, InventoryType type, float weight, std::string description, int price, bool usable, std::vector<Modifier> modifers = std::vector<Modifier>())
 {
 	InventoryItemData itemData;
 	itemData.m_name = name;
@@ -142,46 +86,59 @@ void Inventory::NewInventoryItem(std::string name, InventoryType type, float wei
 	itemData.m_description = description;
 	itemData.m_price = price;
 	itemData.m_modifiers = modifers;
+	itemData.m_usable = usable;
 	s_InventoryDatabase.push_back(itemData);
 	std::sort(s_InventoryDatabase.begin(), s_InventoryDatabase.end(), by_name());
 }
 
 void Inventory::InitDefaults()
 {
-	s_maxWeight = 5;
-	m_max_wearable_slots = 8;
-	m_max_equipable_slots = 8;
-	m_max_material_slots = 8;
-	m_max_consumable_slots = 8;
-	m_max_general_slots = 8;
-	m_max_quest_slots = 8;
+	s_maxWeight = INVENTORY_SIZE_LIMIT;
+	m_max_wearable_slots = INVENTORY_SIZE_LIMIT;
+	m_max_equipable_slots = INVENTORY_SIZE_LIMIT;
+	m_max_material_slots = INVENTORY_SIZE_LIMIT;
+	m_max_consumable_slots = INVENTORY_SIZE_LIMIT;
+	m_max_general_slots = INVENTORY_SIZE_LIMIT;
+	m_max_quest_slots = INVENTORY_SIZE_LIMIT;
+	m_max_skill_slots = INVENTORY_SIZE_LIMIT;
 
+	s_equippedItems.m_belt = "";
+	s_equippedItems.m_equipped = "";
+	s_equippedItems.m_feet = "";
+	s_equippedItems.m_hands = "";
+	s_equippedItems.m_head = "";
+	s_equippedItems.m_lowerBody = "";
+	s_equippedItems.m_lowerBody = "";
+	s_equippedItems.m_upperBody = "";
+
+	/*	s_currentCompanionName = "";
+		s_currentContainerName = "";
+
+		p_displayedContainer = nullptr;
+
+		s_pendingUsedItems.clear();
+		s_InventoryDatabase.clear();
+		s_containers.clear();
+		s_compainions.clear();
+
+		for (int i = 0; i < INVENTORY_SIZE_LIMIT; i++) {
+			s_playerInventory_consumable[i].m_name = EMPTY_SLOT;
+			s_playerInventory_consumable[i].m_quantity = 0;
+			s_playerInventory_wearable[i].m_name = EMPTY_SLOT;
+			s_playerInventory_wearable[i].m_quantity = 0;
+			s_playerInventory_equipable[i].m_name = EMPTY_SLOT;
+			s_playerInventory_equipable[i].m_quantity = 0;
+			s_playerInventory_material[i].m_name = EMPTY_SLOT;
+			s_playerInventory_material[i].m_quantity = 0;
+			s_playerInventory_general[i].m_name = EMPTY_SLOT;
+			s_playerInventory_general[i].m_quantity = 0;
+			s_playerInventory_quest[i].m_name = EMPTY_SLOT;
+			s_playerInventory_quest[i].m_quantity = 0;
+			s_playerInventory_skills[i].m_name = EMPTY_SLOT;
+			s_playerInventory_skills[i].m_quantity = 0;
+		}
+		*/
 	SetCurrentInventoryBagToGeneral();
-
-	// TESTING DATAAAAAAAAAAAAA
-	NewInventoryItem("Hat", InventoryType::WEARABLE_HEAD, 0.1f, "bla bla bla", 1);
-	NewInventoryItem("Hammer", InventoryType::MATERIAL, 0.1f, "bla bla bla", 1);
-	NewInventoryItem("Jeans", InventoryType::WEARABLE_LOWER_BODY, 0.1f, "bla bla bla", 1);
-	NewInventoryItem("Acid Gloves", InventoryType::WEARABLE_HANDS, 0.1f, "bla bla bla", 1);
-	NewInventoryItem("Knife", InventoryType::EQUIPABLE, 0.1f, "bla bla bla", 1);
-	NewInventoryItem("Jacket", InventoryType::WEARABLE_UPPER_BODY, 0.4f, "bla bla bla", 2);
-	NewInventoryItem("Boots", InventoryType::WEARABLE_FEET, 0.4f, "bla bla bla", 2);
-	NewInventoryItem("Utility Belt", InventoryType::WEARABLE_BELT, 0.4f, "bla bla bla", 2);
-	NewInventoryItem("Canned Beans", InventoryType::CONSUMABLE, 0.4f, "bla bla bla", 2);
-	NewInventoryItem("Shotgun", InventoryType::EQUIPABLE, 0.4f, "bla bla bla", 2);
-	NewInventoryItem("Medkit", InventoryType::CONSUMABLE, 0.4f, "bla bla bla", 2);
-
-	Modifier buff1, buff2;
-	buff1.m_type = ModifierType::SPEED;
-	buff1.m_value = 20;
-	buff2.m_type = ModifierType::LOCK_PICKING;
-	buff2.m_value = 10;
-	std::vector<Modifier> modifers;
-	modifers.push_back(buff1);
-	modifers.push_back(buff2);
-
-	NewInventoryItem("Map", InventoryType::GENERAL, 0.05f, "bla bla bla", 33, modifers);
-	NewInventoryItem("Health Potion", InventoryType::CONSUMABLE, 0.05f, "bla bla bla", 33, modifers);
 
 	NewContainer("Test Container A", "Box", 9, std::vector<PlayerInventoryItem> {
 		PlayerInventoryItem("Knife", 1),
@@ -196,6 +153,7 @@ void Inventory::InitDefaults()
 			PlayerInventoryItem("Illegal Documents", 3)});
 
 	NewCompanion("Devil", CompanionType::DOG);
+	NewCompanion("Kitty", CompanionType::CAT);
 }
 
 void Inventory::NewCompanion(std::string name, CompanionType type)
@@ -367,6 +325,8 @@ ReturnValue Inventory::WithdrawItemsFromContainer(std::string containerName, std
 					SetCurrentInventoryBagToQuest();
 				else if (targetInventoryBag == InventoryBagType::WEARABLE)
 					SetCurrentInventoryBagToWearable();
+				else if (targetInventoryBag == InventoryBagType::SKILL)
+					SetCurrentInventoryBagToSkills();
 
 				wasItemPlacementSuccessful = GiveItem(itemName, itemQuantity);
 			}
@@ -408,6 +368,8 @@ PlayerInventoryItem* Inventory::GetCorrespondingInventoryArrayPointerByItemName(
 		return s_playerInventory_quest;
 	else if (bagType == InventoryBagType::WEARABLE)
 		return s_playerInventory_wearable;
+	else if (bagType == InventoryBagType::SKILL)
+		return s_playerInventory_skills;
 	else
 		return s_playerInventory_general;
 }
@@ -423,6 +385,8 @@ InventoryBagType Inventory::GetInventoryBagTypeByItemName(std::string name)
 		return InventoryBagType::MATERIAL;
 	else if (type == InventoryType::QUEST)
 		return InventoryBagType::QUEST;
+	else if (type == InventoryType::SKILL)
+		return InventoryBagType::SKILL;
 	else if (type == InventoryType::WEARABLE_BELT
 		|| type == InventoryType::WEARABLE_FEET
 		|| type == InventoryType::WEARABLE_HANDS
@@ -452,16 +416,17 @@ void Inventory::SaveInventoryDatabase()
 		SaveString(&object, "Name", item.m_name, allocator);
 		SaveString(&object, "Type", InventoryTypeToString(item.m_type), allocator);
 		SaveFloat(&object, "Weight", item.m_weight, allocator);
+		SaveInt(&object, "Price", item.m_price, allocator);
 		SaveString(&object, "Description", item.m_description, allocator);
 
 		// Modifiers
-		rapidjson::Value modifiersObject;
+		/*rapidjson::Value modifiersObject;
 		modifiersObject.SetObject();
 		for (Modifier& modifier : item.m_modifiers) {
 			SaveString(&modifiersObject, "Type", ModiferTypeToString(modifier.m_type), allocator);
 			SaveInt(&modifiersObject, "Value", modifier.m_value, allocator);
 		}
-		object.AddMember("Effect", modifiersObject, allocator);
+		object.AddMember("Effect", modifiersObject, allocator);*/
 
 		inventoryArray.PushBack(object, allocator);
 	}
@@ -517,6 +482,7 @@ std::string Inventory::InventoryTypeToString(InventoryType query)
 	else if (query == InventoryType::CONSUMABLE) return "CONSUMABLE";
 	else if (query == InventoryType::GENERAL) return "GENERAL";
 	else if (query == InventoryType::QUEST) return "QUEST";
+	else if (query == InventoryType::SKILL) return "SKILL";
 	else return "UNDEFINED";
 }
 
@@ -531,12 +497,15 @@ std::string Inventory::ModiferTypeToString(ModifierType query)
 
 void Inventory::TakeItem(std::string name, int quantity)
 {
+	if (quantity < 0)
+		return;
+
 	// First find the item type and select the appropriate array and slot limit
 	InventoryType type = GetItemTypeByInventoryName(name);
 
 	// First set it to consuermable inventory, then check if this is wrong.... This prevents "potentially uninitilazed local variable" error
-	PlayerInventoryItem* playerInventory = s_playerInventory_consumable;
-	int sizeLimit = m_max_consumable_slots;
+	PlayerInventoryItem* playerInventory = s_playerInventory_wearable;
+	int sizeLimit = m_max_wearable_slots;
 
 	if (type == InventoryType::EQUIPABLE) {
 		playerInventory = s_playerInventory_equipable;
@@ -554,25 +523,37 @@ void Inventory::TakeItem(std::string name, int quantity)
 		playerInventory = s_playerInventory_quest;
 		sizeLimit = m_max_quest_slots;
 	}
-	else if (type != InventoryType::UNDEFINED) {
-		playerInventory = s_playerInventory_wearable;
-		sizeLimit = m_max_wearable_slots;
+	else if (type == InventoryType::SKILL) {
+		playerInventory = s_playerInventory_skills;
+		sizeLimit = m_max_skill_slots;
 	}
+	else if (type == InventoryType::CONSUMABLE) {
+		playerInventory = s_playerInventory_consumable;
+		sizeLimit = m_max_consumable_slots;
+	}
+	else if (type == InventoryType::UNDEFINED) {
+		return;
+	}
+
+
 
 	// iterate over player inventory
 	for (size_t i = 0; i < sizeLimit; i++)
 	{
 		// find the matching name
-		if (playerInventory[i].m_name == name)
+		if (Util::CaselessEquality(playerInventory[i].m_name, name))
 		{
-			// if there enough of the item then remove that specified quantity
-			if (playerInventory[i].m_quantity <= quantity)
-				playerInventory[i].m_quantity -= quantity;
+			// Remove the desired amount
+			playerInventory[i].m_quantity -= quantity;
+
 			// If that was the last one of the item then remove it from the players inventory entirely
-			if (playerInventory[i].m_quantity >= 0) {
+			if (playerInventory[i].m_quantity <= 0) {
 				playerInventory[i].m_name = EMPTY_SLOT;
 				playerInventory[i].m_quantity = 0;
 			}
+
+			// The item could be equipped, so dequip it, then bail
+			DequipItemByName(name);
 			return;
 		}
 	}
@@ -583,7 +564,7 @@ ReturnValue Inventory::GiveItem(std::string name, int quantity)
 	// Do you have enough weight capacity?
 	float weight = 0;
 	for (InventoryItemData& inventoryItemData : s_InventoryDatabase)
-		if (inventoryItemData.m_name == name)
+		if (Util::CaselessEquality(inventoryItemData.m_name, name))
 			weight = inventoryItemData.m_weight * quantity;
 	if (GetCurrentTotalWeight() + weight > s_maxWeight)
 		return ReturnValue::OVERWEIGHT;
@@ -613,6 +594,10 @@ ReturnValue Inventory::GiveItem(std::string name, int quantity)
 		playerInventory = s_playerInventory_quest;
 		sizeLimit = m_max_quest_slots;
 	}
+	else if (item_type == InventoryType::SKILL) {
+		playerInventory = s_playerInventory_skills;
+		sizeLimit = m_max_skill_slots;
+	}
 	else if (item_type == InventoryType::WEARABLE_BELT ||
 		item_type == InventoryType::WEARABLE_FEET ||
 		item_type == InventoryType::WEARABLE_HANDS ||
@@ -626,7 +611,7 @@ ReturnValue Inventory::GiveItem(std::string name, int quantity)
 
 	// First see if you have the item already. Cause then you can just add to the quantity.
 	for (size_t i = 0; i < sizeLimit; i++) {
-		if (playerInventory[i].m_name == name) {
+		if (Util::CaselessEquality(playerInventory[i].m_name, name)) {
 			playerInventory[i].m_quantity += quantity;
 			return ReturnValue::SUCCESS;
 		}
@@ -648,22 +633,25 @@ int Inventory::GetItemQuantity(std::string name)
 {
 	// Check every inventory to find the item and report the quantity
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_consumable)
-		if (inventoryItem.m_name == name)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
 			return inventoryItem.m_quantity;
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_equipable)
-		if (inventoryItem.m_name == name)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
 			return inventoryItem.m_quantity;
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_general)
-		if (inventoryItem.m_name == name)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
 			return inventoryItem.m_quantity;
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_material)
-		if (inventoryItem.m_name == name)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
 			return inventoryItem.m_quantity;
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_quest)
-		if (inventoryItem.m_name == name)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
 			return inventoryItem.m_quantity;
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_wearable)
-		if (inventoryItem.m_name == name)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
+			return inventoryItem.m_quantity;
+	for (PlayerInventoryItem& inventoryItem : s_playerInventory_skills)
+		if (Util::CaselessEquality(inventoryItem.m_name, name))
 			return inventoryItem.m_quantity;
 	return -1;
 }
@@ -742,6 +730,7 @@ void Inventory::PrintInventoryDatabase()
 	std::cout << "ITEM DATABASE \n";
 	for (int i = 0; i < s_InventoryDatabase.size(); i++)
 		std::cout << " " << s_InventoryDatabase[i].m_name << "\n";
+	//std::cout << " " << s_InventoryDatabase[i].m_name << "(" << (s_InventoryDatabase[i].m_weight) << ")\n";
 	std::cout << "\n";
 }
 
@@ -754,49 +743,49 @@ void Inventory::PrintPlayerInventoryList()
 	std::cout << " GENERAL INVENTORY\n";
 	for (int i = 0; i < m_max_general_slots; i++)
 		if (s_playerInventory_general[i].m_name != EMPTY_SLOT)
-			std::cout << "  [" << i << "] " << s_playerInventory_general[i].m_name << " (" << s_playerInventory_general[i].m_quantity << ")\n";
-		else
-			std::cout << "  [" << i << "] " << s_playerInventory_general[i].m_name << "\n";
+			std::cout << "  " << s_playerInventory_general[i].m_name << " (" << s_playerInventory_general[i].m_quantity << ")\n";
+	//else
+	//	std::cout << "  [" << i << "] " << s_playerInventory_general[i].m_name << "\n";
 	std::cout << "\n";
 
 	std::cout << " CONSUMERABLE INVENTORY\n";
 	for (int i = 0; i < m_max_consumable_slots; i++)
 		if (s_playerInventory_consumable[i].m_name != EMPTY_SLOT)
-			std::cout << "  [" << i << "] " << s_playerInventory_consumable[i].m_name << " (" << s_playerInventory_consumable[i].m_quantity << ")\n";
-		else
-			std::cout << "  [" << i << "] " << s_playerInventory_consumable[i].m_name << "\n";
+			std::cout << "  " << s_playerInventory_consumable[i].m_name << " (" << s_playerInventory_consumable[i].m_quantity << ")\n";
+	//else
+	//	std::cout << "  [" << i << "] " << s_playerInventory_consumable[i].m_name << "\n";
 	std::cout << "\n";
 
 	std::cout << " EQUIPABLE INVENTORY\n";
 	for (int i = 0; i < m_max_equipable_slots; i++)
 		if (s_playerInventory_equipable[i].m_name != EMPTY_SLOT)
-			std::cout << "  [" << i << "] " << s_playerInventory_equipable[i].m_name << " (" << s_playerInventory_equipable[i].m_quantity << ")\n";
-		else
-			std::cout << "  [" << i << "] " << s_playerInventory_equipable[i].m_name << "\n";
+			std::cout << "  " << s_playerInventory_equipable[i].m_name << " (" << s_playerInventory_equipable[i].m_quantity << ")\n";
+	//else
+	//	std::cout << "  [" << i << "] " << s_playerInventory_equipable[i].m_name << "\n";
 	std::cout << "\n";
 
 	std::cout << " MATERIAL INVENTORY\n";
 	for (int i = 0; i < m_max_material_slots; i++)
 		if (s_playerInventory_material[i].m_name != EMPTY_SLOT)
-			std::cout << "  [" << i << "] " << s_playerInventory_material[i].m_name << " (" << s_playerInventory_material[i].m_quantity << ")\n";
-		else
-			std::cout << "  [" << i << "] " << s_playerInventory_material[i].m_name << "\n";
+			std::cout << "  " << s_playerInventory_material[i].m_name << " (" << s_playerInventory_material[i].m_quantity << ")\n";
+	//else
+	//	std::cout << "  [" << i << "] " << s_playerInventory_material[i].m_name << "\n";
 	std::cout << "\n";
 
 	std::cout << " QUEST INVENTORY\n";
 	for (int i = 0; i < m_max_quest_slots; i++)
 		if (s_playerInventory_quest[i].m_name != EMPTY_SLOT)
-			std::cout << "  [" << i << "] " << s_playerInventory_quest[i].m_name << " (" << s_playerInventory_quest[i].m_quantity << ")\n";
-		else
-			std::cout << "  [" << i << "] " << s_playerInventory_quest[i].m_name << "\n";
+			std::cout << "  " << s_playerInventory_quest[i].m_name << " (" << s_playerInventory_quest[i].m_quantity << ")\n";
+	//else
+	//	std::cout << "  [" << i << "] " << s_playerInventory_quest[i].m_name << "\n";
 	std::cout << "\n";
 
 	std::cout << " WEARABLE INVENTORY\n";
 	for (int i = 0; i < m_max_wearable_slots; i++)
 		if (s_playerInventory_wearable[i].m_name != EMPTY_SLOT)
-			std::cout << "  [" << i << "] " << s_playerInventory_wearable[i].m_name << " (" << s_playerInventory_wearable[i].m_quantity << ")\n";
-		else
-			std::cout << "  [" << i << "] " << s_playerInventory_wearable[i].m_name << "\n";
+			std::cout << " " << s_playerInventory_wearable[i].m_name << " (" << s_playerInventory_wearable[i].m_quantity << ")\n";
+	//else
+	//	std::cout << "  [" << i << "] " << s_playerInventory_wearable[i].m_name << "\n";
 	std::cout << "\n";
 }
 
@@ -872,6 +861,8 @@ float Inventory::GetCurrentTotalWeight()
 		weight += GetWeightByItemName(inventoryItem.m_name) * inventoryItem.m_quantity;
 	for (PlayerInventoryItem& inventoryItem : s_playerInventory_wearable)
 		weight += GetWeightByItemName(inventoryItem.m_name) * inventoryItem.m_quantity;
+	for (PlayerInventoryItem& inventoryItem : s_playerInventory_skills)
+		weight += GetWeightByItemName(inventoryItem.m_name) * inventoryItem.m_quantity;
 
 	return weight;
 }
@@ -879,7 +870,7 @@ float Inventory::GetCurrentTotalWeight()
 float Inventory::GetWeightByItemName(std::string name)
 {
 	for (InventoryItemData& inventoryItemData : s_InventoryDatabase)
-		if (inventoryItemData.m_name == name)
+		if (Util::CaselessEquality(inventoryItemData.m_name, name))
 			return inventoryItemData.m_weight;
 	return 0;
 }
@@ -905,7 +896,7 @@ void Inventory::ClearAllPlayerInventory()
 InventoryType Inventory::GetItemTypeByInventoryName(std::string name)
 {
 	for (InventoryItemData& inventoryItemData : s_InventoryDatabase)
-		if (inventoryItemData.m_name == name)
+		if (Util::CaselessEquality(inventoryItemData.m_name, name))
 			return inventoryItemData.m_type;
 
 	return InventoryType::UNDEFINED;
@@ -929,6 +920,9 @@ void Inventory::SetConsumableInventoryBagSize(int size) {
 void Inventory::SetQuestInventoryBagSize(int size) {
 	m_max_quest_slots = size;
 }
+void Inventory::SetSkillInventoryBagSize(int size) {
+	m_max_skill_slots = size;
+}
 int Inventory::GetGeneralInventoryBagSize() {
 	return m_max_general_slots;
 }
@@ -946,6 +940,9 @@ int Inventory::GetConsumableInventoryBagSize() {
 }
 int Inventory::GetQuestInventoryBagSize() {
 	return m_max_quest_slots;
+}
+int Inventory::GetSkillInventoryBagSize() {
+	return m_max_skill_slots;
 }
 bool Inventory::IsGeneralInventoryBagOpen() {
 	return s_currentInventoryBagType == InventoryBagType::GENERAL;
@@ -965,12 +962,18 @@ bool Inventory::IsConsumableInventoryBagOpen() {
 bool Inventory::IsQuestInventoryBagOpen() {
 	return s_currentInventoryBagType == InventoryBagType::QUEST;
 }
-int Inventory::GetCurrentContainerSize() {
-	if (p_displayedContainer)
-		return p_displayedContainer->contentsVector.size();
-	else
-		return -1;
+bool Inventory::IsSkillInventoryBagOpen()
+{
+	return s_currentInventoryBagType == InventoryBagType::SKILL;
 }
+int Inventory::GetContainerSize(std::string containerName) {
+	for (Container& container : s_containers)
+		if (container.name == containerName)
+			return container.contentsVector.size();
+	return -1;
+}
+
+/*
 int Inventory::GetCurrentInventoryBagItemQuantityByindex(int index) {
 	if (p_currentInventory && index > 0)
 		return p_currentInventory[index].m_quantity;
@@ -982,18 +985,21 @@ std::string Inventory::GetInventoryBagItemNameByindex(int index) {
 		return p_currentInventory[index].m_name;
 	else
 		return "cannot access inventory";
+}*/
+int Inventory::GetContainerItemQuantityByIndex(std::string containerName, int index)
+{
+	for (Container& container : s_containers)
+		if (container.name == containerName)
+			return container.contentsVector[index].m_quantity;
+	return -1;
 }
-int Inventory::GetCurrentContainerItemQuantityByindex(int index) {
-	if (p_displayedContainer && index > 0 && index < p_displayedContainer->contentsVector.size())
-		return p_displayedContainer->contentsVector[index].m_quantity;
-	else
-		return -1;
-}
-std::string Inventory::GetCurrentContainerItemNameByindex(int index) {
-	if (p_displayedContainer && index > 0 && index < p_displayedContainer->contentsVector.size())
-		return p_displayedContainer->contentsVector[index].m_name;
-	else
-		return "Current container pointer is null";
+
+std::string Inventory::GetContainerItemNameByIndex(std::string containerName, int index) {
+
+	for (Container& container : s_containers)
+		if (container.name == containerName)
+			return container.contentsVector[index].m_name;
+	return "Container name not found";
 }
 
 int Inventory::GetContainerSizeByName(std::string containerName)
@@ -1004,10 +1010,20 @@ int Inventory::GetContainerSizeByName(std::string containerName)
 	return -1;
 }
 
+std::string Inventory::GetContainerIconName(std::string containerName)
+{
+	for (Container& container : s_containers)
+		if (container.name == containerName)
+			return container.iconName;
+	return "Container name not found";
+}
+
+
+
 std::string Inventory::GetItemDescriptionByName(std::string name)
 {
 	for (InventoryItemData& item : s_InventoryDatabase)
-		if (item.m_name == name)
+		if (Util::CaselessEquality(item.m_name, name))
 			return item.m_description;
 	return "Item name not found";
 }
@@ -1015,7 +1031,7 @@ std::string Inventory::GetItemDescriptionByName(std::string name)
 int Inventory::GetItemNumberOfModifierEffectsByName(std::string name)
 {
 	for (InventoryItemData& item : s_InventoryDatabase)
-		if (item.m_name == name)
+		if (Util::CaselessEquality(item.m_name, name))
 			return item.m_modifiers.size();
 	return 0;
 }
@@ -1023,7 +1039,7 @@ int Inventory::GetItemNumberOfModifierEffectsByName(std::string name)
 std::string Inventory::GetItemModiferEffectNameByIndex(std::string name, int index)
 {
 	for (InventoryItemData& item : s_InventoryDatabase)
-		if (item.m_name == name)
+		if (Util::CaselessEquality(item.m_name, name))
 			return Util::GetModifierTypeNameAsString(item.m_modifiers[index].m_type);
 	return "ITEM NAME NOT FOUND";
 }
@@ -1032,7 +1048,7 @@ std::string Inventory::GetItemModiferEffectNameByIndex(std::string name, int ind
 int Inventory::GetItemModiferEffectValueByIndex(std::string name, int index)
 {
 	for (InventoryItemData& item : s_InventoryDatabase)
-		if (item.m_name == name)
+		if (Util::CaselessEquality(item.m_name, name))
 			return item.m_modifiers[index].m_value;
 	return -1;
 }
@@ -1062,4 +1078,294 @@ std::string Inventory::GetCurrentBagItemNameByIndex(int index)
 int Inventory::GetCurrentBagIteQuantityByIndex(int index)
 {
 	return p_currentInventory[index].m_quantity;
+}
+
+
+void Inventory::SetCurrentInventoryBagToGeneral() {
+	s_currentInventoryBagType = InventoryBagType::GENERAL;
+	p_currentInventory = s_playerInventory_general;
+}
+void Inventory::SetCurrentInventoryBagToWearable() {
+	s_currentInventoryBagType = InventoryBagType::WEARABLE;
+	p_currentInventory = s_playerInventory_wearable;
+}
+void Inventory::SetCurrentInventoryBagToEquipable() {
+	s_currentInventoryBagType = InventoryBagType::EQUIPABLE;
+	p_currentInventory = s_playerInventory_equipable;
+}
+void Inventory::SetCurrentInventoryBagToMaterial() {
+	s_currentInventoryBagType = InventoryBagType::MATERIAL;
+	p_currentInventory = s_playerInventory_material;
+}
+void Inventory::SetCurrentInventoryBagToQuest() {
+	s_currentInventoryBagType = InventoryBagType::QUEST;
+	p_currentInventory = s_playerInventory_quest;
+}
+void Inventory::SetCurrentInventoryBagToSkills() {
+	s_currentInventoryBagType = InventoryBagType::SKILL;
+	p_currentInventory = s_playerInventory_skills;
+}
+
+void Inventory::SetCurrentInventoryBagToConsumeable() {
+	s_currentInventoryBagType = InventoryBagType::CONSUMABLE;
+	p_currentInventory = s_playerInventory_consumable;
+}
+int Inventory::GetCurrentInventoryBagSize() {
+	if (s_currentInventoryBagType == InventoryBagType::GENERAL)
+		return m_max_general_slots;
+	else if (s_currentInventoryBagType == InventoryBagType::WEARABLE)
+		return m_max_wearable_slots;
+	else if (s_currentInventoryBagType == InventoryBagType::EQUIPABLE)
+		return m_max_equipable_slots;
+	else if (s_currentInventoryBagType == InventoryBagType::MATERIAL)
+		return m_max_material_slots;
+	else if (s_currentInventoryBagType == InventoryBagType::QUEST)
+		return m_max_quest_slots;
+	else if (s_currentInventoryBagType == InventoryBagType::CONSUMABLE)
+		return m_max_consumable_slots;
+	else if (s_currentInventoryBagType == InventoryBagType::SKILL)
+		return m_max_skill_slots;
+	else
+		return 0;
+}
+
+std::string Inventory::GetCurrentCompanionName()
+{
+	return s_inventoryState.currentCompanionName;
+}
+
+std::string Inventory::GetCurrentContainerName()
+{
+	return s_inventoryState.currentContainerName;
+}
+
+int Inventory::GetItemPositionInInventoryByItemName(std::string itemName)
+{
+	InventoryBagType bagType = GetInventoryBagTypeByItemName(itemName);
+
+	if (bagType == InventoryBagType::GENERAL)
+		for (int i = 0; i < m_max_general_slots; i++)
+			if (s_playerInventory_general[i].m_name == itemName)
+				return i;
+
+	if (bagType == InventoryBagType::GENERAL)
+		for (int i = 0; i < m_max_consumable_slots; i++)
+			if (s_playerInventory_consumable[i].m_name == itemName)
+				return i;
+
+	if (bagType == InventoryBagType::EQUIPABLE)
+		for (int i = 0; i < m_max_equipable_slots; i++)
+			if (s_playerInventory_equipable[i].m_name == itemName)
+				return i;
+
+	if (bagType == InventoryBagType::MATERIAL)
+		for (int i = 0; i < m_max_material_slots; i++)
+			if (s_playerInventory_material[i].m_name == itemName)
+				return i;
+
+	if (bagType == InventoryBagType::QUEST)
+		for (int i = 0; i < m_max_quest_slots; i++)
+			if (s_playerInventory_quest[i].m_name == itemName)
+				return i;
+
+	if (bagType == InventoryBagType::SKILL)
+		for (int i = 0; i < m_max_skill_slots; i++)
+			if (s_playerInventory_skills[i].m_name == itemName)
+				return i;
+
+	if (bagType == InventoryBagType::WEARABLE)
+		for (int i = 0; i < m_max_wearable_slots; i++)
+			if (s_playerInventory_wearable[i].m_name == itemName)
+				return i;
+	return -1;
+}
+
+int Inventory::GetItemPositionInContainerByItemName(std::string itemName)
+{
+	for (int i = 0; i < p_displayedContainer->contentsVector.size(); i++)
+		if (p_displayedContainer->contentsVector[i].m_name == itemName)
+			return i;
+	return -1;
+}
+
+bool Inventory::IsItemWearable(std::string itemName)
+{
+	for (InventoryItemData& item : s_InventoryDatabase)
+		if (item.m_name == itemName)
+		{
+			if ((item.m_type == InventoryType::WEARABLE_BELT ||
+				item.m_type == InventoryType::WEARABLE_FEET ||
+				item.m_type == InventoryType::WEARABLE_HEAD ||
+				item.m_type == InventoryType::WEARABLE_HANDS ||
+				item.m_type == InventoryType::WEARABLE_LOWER_BODY ||
+				item.m_type == InventoryType::WEARABLE_UPPER_BODY ||
+				item.m_type == InventoryType::EQUIPABLE))
+				return true;
+		}
+	return false;
+}
+bool Inventory::IsItemEquipped(std::string itemName)
+{
+	if (s_equippedItems.m_belt == itemName)
+		return true;
+	else if (s_equippedItems.m_equipped == itemName)
+		return true;
+	else if (s_equippedItems.m_feet == itemName)
+		return true;
+	else if (s_equippedItems.m_hands == itemName)
+		return true;
+	else if (s_equippedItems.m_head == itemName)
+		return true;
+	else if (s_equippedItems.m_lowerBody == itemName)
+		return true;
+	else if (s_equippedItems.m_upperBody == itemName)
+		return true;
+	else
+		return false;
+}
+
+void Inventory::EquipItemByName(std::string itemName)
+{
+	for (InventoryItemData& item : s_InventoryDatabase)
+		if (item.m_name == itemName)
+		{
+			if (item.m_type == InventoryType::WEARABLE_BELT)
+				s_equippedItems.m_belt = itemName;
+			else if (item.m_type == InventoryType::WEARABLE_FEET)
+				s_equippedItems.m_feet = itemName;
+			else if (item.m_type == InventoryType::WEARABLE_HEAD)
+				s_equippedItems.m_head = itemName;
+			else if (item.m_type == InventoryType::WEARABLE_HANDS)
+				s_equippedItems.m_hands = itemName;
+			else if (item.m_type == InventoryType::WEARABLE_LOWER_BODY)
+				s_equippedItems.m_lowerBody = itemName;
+			else if (item.m_type == InventoryType::WEARABLE_UPPER_BODY)
+				s_equippedItems.m_upperBody = itemName;
+			else if (item.m_type == InventoryType::EQUIPABLE)
+				s_equippedItems.m_equipped = itemName;
+		}
+}
+
+void Inventory::DequipItemByName(std::string itemName)
+{
+	if (s_equippedItems.m_belt == itemName) {
+		s_equippedItems.m_belt = EMPTY_SLOT;
+		return;
+	}
+	else if (s_equippedItems.m_equipped == itemName) {
+		s_equippedItems.m_equipped = EMPTY_SLOT;
+		return;
+	}
+	else if (s_equippedItems.m_feet == itemName) {
+		s_equippedItems.m_feet = EMPTY_SLOT;
+		return;
+	}
+	else if (s_equippedItems.m_hands == itemName) {
+		s_equippedItems.m_hands = EMPTY_SLOT;
+		return;
+	}
+	else if (s_equippedItems.m_head == itemName) {
+		s_equippedItems.m_head = EMPTY_SLOT;
+		return;
+	}
+	else if (s_equippedItems.m_upperBody == itemName) {
+		s_equippedItems.m_upperBody = EMPTY_SLOT;
+		return;
+	}
+	else if (s_equippedItems.m_lowerBody == itemName) {
+		s_equippedItems.m_lowerBody = EMPTY_SLOT;
+		return;
+	}
+}
+
+void Inventory::UseItem(std::string itemName)
+{
+	s_pendingUsedItems.push_back(itemName);
+}
+
+bool Inventory::WasItemUsed(std::string itemName)
+{
+	// If no outstanding items have been submitted as used, then bail
+	if (s_pendingUsedItems.size() == 0)
+		return false;
+
+	// Search for the desired item
+	for (int i = 0; i < s_pendingUsedItems.size(); i++)
+	{
+		// If you find it remove ti from the list and return true
+		if (s_pendingUsedItems[i] == itemName) {
+			s_pendingUsedItems.erase(s_pendingUsedItems.begin() + i);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool Inventory::IsItemUsable(std::string itemName)
+{
+	for (InventoryItemData& item : s_InventoryDatabase)
+		if (item.m_name == itemName)
+			return item.m_usable;
+
+	return false;
+}
+
+void Inventory::ShowContainer()
+{
+	for (Container& container : s_containers)
+		if (container.name == s_inventoryState.currentContainerName) {
+			p_displayedContainer = &container;
+		}
+}
+
+void Inventory::ShowCompanion()
+{
+	for (Container& container : s_containers)
+		if (container.name == s_inventoryState.currentCompanionName) {
+			p_displayedContainer = &container;
+			return;
+		}
+}
+
+void Inventory::SetCurrentContainerByName(std::string name)
+{
+	for (Container& container : s_containers)
+		if (Util::CaselessEquality(container.name, name)) {
+			p_displayedContainer = &container;
+			s_inventoryState.currentContainerName = name;
+			return;
+		}
+}
+
+
+
+void Inventory::SetCurrentCompanionByName(std::string name)
+{
+	for (Container& container : s_containers)
+		if (Util::CaselessEquality(container.name, name)) {
+			p_displayedContainer = &container;
+			s_inventoryState.currentCompanionName = name;
+			return;
+		}
+}
+
+void Inventory::SetCurrentContainerToNone()
+{
+	s_inventoryState.currentContainerName = "";
+}
+
+void Inventory::SetCurrentCompanionToNone()
+{
+	s_inventoryState.currentCompanionName = "";
+}
+
+bool Inventory::IsPlayerAtContainer()
+{
+	return s_inventoryState.currentContainerName != "";
+}
+
+bool Inventory::PlayerHasCompanion()
+{
+	return s_inventoryState.currentCompanionName != "";
 }

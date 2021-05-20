@@ -13,6 +13,7 @@ public:
     // Static Methods
     static std::string GetModifierTypeNameAsString(ModifierType type);
     static std::string GetItemTypeAsString(InventoryType type);
+    static InventoryType GetItemTypeFromString(std::string type);
     static bool CaselessEquality(std::string strA, std::string strB);
     static std::string ToUppercase(std::string str);
     static std::string ToLowercase(std::string str);
@@ -56,4 +57,6 @@ public:
     {
         return ltrim(rtrim(s, t), t);
     }
+
+    static void Log(std::string text);
 };

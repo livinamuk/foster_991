@@ -35,10 +35,10 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkAction(13, SetGameFlagToFalse);
 	LinkAction(14, ToggleGameFlag);
 
-	LinkAction(15, RegisterItemFixedValue);
+	//LinkAction(15, RegisterItemFixedValue);	 you need to remove the json
 	LinkAction(16, GiveItem);
 	LinkAction(17, TakeItem);
-	LinkAction(18, PickedUpFusionItem);
+	//LinkAction(18, PickedUpFusionItem);		 you need to remove the json
 
 	LinkAction(19, TriggerFusionActionByName);
 
@@ -47,15 +47,18 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkAction(22, FailQuestByName);
 	LinkAction(23, CheckForQuestCompletion);
 
-	LinkAction(24, RegisterNPCFixedValue);
-	LinkAction(25, CheckNPCQuestDialog);
-	LinkAction(26, CheckNPCInWorldDialog);
+	//LinkAction(24, RegisterNPCFixedValue);		you need to remove the json
+	LinkAction(25, CheckNPCForStandardDialogAndQuests);
+	LinkAction(26, CheckNPCForInWorldDialog);
 	LinkAction(27, SetTextTimerDuration);
-	LinkAction(28, CheckNPCInWorldQuestDialogText);
-	LinkAction(29, CheckNPCStandardDialogText);
+	LinkAction(28, CheckNPCForInworldQuestDialog);
+	//LinkAction(29, CheckNPCForStandardDialog); delete meeeeeeeeeeeeeeeeee too
 
 	LinkAction(30, ClearAllData);
 	LinkAction(31, UpdateEngine);
+
+
+	
 
 
 	// inventory
@@ -88,6 +91,15 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkAction(58, EquipToBelt);
 	LinkAction(59, EquipToEquipSlot);
 
+	LinkAction(60, SetInventoryBagSkillsSize);
+	LinkAction(61, setCurrentBagToSkills);
+	LinkAction(62, EquipItemByName);
+	LinkAction(63, DequipItemByName);
+	LinkAction(64, UseItemByName);
+
+	LinkAction(65, SetCurrentContainerToNone);
+	LinkAction(66, SetCurrentCompanionToNone);
+
 
 	LinkCondition(0, IsThereDialogToShow);
 	LinkCondition(1, IsDialogOver);
@@ -102,7 +114,7 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	//
 	LinkCondition(10, IsQuestActive);
 	LinkCondition(11, IsQuestInactive);
-	LinkCondition(12, AreQuestRequirementsFullfilled);
+	//LinkCondition(12, AreQuestRequirementsFullfilled);
 	LinkCondition(13, IsQuestComplete);
 	LinkCondition(14, IsQuestFailed);
 	LinkCondition(15, WasAnyQuestJustCompleted);
@@ -115,8 +127,15 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkCondition(20, IsCurrentBagMaterial);
 	LinkCondition(21, IsCurrentBagConsumable);
 	LinkCondition(22, IsCurrentBagQuest);
+	LinkCondition(23, IsItemUsable);
+	LinkCondition(24, IsItemWearable);
+	LinkCondition(25, IsItemEquipped);
+	LinkCondition(26, WasItemUsed);
+	LinkCondition(27, IsCurrentBagSkills);
+	LinkCondition(28, IsPlayerAtContainer);
+	LinkCondition(29, PlayerHasCompanion);
 
-
+	
 
 
 	LinkExpression(0, GetCurrentDialogText);
@@ -147,7 +166,7 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 
 	LinkExpression(21, GetNPCCount);
 	LinkExpression(22, GetNPCInWorldDialogStringByIndex);
-	LinkExpression(23, GetNPCFixedValueByIndex);
+	LinkExpression(23, GetNPCNameByIndex);  // dummy. delete m ee.
 
 
 	// Inventory
@@ -180,10 +199,10 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkExpression(47, GetCurrentBagSize);
 
 	LinkExpression(48, GetCurrentContainerName);
-	LinkExpression(49, GetCurrentContainerSize);
-	LinkExpression(50, GetCurrentContainerItemNameByIndex);
-	LinkExpression(51, GetCurrentContainerItemQuanityByIndex);
-	LinkExpression(52, GetCurrentContainerIconName);
+	LinkExpression(49, GetContainerSize);
+	LinkExpression(50, GetContainerItemNameByIndex);
+	LinkExpression(51, GetContainerItemQuanityByIndex);
+	LinkExpression(52, GetContainerIconName);
 
 	LinkExpression(53, GetItemNameEquippedToHead);
 	LinkExpression(54, GetItemNameEquippedToUpperBody);
@@ -192,7 +211,13 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkExpression(57, GetItemNameEquippedToHands);
 	LinkExpression(58, GetItemNameEquippedToBelt);
 	LinkExpression(59, GetItemNameEquippedToEquipSlot);
-	
+	LinkExpression(60, GetCurrentWeight);
+	LinkExpression(61, GetMaxWeight);
+	LinkExpression(62, GetInventoryBagSkillssize);
+	LinkExpression(63, GetSkillBagItemNameByIndex);
+	LinkExpression(64, GetItemPositionInInventoryByItemName);
+	LinkExpression(65, GetItemPositionInContainerByItemName);
+
 
 	/*
         This is where you'd do anything you'd do in CreateRunObject in the original SDK

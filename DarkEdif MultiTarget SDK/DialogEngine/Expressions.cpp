@@ -138,14 +138,20 @@ int Extension::GetNPCCount()
 
 const TCHAR* Extension::GetNPCInWorldDialogStringByIndex(int index)
 {
+//	std::string message = "Do you ever even use this?";
+	//
+	std::string text = DialogEngine::s_NPCs[index].m_inWorldDialogString;
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(text).c_str());
+	/*
 	std::string str = DialogEngine::GetNPCInWorldDialogStringByIndex(index);
 	std::tstring tstr = DarkEdif::UTF8ToTString(str);
-	return Runtime.CopyString(tstr.c_str());
+	return Runtime.CopyString(tstr.c_str());*/
 }
 
-int Extension::GetNPCFixedValueByIndex(int index)
+const TCHAR* Extension::GetNPCNameByIndex(int index)
 {
-	return DialogEngine::GetNPCFixedValueByIndex(index);
+	std::string name = DialogEngine::GetNPCNameByIndex(index);
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(name).c_str());
 }
 
 
@@ -182,6 +188,11 @@ int Extension::GetInventoryBagConsumableSize()
 int Extension::GetInventoryBagQuestsize()
 {
 	return Inventory::m_max_quest_slots;
+}
+
+int Extension::GetInventoryBagSkillssize()
+{
+	return Inventory::m_max_skill_slots;
 }
 
 
@@ -233,14 +244,22 @@ const TCHAR* Extension::GetQuestBagItemNameByIndex(int index)
 		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
 }
 
+const TCHAR* Extension::GetSkillBagItemNameByIndex(int index)
+{
+	if (index >= 0 && index < Inventory::m_max_skill_slots)
+		return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_skills[index].m_name).c_str());
+	else
+		return Runtime.CopyString(DarkEdif::UTF8ToTString("out of range").c_str());
+}
+
 const TCHAR* Extension::GetCurrentCompanionName()
 {
-	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_currentCompanionName).c_str());
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_inventoryState.currentCompanionName).c_str());
 }
 
 const TCHAR* Extension::GetCurrentContainerName()
 {
-	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentContainerName()).c_str());
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_inventoryState.currentContainerName).c_str());
 }
 
 int Extension::GetSizeOfContainerByName(TCHAR* name)
@@ -276,6 +295,12 @@ const TCHAR* Extension::GetConsumableInventoryItemNameByIndex(int index)
 const TCHAR* Extension::GetQuestInventoryItemNameByIndex(int index)
 {
 	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_quest[index].m_name).c_str());
+}
+
+const TCHAR* Extension::GetSkillInventoryItemNameByIndex(int index)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_playerInventory_skills[index].m_name).c_str());
+
 }
 
 const TCHAR* Extension::GetItemTypeAsStringByName(const TCHAR* itemName)
@@ -331,27 +356,29 @@ int Extension::GetCurrentBagSize()
 		return Inventory::m_max_wearable_slots;
 	else if (Inventory::IsQuestInventoryBagOpen())
 		return Inventory::m_max_quest_slots;
+	else if (Inventory::IsSkillInventoryBagOpen())
+		return Inventory::m_max_skill_slots;
 	else return -1;
 }
 
 
-int Extension::GetCurrentContainerSize()
+int Extension::GetContainerSize(const TCHAR* containerName)
 {
-	return Inventory::p_displayedContainer->contentsVector.size();
+	return Inventory::GetContainerSize(DarkEdif::TStringToUTF8(containerName));
 }
-const TCHAR* Extension::GetCurrentContainerItemNameByIndex(int index)
+const TCHAR* Extension::GetContainerItemNameByIndex(const TCHAR* containerName, int index)
 {
-	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentContainerItemNameByIndex(index)).c_str());
-}
-
-int Extension::GetCurrentContainerItemQuanityByIndex(int index)
-{
-	return Inventory::GetCurrentContainerItemQuantityByIndex(index);
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetContainerItemNameByIndex(DarkEdif::TStringToUTF8(containerName), index)).c_str());
 }
 
-const TCHAR* Extension::GetCurrentContainerIconName()
+int Extension::GetContainerItemQuanityByIndex(const TCHAR* containerName, int index)
 {
-	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetCurrentContainerIconName()).c_str());
+	return Inventory::GetContainerItemQuantityByIndex(DarkEdif::TStringToUTF8(containerName), index);
+}
+
+const TCHAR* Extension::GetContainerIconName(const TCHAR* containerName)
+{
+	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::GetContainerIconName(DarkEdif::TStringToUTF8(containerName))).c_str());
 }
 
 const TCHAR* Extension::GetItemNameEquippedToHead()
@@ -382,3 +409,24 @@ const TCHAR* Extension::GetItemNameEquippedToEquipSlot()
 {
 	return Runtime.CopyString(DarkEdif::UTF8ToTString(Inventory::s_equippedItems.m_equipped).c_str());
 }
+
+float Extension::GetCurrentWeight()
+{
+	return Inventory::GetCurrentTotalWeight();
+}
+
+float Extension::GetMaxWeight()
+{
+	return Inventory::s_maxWeight;
+}
+
+int Extension::GetItemPositionInInventoryByItemName(const TCHAR* itemName)
+{
+	return Inventory::GetItemPositionInInventoryByItemName(DarkEdif::TStringToUTF8(itemName));
+}
+
+int Extension::GetItemPositionInContainerByItemName(const TCHAR* itemName)
+{
+	return Inventory::GetItemPositionInContainerByItemName(DarkEdif::TStringToUTF8(itemName));
+}
+

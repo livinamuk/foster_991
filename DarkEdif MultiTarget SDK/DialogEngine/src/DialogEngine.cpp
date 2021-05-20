@@ -13,7 +13,7 @@ std::vector<Quest> DialogEngine::s_Quests;
 bool DialogEngine::s_wasAnyQuestJustCompleted = false;
 bool DialogEngine::s_wasAnyQuestJustFailed = false;
 std::vector<NPC> DialogEngine::s_NPCs;
-std::map<int, std::string> DialogEngine::s_itemFixedValueMap;
+//std::map<int, std::string> DialogEngine::s_itemFixedValueMap;
 int DialogEngine::s_textDuration = 150;
 
 
@@ -438,7 +438,7 @@ std::string DialogEngine::GetCurrentDialogImageName()
 bool DialogEngine::EvaluateConditionalComparison(std::string name, ConditionType conditionType, float comparisonValue)
 {
 	// If item or value is not found, assume 0, and perform check...
-	 float objectValue = 0;
+	float objectValue = 0;
 
 	// Otherwise, get the value
 	if (Inventory::HasItem(name))
@@ -472,16 +472,18 @@ void DialogEngine::UpdateAvaliableResponses()
 {
 	// Reset
 	s_avaliableResponses.clear();
-
+	//std::cout << s_currentDialog.m_responses.size() << " response count\n";
 	// Get avaliable responses
 	for (Response& response : s_currentDialog.m_responses)
 	{
 		if (IsConditionListSatisfied(response.m_responseConditions))
 			s_avaliableResponses.push_back(response);
+		///else
+		//	std::cout << response.m_text << "WAS REJECTED\n";
 
 	loop_exit:;
 	}
-}	
+}
 
 bool DialogEngine::IsDialogOver()
 {
@@ -514,12 +516,12 @@ void DialogEngine::SelectResponse(int index)
 	// Get any fusion actions
 	for (std::string fusionAction : selectedRespone.m_fusionActions) {
 		AddFusionAction(fusionAction);
-		//std::cout << "\nFUSION ACTION: " << fusionAction << "\n";
 	}
 
 	// Do any quest shit you need to
-	for (std::string& quest : selectedRespone.m_ActivateQuests)
+	for (std::string& quest : selectedRespone.m_ActivateQuests) {
 		ActivateQuestByName(quest);
+	}
 	for (std::string& quest : selectedRespone.m_CompleteQuests)
 		CompleteQuestByName(quest);
 	for (std::string& quest : selectedRespone.m_FailQuests)
@@ -531,7 +533,7 @@ void DialogEngine::SelectResponse(int index)
 		// First you gotta find the GameValue based on the name.
 		for (GameFloat& gameFloat : DialogEngine::s_gameFloats)
 		{
-			if (responseAction.m_name == gameFloat.m_name)
+			if (Util::CaselessEquality(responseAction.m_name, gameFloat.m_name))
 			{
 				if (responseAction.m_actionType == ActionType::SUBRACT_FLOAT) {
 					gameFloat.Subract(responseAction.m_modifierValue);
@@ -582,7 +584,7 @@ bool DialogEngine::TriggerFusionAction(std::string name)
 {
 	for (size_t i = 0; i < s_pendingFusionActions.size(); i++)
 	{
-		if (s_pendingFusionActions[i] == name)
+		if (Util::CaselessEquality(s_pendingFusionActions[i], name))
 		{
 			s_pendingFusionActions.erase(s_pendingFusionActions.begin() + i);
 			return true;
@@ -690,7 +692,7 @@ void DialogEngine::CheckQuestRequirementsAndPayOuts()
 void DialogEngine::ActivateQuestByName(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query && quest.m_questState == QuestState::INACTIVE) {
+		if (Util::CaselessEquality(quest.m_name, query) && quest.m_questState == QuestState::INACTIVE) {
 			quest.m_questState = QuestState::ACTIVE;
 			return;
 		}
@@ -699,7 +701,7 @@ void DialogEngine::ActivateQuestByName(std::string query)
 void DialogEngine::CompleteQuestByName(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query && quest.m_questState != QuestState::COMPLETE) {
+		if (Util::CaselessEquality(quest.m_name, query) && quest.m_questState != QuestState::COMPLETE) {
 			quest.m_questState = QuestState::COMPLETE;
 			s_wasAnyQuestJustCompleted = true;
 			return;
@@ -709,7 +711,7 @@ void DialogEngine::CompleteQuestByName(std::string query)
 void DialogEngine::FailQuestByName(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query && quest.m_questState != QuestState::FAILED) {
+		if (Util::CaselessEquality(quest.m_name, query) && quest.m_questState != QuestState::FAILED) {
 			quest.m_questState = QuestState::FAILED;
 			s_wasAnyQuestJustFailed = true;
 			return;
@@ -750,7 +752,7 @@ bool DialogEngine::WasIfAnyQuestWasJustCompleted()
 bool DialogEngine::IsQuestActive(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_questState == QuestState::ACTIVE);
 	return false;
 }
@@ -758,7 +760,7 @@ bool DialogEngine::IsQuestActive(std::string query)
 bool DialogEngine::IsQuestInactive(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return (quest.m_questState == QuestState::INACTIVE);
 	return false;
 }
@@ -766,7 +768,7 @@ bool DialogEngine::IsQuestInactive(std::string query)
 std::string DialogEngine::GetQuestStateAsString(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 		{
 			if (quest.m_questState == QuestState::ACTIVE) return "ACTIVE";
 			if (quest.m_questState == QuestState::INACTIVE) return "INACTIVE";
@@ -780,7 +782,7 @@ std::string DialogEngine::GetQuestStateAsString(std::string query)
 std::string DialogEngine::GetQuestDescription(std::string query)
 {
 	for (Quest& quest : s_Quests)
-		if (quest.m_name == query)
+		if (Util::CaselessEquality(quest.m_name, query))
 			return quest.m_description;
 	return "";
 }
@@ -807,6 +809,7 @@ NPC* DialogEngine::GetNPCAndCreateIfItDoesntExist(std::string name)
 	return CreateNPC(name);
 }
 
+/*
 NPC* DialogEngine::GetNPCPointerByFixedValue(int fixedValue)
 {
 	// Search for it and return pointer if you find it
@@ -818,7 +821,7 @@ NPC* DialogEngine::GetNPCPointerByFixedValue(int fixedValue)
 	// Otherwise return null
 	return nullptr;
 }
-
+*/
 NPC* DialogEngine::GetNPCPointer(std::string name)
 {
 	// Search for it and return pointer if you find it
@@ -829,6 +832,7 @@ NPC* DialogEngine::GetNPCPointer(std::string name)
 	return nullptr;
 }
 
+/*
 void DialogEngine::RegisterNPC(std::string name, int fixedValue)
 {
 	for (NPC& npc : s_NPCs)
@@ -843,12 +847,14 @@ void DialogEngine::RegisterNPC(std::string name, int fixedValue)
 	npc.m_fixedValue = fixedValue;
 	s_NPCs.push_back(npc);
 }
-
+*/
+/*
 void DialogEngine::RegisterItem(std::string name, int fixedValue)
 {
 	s_itemFixedValueMap.insert({ fixedValue, name });
 }
-
+*/
+/*
 void DialogEngine::PickedUpFusionItem(int fixedValue)
 {
 	if (s_itemFixedValueMap.find(fixedValue) == s_itemFixedValueMap.end()) {
@@ -858,7 +864,7 @@ void DialogEngine::PickedUpFusionItem(int fixedValue)
 		std::string itemName = s_itemFixedValueMap[fixedValue];
 		Inventory::GiveItem(itemName, 1);
 	}
-}
+}*/
 
 MyCondition DialogEngine::ConditionObjectFromString(std::string str)
 {
@@ -984,6 +990,7 @@ MyCondition DialogEngine::ConditionObjectFromString(std::string str)
 	return condition;
 }
 
+/* THIS COULD BE IMPORTANT BUT FOR NOW DELETING */
 bool DialogEngine::IsConditionListSatisfied(std::vector<MyCondition>& conidtionList)
 {
 	// Check if all conditions are met
@@ -993,19 +1000,21 @@ bool DialogEngine::IsConditionListSatisfied(std::vector<MyCondition>& conidtionL
 		if (responseCondition.m_ConditionType == ConditionType::BOOOL)
 		{
 			//std::cout << "MADE IT HERE\n";
+			//std::cout << "checking flag: [" << responseCondition.m_conditionName << "] with state " << responseCondition.m_requiredConditionBoolState << " and actual state is " << DialogEngine::GetGameFlagState(responseCondition.m_conditionName) << "\n";
+
 			if (responseCondition.m_requiredConditionBoolState != DialogEngine::GetGameFlagState(responseCondition.m_conditionName))
 				return false;
 		}
 		// Quest conditions
-		else if (responseCondition.m_ConditionType == ConditionType::QUEST_REQUIREMENTS_MET)
+		/*else if (responseCondition.m_ConditionType == ConditionType::QUEST_REQUIREMENTS_MET)
 		{
 			if (responseCondition.m_requiredConditionBoolState != DialogEngine::AreQuestRequirementsFullfilled(responseCondition.m_conditionName))
 				return false;
-		}
+		}*/
 		// Could be an item check
 		else if (responseCondition.m_ConditionType == ConditionType::HAVE_ITEM)
 		{
-			//std::cout << "FOUND A HAVE_ITEM " << responseCondition.m_conditionName << " with state " << responseCondition.m_requiredConditionBoolState << " and actual state is " << DialogEngine::HasItem(responseCondition.m_conditionName) << "\n";
+			//std::cout << "FOUND A HAVE_ITEM " << responseCondition.m_conditionName << " with state " << responseCondition.m_requiredConditionBoolState << " and actual state is " << Inventory::HasItem(responseCondition.m_conditionName) << "\n";
 			if (responseCondition.m_requiredConditionBoolState != Inventory::HasItem(responseCondition.m_conditionName))
 				//if (!DialogEngine::HasItem(responseCondition.m_conditionName))
 				return false;
@@ -1051,6 +1060,7 @@ bool DialogEngine::IsConditionListSatisfied(std::vector<MyCondition>& conidtionL
 	return true;
 }
 
+/*
 int DialogEngine::GetQuestDialogIDFromNPCFixedValue(int fixedValue)
 {
 	// First you gotta get the NPC
@@ -1078,14 +1088,47 @@ int DialogEngine::GetQuestDialogIDFromNPCFixedValue(int fixedValue)
 	std::cout << "NONE PASSED\n";
 	return -1;
 }
+*/
 
-void DialogEngine::CheckNPCStandardDialogText(int fixedValue)
+
+
+/*
+int DialogEngine::GetNextQuestDialogIDFromNPCName(std::string npcName)
+{
+	for (NPC& npc : s_NPCs) {
+		if (npc.m_name == npcName)
+		{
+			// Iterate over each quest and stop at the first one that passes the condition list
+			for (NPCQuestData& questData : npc.m_quests)
+			{
+				Quest* quest = GetQuestByName(questData.m_questName);
+
+				if (IsConditionListSatisfied(quest->m_conditions))
+				{
+					if (quest->m_questState == QuestState::ACTIVE && questData.m_questDialogIDs.active != -1)
+						return questData.m_questDialogIDs.active;
+					else if (quest->m_questState == QuestState::INACTIVE && questData.m_questDialogIDs.inactive != -1)
+						return questData.m_questDialogIDs.inactive;
+					else if (quest->m_questState == QuestState::FAILED && questData.m_questDialogIDs.failed != -1)
+						return questData.m_questDialogIDs.failed;
+					else if (quest->m_questState == QuestState::COMPLETE && questData.m_questDialogIDs.complete != -1)
+						return questData.m_questDialogIDs.complete;
+				}
+			}
+			std::cout << "NONE PASSED\n";
+			return -1;
+		}
+	}
+	// Otherwise return nothing
+	return -1;
+}*/
+/*
+void DialogEngine::DisplayStandardFromNPCName(std::string npcName)
 {
 	// First you gotta get the NPC
-	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
+	NPC* npc = GetNPCPointer(npcName);
 	if (!npc)
 		return;
-
 
 	// Now iterate over the dialog entries and find the first that satisfies all conditions
 	for (DialogEntry& dialogEntry : s_dialogEntries)
@@ -1093,7 +1136,7 @@ void DialogEngine::CheckNPCStandardDialogText(int fixedValue)
 		// Find matching name
 		if (Util::CaselessEquality(dialogEntry.m_npcTriggerName, npc->m_name))
 		{
-			std::cout << "dialog: " << dialogEntry.m_ID << " " << dialogEntry.m_conditions.size() << " conditions" << "\n";
+			//std::cout << "dialog: " << dialogEntry.m_ID << " " << dialogEntry.m_conditions.size() << " conditions" << "\n";
 
 			// BAIL if condition not met
 			for (MyCondition& responseCondition : dialogEntry.m_conditions)
@@ -1133,25 +1176,23 @@ void DialogEngine::CheckNPCStandardDialogText(int fixedValue)
 			return;
 		}
 	loop_exit:;
-		//std::cout << "dialog: " << dialogEntry.m_ID << " failed \n";
 	}
-	//std::cout << "all failed \n";
 }
 
-void DialogEngine::CheckNPCInWorldQuestDialogText(int fixedValue)
+*/
+void DialogEngine::CheckNPCForInworldQuestDialog(std::string npcName)
 {
 	// First you gotta get the NPC
-	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
-	if (!npc) {
+	NPC* npc = GetNPCPointer(npcName);
+	if (!npc)
 		return;
-	}
-
+	
 	// Iterate over each quest and stop at the first one that passes the condition list
 	for (NPCQuestData& questData : npc->m_quests)
 	{
 		Quest* quest = GetQuestByName(questData.m_questName);
 
-		if (IsConditionListSatisfied(quest->m_conditions))
+		if (quest)
 		{
 			if (quest->m_questState == QuestState::ACTIVE && questData.m_questInWorldDialogText.active != "") {
 				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.active;
@@ -1172,17 +1213,100 @@ void DialogEngine::CheckNPCInWorldQuestDialogText(int fixedValue)
 				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.complete;
 				npc->m_inWorldDialogTextTimer = s_textDuration;
 				return;
-			}
+			}			
 		}
 	}
-	//	std::cout << "NOTHING PASSSED HERE INWORLD\n";
 	return;
 }
 
-std::string DialogEngine::GetRandomInWorldDialogFromNPCFixedValue(int fixedValue)
+
+void DialogEngine::CheckNPCForStandardDialogAndQuests(std::string npcName)
+{
+	/////
+	// Search for standard dialog first
+	/////
+
+	// Iterate over the dialog entries and find the first that satisfies all conditions
+	for (DialogEntry& dialogEntry : s_dialogEntries)
+	{
+		if (Util::CaselessEquality(dialogEntry.m_npcTriggerName, npcName))
+		{
+			for (MyCondition& responseCondition : dialogEntry.m_conditions) {
+				// Bool conditions
+				if (responseCondition.m_ConditionType == ConditionType::BOOOL) 
+				{
+					if (responseCondition.m_requiredConditionBoolState != DialogEngine::GetGameFlagState(responseCondition.m_conditionName))
+						goto loop_exit;
+				}
+				// Quest conditions
+				/*else if (responseCondition.m_ConditionType == ConditionType::QUEST_REQUIREMENTS_MET) {
+					if (responseCondition.m_requiredConditionBoolState != DialogEngine::AreQuestRequirementsFullfilled(responseCondition.m_conditionName))
+						goto loop_exit;
+				}*/
+				// Could be an item check
+				else if (responseCondition.m_ConditionType == ConditionType::HAVE_ITEM) {
+					if (responseCondition.m_requiredConditionBoolState != Inventory::HasItem(responseCondition.m_conditionName))
+						goto loop_exit;
+				}
+				// Must be a value or item comparison
+				else
+				{
+					std::string name = responseCondition.m_conditionName;
+					ConditionType type = responseCondition.m_ConditionType;
+					float value = responseCondition.m_conditionComparisonValue;
+
+					if (!DialogEngine::EvaluateConditionalComparison(name, type, value))
+						goto loop_exit;
+				}
+			}
+			// It's good then
+			SetCurrentDialogByID(dialogEntry.m_ID);
+			return;
+		}
+	loop_exit:;
+	}
+
+	/////
+	// now check for quests
+	/////
+
+	for (NPC& npc : s_NPCs) {
+		if (npc.m_name == npcName)
+		{
+			// Iterate over each quest and stop at the first one that passes the condition list
+			for (NPCQuestData& questData : npc.m_quests)
+			{
+				Quest* quest = GetQuestByName(questData.m_questName);
+
+				//if (IsConditionListSatisfied(quest->m_conditions))
+				{
+					if (quest->m_questState == QuestState::ACTIVE && questData.m_questDialogIDs.active != -1) {
+						SetCurrentDialogByID(questData.m_questDialogIDs.active);
+						return;
+					}
+					else if (quest->m_questState == QuestState::INACTIVE && questData.m_questDialogIDs.inactive != -1) {
+						SetCurrentDialogByID(questData.m_questDialogIDs.inactive);
+						return;
+					}
+					else if (quest->m_questState == QuestState::FAILED && questData.m_questDialogIDs.failed != -1) {
+						SetCurrentDialogByID(questData.m_questDialogIDs.failed);
+						return;
+					}
+					else if (quest->m_questState == QuestState::COMPLETE && questData.m_questDialogIDs.complete != -1) {
+						SetCurrentDialogByID(questData.m_questDialogIDs.complete);
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
+//std::string DialogEngine::GetRandomNPCInWorldDialogFromNPCName(std::string npcName)
+void DialogEngine::CheckNPCForInWorldDialog(std::string npcName)
 {
 	// First you gotta get the NPC
-	NPC* npc = GetNPCPointerByFixedValue(fixedValue);
+	NPC* npc = GetNPCPointer(npcName);
 
 	if (npc)
 	{
@@ -1194,16 +1318,32 @@ std::string DialogEngine::GetRandomInWorldDialogFromNPCFixedValue(int fixedValue
 			int randomIndex = Util::RandomInt(1, (int)npc->m_inWorldDialogReplies.size()); // get random index
 			npc->m_inWorldDialogReplies.insert(npc->m_inWorldDialogReplies.begin() + randomIndex, npc->m_inWorldDialogString); // reinsert it
 			npc->m_inWorldDialogTextTimer = s_textDuration;
-			return npc->m_inWorldDialogString; // return it
+
+
+		//	Util::Log("timer: " + std::to_string(npc->m_inWorldDialogTextTimer));
+		//	Util::Log("text:  " + npc->m_inWorldDialogString);
+			return;// npc->m_inWorldDialogString; // return it
+
+
 		}
 		else if (npc->m_inWorldDialogReplies.size() == 1)
 		{
 			npc->m_inWorldDialogString = npc->m_inWorldDialogReplies[0]; // store it
 			npc->m_inWorldDialogTextTimer = s_textDuration;
-			return npc->m_inWorldDialogString; // return it
+		//	Util::Log("no fucking text to display");
+			return;// npc->m_inWorldDialogString; // return it
 		}
 	}
-	return "";
+	return;// "";
+}
+
+
+std::string DialogEngine::GetNPCNameByIndex(int index)
+{
+	if (index < 0 || index >= (int)s_NPCs.size())
+		return "NPC index out of range";
+	else
+		return s_NPCs[index].m_name;;
 }
 
 Quest* DialogEngine::GetQuestByName(std::string name)
@@ -1215,32 +1355,8 @@ Quest* DialogEngine::GetQuestByName(std::string name)
 	return nullptr;
 }
 
-void DialogEngine::CheckNPCQuestDialog(int fixedValue)
-{
-	SetCurrentDialogByID(GetQuestDialogIDFromNPCFixedValue(fixedValue));
-}
 
-void DialogEngine::CheckNPCInWorldDialog(int fixedValue)
-{
-	GetRandomInWorldDialogFromNPCFixedValue(fixedValue);
-}
-std::string DialogEngine::GetNPCInWorldDialogStringByIndex(int index)
-{
-	if (index < 0 || index >= (int)s_NPCs.size())
-		return "out_of_range";
-
-	return s_NPCs[index].m_inWorldDialogString;
-}
-
-int DialogEngine::GetNPCFixedValueByIndex(int index)
-{
-	if (index < 0 || index >= (int)s_NPCs.size())
-		return -1;
-
-	return s_NPCs[index].m_fixedValue;
-}
-
-
+/*
 bool DialogEngine::AreQuestRequirementsFullfilled(std::string query)
 {
 	for (Quest& quest : s_Quests)
@@ -1248,7 +1364,9 @@ bool DialogEngine::AreQuestRequirementsFullfilled(std::string query)
 			return (quest.m_requirementsFullfiled);
 	return false;
 
-}bool DialogEngine::IsQuestCompleted(std::string query)
+}*/
+
+bool DialogEngine::IsQuestCompleted(std::string query)
 {
 	for (Quest& quest : s_Quests)
 		if (quest.m_name == query)
@@ -1288,7 +1406,7 @@ void DialogEngine::SetGameFloat(std::string name, float value)
 	// check if float exists
 	for (GameFloat& gameValue : s_gameFloats) {
 
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.SetTo(value);
 			return;
 		}
@@ -1300,7 +1418,7 @@ void DialogEngine::SetGameFloat(std::string name, float value)
 bool DialogEngine::DoesFlagExist(std::string name)
 {
 	for (GameFlag& flag : s_gameFlags)
-		if (flag.m_name == name)
+		if (Util::CaselessEquality(flag.m_name, name))
 			return true;
 	return false;
 }
@@ -1308,7 +1426,7 @@ bool DialogEngine::DoesFlagExist(std::string name)
 void DialogEngine::SetGameFloatMin(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.SetMin(value);
 			return;
 		}
@@ -1317,7 +1435,7 @@ void DialogEngine::SetGameFloatMin(std::string name, float value)
 void DialogEngine::SetGameFloatMax(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.SetMax(value);
 			return;
 		}
@@ -1326,7 +1444,7 @@ void DialogEngine::SetGameFloatMax(std::string name, float value)
 void DialogEngine::AddToGameFloat(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.m_value += value;
 			return;
 		}
@@ -1335,18 +1453,18 @@ void DialogEngine::AddToGameFloat(std::string name, float value)
 void DialogEngine::SubractFromGameFloat(std::string name, float value)
 {
 	for (GameFloat& gameValue : s_gameFloats)
-		if (gameValue.m_name == name) {
+		if (Util::CaselessEquality(gameValue.m_name, name)) {
 			gameValue.m_value -= value;
 			return;
 		}
 }
 
 
-float DialogEngine::GetGameFloat(std::string flagName)
+float DialogEngine::GetGameFloat(std::string name)
 {
 	// Look for the fucking flag
 	for (GameFloat& gamevalue : s_gameFloats) {
-		if (gamevalue.m_name == flagName) {
+		if (Util::CaselessEquality(gamevalue.m_name, name)) {
 			return gamevalue.m_value;
 		}
 	}
@@ -1358,7 +1476,7 @@ float DialogEngine::GetGameFloat(std::string flagName)
 bool DialogEngine::GameFloatExists(std::string name)
 {
 	for (GameFloat& value : s_gameFloats)
-		if (value.m_name == name)
+		if (Util::CaselessEquality(value.m_name, name))
 			return true;
 	return false;
 }
@@ -1380,6 +1498,8 @@ std::string DialogEngine::GetGameFloatNameByIndex(int index)
 
 void DialogEngine::SetGameFlag(std::string flagName, bool state)
 {
+	flagName = Util::ToUppercase(flagName);
+
 	// check if flag exists
 	for (GameFlag& gameFlag : s_gameFlags) {
 

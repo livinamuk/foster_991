@@ -20,12 +20,18 @@
 	3) A companion can not have the same name as a container or shit will break; Or maybe they will just share the same space lol.
 */
 
+struct InventoryState {
+	std::string currentContainerName;
+	std::string currentCompanionName;
+};
+
 class Inventory {
 public:
 	// functions
 	static void InitDefaults();
+	static void LoadInventoryDatabase(std::string filepath);
 	static void SaveInventoryDatabase();
-	static void NewInventoryItem(std::string name, InventoryType type, float weight, std::string description, int price, std::vector<Modifier> modifers);
+	static void NewInventoryItem(std::string name, InventoryType type, float weight, std::string description, int price, bool usable, std::vector<Modifier> modifers);
 	static void TakeItem(std::string name, int quantity);
 	static ReturnValue GiveItem(std::string name, int quantity);
 	static int GetItemQuantity(std::string name);
@@ -60,8 +66,8 @@ public:
 	static void MoveContainerItem(std::string itemName, int newLocation);
 	static void MoveInventoryItem(std::string itemName, int newLocation);
 
-	static std::string GetContainerItemNameByIndex(std::string containerName, int index);
-	static std::string GetContainerItemQuantityByIndex(std::string containerName, int index);
+	//static std::string GetContainerItemNameByIndex(std::string containerName, int index);
+	//static std::string GetContainerItemQuantityByIndex(std::string containerName, int index);
 
 	static InventoryBagType GetInventoryBagTypeByItemName(std::string name);
 	static PlayerInventoryItem* GetCorrespondingInventoryArrayPointerByItemName(std::string name);
@@ -72,11 +78,13 @@ public:
 	static void ShowCompanion();
 	static void SetCurrentContainerByName(std::string name);
 	static void SetCurrentCompanionByName(std::string name);
-	static int GetCurrentContainerSize();
-	static int GetCurrentInventoryBagItemQuantityByindex(int index);
-	static std::string GetCurrentContainerItemNameByindex(int index);
-	static std::string GetInventoryBagItemNameByindex(int index);
-	static int GetCurrentContainerItemQuantityByindex(int index);
+	//static int GetCurrentInventoryBagItemQuantityByindex(int index);
+	//static std::string GetInventoryBagItemNameByindex(int index);
+
+	static int GetContainerSize(std::string containerName);
+	static std::string GetContainerItemNameByIndex(std::string containerName, int index);
+	static int GetContainerItemQuantityByIndex(std::string containerName, int index);
+	static std::string GetContainerIconName(std::string containerName);
 
 	static int GetContainerSizeByName(std::string containerName);
 
@@ -86,6 +94,7 @@ public:
 	static void SetCurrentInventoryBagToMaterial();
 	static void SetCurrentInventoryBagToConsumeable();
 	static void SetCurrentInventoryBagToQuest();
+	static void SetCurrentInventoryBagToSkills();
 	static int GetCurrentInventoryBagSize();
 
 
@@ -95,18 +104,24 @@ public:
 	static void SetMaterialInventoryBagSize(int size);
 	static void SetConsumableInventoryBagSize(int size);
 	static void SetQuestInventoryBagSize(int size);
+	static void SetSkillInventoryBagSize(int size);
+
 	static int GetGeneralInventoryBagSize();
 	static int GetWearableInventoryBagSize();
 	static int GetEquipableInventoryBagSize();
 	static int GetMaterialInventoryBagSize();
 	static int GetConsumableInventoryBagSize();
 	static int GetQuestInventoryBagSize();
+	static int GetSkillInventoryBagSize();
+
 	static bool IsGeneralInventoryBagOpen();
 	static bool IsWearableInventoryBagOpen();
 	static bool IsEquipableInventoryBagOpen();
 	static bool IsMaterialInventoryBagOpen();
 	static bool IsConsumableInventoryBagOpen();
 	static bool IsQuestInventoryBagOpen();
+	static bool IsSkillInventoryBagOpen();
+
 	static std::string GetItemDescriptionByName(std::string name);
 	static int GetItemNumberOfModifierEffectsByName(std::string name);
 	static std::string GetItemModiferEffectNameByIndex(std::string name, int index);
@@ -117,19 +132,38 @@ public:
 
 	static std::string GetCurrentBagItemNameByIndex(int index);
 	static int GetCurrentBagIteQuantityByIndex(int index);
+
 	static std::string GetCurrentContainerName();
-	static std::string GetCurrentContainerIconName();
+	static std::string GetCurrentCompanionName();
+
+	static int GetItemPositionInInventoryByItemName(std::string itemName);
+	static int GetItemPositionInContainerByItemName(std::string itemName);
+
+	static bool IsItemWearable(std::string itemName);
+	static bool IsItemUsable(std::string itemName);
+	static bool IsItemEquipped(std::string itemName);
+	static void EquipItemByName(std::string itemName);
+	static void DequipItemByName(std::string itemName);
+	static void UseItem(std::string itemName);
+	static bool WasItemUsed(std::string itemName);
+
+	static void SetCurrentContainerToNone();
+	static void SetCurrentCompanionToNone();
+	static bool IsPlayerAtContainer();
+	static bool PlayerHasCompanion();
 
 	static Container* p_displayedContainer;
-
 
 	////////////////
 	// varaibles //
 
-	static std::vector<Companion> s_compainions;
-	static std::string s_currentCompanionName;
-	static std::string s_currentContainerName;
+	static InventoryState s_inventoryState;
 
+	static std::vector<Companion> s_compainions;
+	//static std::string s_currentCompanionName;
+	//static std::string s_currentContainerName;
+
+	static std::vector<std::string> s_pendingUsedItems;
 
 	static std::vector<InventoryItemData> s_InventoryDatabase;
 
@@ -141,6 +175,7 @@ public:
 	static PlayerInventoryItem s_playerInventory_consumable[];
 	static PlayerInventoryItem s_playerInventory_general[];
 	static PlayerInventoryItem s_playerInventory_quest[];
+	static PlayerInventoryItem s_playerInventory_skills[];
 
 	static std::vector<Container> s_containers;
 
@@ -150,6 +185,7 @@ public:
 	static int m_max_consumable_slots;
 	static int m_max_general_slots;
 	static int m_max_quest_slots;
+	static int m_max_skill_slots;
 
 	static float s_maxWeight;
 
@@ -170,5 +206,6 @@ private:
 	static void SaveFloat(rapidjson::Value* object, std::string elementName, float number, rapidjson::Document::AllocatorType& allocator);
 	static void SaveInt(rapidjson::Value* object, std::string elementName, int number, rapidjson::Document::AllocatorType& allocator);
 	static std::string InventoryTypeToString(InventoryType query);
+	//static std::string InventoryTypeToString(InventoryType query);
 	static std::string ModiferTypeToString(ModifierType query);
 };

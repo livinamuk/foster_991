@@ -75,10 +75,10 @@ bool Extension::IsQuestInactive(TCHAR* query) {
 	return (DialogEngine::IsQuestInactive(DarkEdif::TStringToUTF8(query)));
 }
 
-bool Extension::AreQuestRequirementsFullfilled(TCHAR* query)
+/*bool Extension::AreQuestRequirementsFullfilled(TCHAR* query)
 {
 	return (DialogEngine::AreQuestRequirementsFullfilled(DarkEdif::TStringToUTF8(query)));
-}
+}*/
 
 bool Extension::IsQuestComplete(TCHAR* query) 
 {
@@ -120,4 +120,36 @@ bool Extension::IsCurrentBagQuest() {
 	return Inventory::IsQuestInventoryBagOpen();
 }
 
+bool Extension::IsCurrentBagSkills()
+{
+	return Inventory::IsSkillInventoryBagOpen();
+}
 
+bool Extension::IsItemUsable(TCHAR* name)
+{
+	return Inventory::IsItemUsable(DarkEdif::TStringToUTF8(name));
+}
+
+bool Extension::IsItemWearable(TCHAR* name)
+{
+	return Inventory::IsItemWearable(DarkEdif::TStringToUTF8(name));
+}
+bool Extension::IsItemEquipped(TCHAR* name)
+{
+	return Inventory::IsItemEquipped(DarkEdif::TStringToUTF8(name));
+}
+
+bool Extension::WasItemUsed(TCHAR* name)
+{
+	return Inventory::WasItemUsed(DarkEdif::TStringToUTF8(name));
+}
+
+bool Extension::IsPlayerAtContainer()
+{
+	return Inventory::IsPlayerAtContainer();
+}
+
+bool Extension::PlayerHasCompanion()
+{
+	return Inventory::PlayerHasCompanion();
+}
