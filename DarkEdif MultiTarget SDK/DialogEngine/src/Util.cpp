@@ -48,6 +48,16 @@ std::string Util::GetItemTypeAsString(InventoryType type)
         return "UNDEFINED";
 }
 
+CompanionType Util::GetCompanionTypeFromString(std::string type)
+{
+    if (CaselessEquality(type, "CAT"))
+        return CompanionType::CAT;
+    else if (CaselessEquality(type, "DOG"))
+        return CompanionType::DOG;
+    else
+        return CompanionType::DONKEY;
+}
+
 InventoryType Util::GetItemTypeFromString(std::string type)
 {
     if (type == "CONSUMABLE")
@@ -71,7 +81,7 @@ InventoryType Util::GetItemTypeFromString(std::string type)
     else if (type == "WEARABLE_LOWER_BODY")
         return InventoryType::WEARABLE_LOWER_BODY;
     else if (type == "WEARABLE_UPPER_BODY")
-        return InventoryType::WEARABLE_UPPER_BODY; 
+        return InventoryType::WEARABLE_UPPER_BODY;
     else if (type == "SKILL")
         return InventoryType::SKILL;
     else

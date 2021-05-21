@@ -1,1 +1,45 @@
-﻿
+﻿  DarkEdif.cpp
+  Edif.cpp
+  Edif.General.cpp
+  Edif.Runtime.cpp
+  json.cpp
+  ObjectSelection.cpp
+  Actions.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(6): error C2011: 'Extension': 'class' type redefinition
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+  Conditions.cpp
+  Expressions.cpp
+  Extension.cpp
+  DialogEngine.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\DialogEngine.cpp(484): warning C4102: 'loop_exit': unreferenced label
+  GameFlag.cpp
+  GameFloat.cpp
+  GameItem.cpp
+  Inventory.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(185): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(189): warning C4018: '>=': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(205): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(253): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(271): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(336): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(509): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(628): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(700): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(707): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(774): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(785): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(798): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(808): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(818): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(1272): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(1380): warning C4018: '<': signed/unsigned mismatch
+  NPC.cpp
+  Quest.cpp
+  Util.cpp
+  Runtime.cpp
+  Edif.Edittime.cpp
+  Generating Code...
+  Compiling...
+  Edittime.cpp
+  General.cpp
+  Generating Code...

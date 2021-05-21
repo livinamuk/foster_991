@@ -1,4 +1,7 @@
 
+#ifndef AAA_HEADER
+#define AAA_HEADER
+
 #include "Edif.h"
 #include "src/DialogEngine.h"
 
@@ -68,7 +71,7 @@ public:
 
 
     /// Actions
-
+    
     void LoadDialogFile(TCHAR* name);
     void LoadQuestFile(TCHAR* name);
     void LoadPlayerDataFile(TCHAR* name);
@@ -104,14 +107,6 @@ public:
     void CheckNPCForStandardDialogAndQuests(TCHAR* npcName);
     void CheckNPCForInWorldDialog(TCHAR* npcName);
 
-    /*void RegisterNPCFixedValue(TCHAR* name, int value);
-    void RegisterItemFixedValue(TCHAR* name, int value);
-    void PickedUpFusionItem(int fixedValue);*/
-
-    /*void CheckNPCQuestDialog(int fixedValue);
-    void CheckNPCInWorldDialog(int fixedValue);
-    void CheckNPCInWorldQuestDialogText(int fixedValue);
-    void CheckNPCStandardDialogText(int fixedValue);*/
 
     void LoadInWorldDialogFile(TCHAR* name);
 
@@ -123,6 +118,7 @@ public:
     // new with inventory 
     //{
         void LoadItemDatabase(TCHAR* filename);
+        void LoadContainerDatabase(TCHAR* filename); 
         void DespositItemIntoContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom);
         void WithdrawItemFromContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom);
         void SetInventoryBagGeneralSize(int size);
@@ -163,6 +159,8 @@ public:
         void SetCurrentContainerToNone();
         void SetCurrentCompanionToNone();
 
+        void AddCompanionToSaveFile(TCHAR* name, TCHAR* type);
+
     //}
 		
 	/// Conditions
@@ -202,6 +200,7 @@ public:
         bool WasItemUsed(TCHAR* name);
         bool IsPlayerAtContainer();
         bool PlayerHasCompanion();
+        bool PlayerHasEncounteredCompanionAlready(TCHAR* name);
 
 
 
@@ -302,7 +301,7 @@ public:
         int GetItemPositionInInventoryByItemName(const TCHAR* itemName);
         int GetItemPositionInContainerByItemName(const TCHAR* itemName);
 
-
+        
 
 
     /* These are called if there's no function linked to an ID */
@@ -343,3 +342,5 @@ public:
     bool Load(HANDLE File);
 
 };
+
+#endif

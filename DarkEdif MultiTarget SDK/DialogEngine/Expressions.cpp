@@ -73,18 +73,6 @@ int Extension::GetGameItemQuantityByName(TCHAR* name)
 	return Inventory::GetItemQuantity(str);
 }
 
-/*onst TCHAR* Extension::GetGameItemNameByIndex(int index)
-{
-	std::string str = DialogEngine::GetGameItemNameByIndex(index);
-	std::tstring tstr = DarkEdif::UTF8ToTString(str);
-	return Runtime.CopyString(tstr.c_str());
-}*/
-
-/*int Extension::GetTotalGameItems()
-{
-	return DialogEngine::s_gameItems.size();
-}*/
-
 const TCHAR* Extension::GetFusionActionNameIndex(int index)
 {
 	std::string str = DialogEngine::GetFusionActionNameByIndex(index);
@@ -138,14 +126,8 @@ int Extension::GetNPCCount()
 
 const TCHAR* Extension::GetNPCInWorldDialogStringByIndex(int index)
 {
-//	std::string message = "Do you ever even use this?";
-	//
 	std::string text = DialogEngine::s_NPCs[index].m_inWorldDialogString;
 	return Runtime.CopyString(DarkEdif::UTF8ToTString(text).c_str());
-	/*
-	std::string str = DialogEngine::GetNPCInWorldDialogStringByIndex(index);
-	std::tstring tstr = DarkEdif::UTF8ToTString(str);
-	return Runtime.CopyString(tstr.c_str());*/
 }
 
 const TCHAR* Extension::GetNPCNameByIndex(int index)
@@ -429,4 +411,3 @@ int Extension::GetItemPositionInContainerByItemName(const TCHAR* itemName)
 {
 	return Inventory::GetItemPositionInContainerByItemName(DarkEdif::TStringToUTF8(itemName));
 }
-

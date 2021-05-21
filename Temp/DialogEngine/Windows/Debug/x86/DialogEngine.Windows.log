@@ -1,1 +1,175 @@
-﻿
+﻿  DarkEdif.cpp
+  Edif.cpp
+  Edif.General.cpp
+  Edif.Runtime.cpp
+  json.cpp
+  ObjectSelection.cpp
+  Actions.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(6): error C2011: 'Extension': 'class' type redefinition
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(9): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(14): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(19): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(24): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(29): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(34): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(39): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(44): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(49): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(54): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(59): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(64): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(69): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(74): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(79): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(84): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(89): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(94): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(105): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(109): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(113): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(154): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(167): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(172): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(177): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(182): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(187): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(193): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(207): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(214): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(219): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(224): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(229): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(233): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(237): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(241): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(245): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(249): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(253): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(257): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(261): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(265): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(269): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(273): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(277): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(281): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(285): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(289): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(293): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(297): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(301): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(306): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(311): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(317): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(323): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(329): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(335): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(341): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(348): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(354): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(360): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(366): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(372): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(377): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp(382): error C2027: use of undefined type 'Extension'
+  D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Extension.h(5): note: see declaration of 'Extension'
+  Conditions.cpp
+  Expressions.cpp
+  Extension.cpp
+  DialogEngine.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\DialogEngine.cpp(484): warning C4102: 'loop_exit': unreferenced label
+  GameFlag.cpp
+  GameFloat.cpp
+  GameItem.cpp
+  Inventory.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(185): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(189): warning C4018: '>=': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(205): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(253): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(271): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(336): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(509): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(628): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(700): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(707): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(774): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(785): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(798): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(808): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(818): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(1272): warning C4018: '<': signed/unsigned mismatch
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(1380): warning C4018: '<': signed/unsigned mismatch
+  NPC.cpp
+  Quest.cpp
+  Util.cpp
+  Runtime.cpp
+  Edif.Edittime.cpp
+  Generating Code...
+  Compiling...
+  Edittime.cpp
+  General.cpp
+  Generating Code...

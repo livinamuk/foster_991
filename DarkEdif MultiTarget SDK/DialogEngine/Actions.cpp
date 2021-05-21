@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "Extension.h"
 
 
 void Extension::LoadDialogFile(TCHAR* name)
@@ -96,11 +97,6 @@ void Extension::ClearAllData()
 }
 
 
-/*
-void Extension::CheckNPCForQuest(TCHAR* npcName)
-{
-	DialogEngine::CheckNPCForQuest(DarkEdif::TStringToUTF8(npcName));
-}*/
 void Extension::CheckNPCForInworldQuestDialog(TCHAR* npcName)
 {
 	DialogEngine::CheckNPCForInworldQuestDialog(DarkEdif::TStringToUTF8(npcName));
@@ -114,54 +110,10 @@ void Extension::CheckNPCForInWorldDialog(TCHAR* npcName)
 	DialogEngine::CheckNPCForInWorldDialog(DarkEdif::TStringToUTF8(npcName));
 }
 
-/*
-void Extension::RegisterNPCFixedValue(TCHAR* name, int value)
-{
-	DialogEngine::RegisterNPC(DarkEdif::TStringToUTF8(name), value);
-}
-
-void Extension::RegisterItemFixedValue(TCHAR* name, int value)
-{
-	DialogEngine::RegisterItem(DarkEdif::TStringToUTF8(name), value);
-}
-
-void Extension::PickedUpFusionItem(int fixedValue)
-{
-	DialogEngine::PickedUpFusionItem(fixedValue);
-}*/
-/*
-void Extension::CheckNPCQuestDialog(int fixedValue)
-{
-	DialogEngine::CheckNPCQuestDialog(fixedValue);
-}
-
-void Extension::CheckNPCInWorldDialog(int fixedValue)
-{
-	DialogEngine::CheckNPCInWorldDialog(fixedValue);
-}
-
-void Extension::CheckNPCInWorldQuestDialogText(int fixedValue)
-{
-	DialogEngine::CheckNPCInWorldQuestDialogText(fixedValue);
-}
-
-void Extension::CheckNPCStandardDialogText(int fixedValue)
-{
-	DialogEngine::CheckNPCStandardDialogText(fixedValue);
-}*/
-
 void Extension::LoadInWorldDialogFile(TCHAR* name)
 {
 	DialogEngine::LoadInWorldDialogFile(DarkEdif::TStringToUTF8(name));
 }
-
-/*void Extension::AddFixedValueTimer(int fixedValue, int timerDuration)
-{
-	FixedValueTimer timer;
-	timer.fixedValue = fixedValue;
-	timer.timer = timerDuration;
-	m_fixedValueTimers.push_back(timer);
-}*/
 
 void Extension::UpdateEngine()
 {
@@ -208,6 +160,11 @@ void Extension::LoadItemDatabase(TCHAR* filename)
 	// replace with loading from a file soon u dummy
 	Inventory::LoadInventoryDatabase(DarkEdif::TStringToUTF8(filename));
 	Inventory::InitDefaults();
+}
+
+void Extension::LoadContainerDatabase(TCHAR* filename)
+{
+	Inventory::LoadContainerDatabase(DarkEdif::TStringToUTF8(filename));
 }
 
 void Extension::DespositItemIntoContainer(TCHAR* containerName, TCHAR* itemName, int itemQuanitity, int gridLocatiom)
@@ -371,4 +328,11 @@ void Extension::SetCurrentContainerToNone()
 void Extension::SetCurrentCompanionToNone()
 {
 	Inventory::SetCurrentCompanionToNone();
+}
+
+void Extension::AddCompanionToSaveFile(TCHAR* name, TCHAR* type)
+{
+	std::string naame = DarkEdif::TStringToUTF8(name);
+	std::string tyype = DarkEdif::TStringToUTF8(type);
+	Inventory::AddCompanionToSaveFile(naame, tyype);
 }

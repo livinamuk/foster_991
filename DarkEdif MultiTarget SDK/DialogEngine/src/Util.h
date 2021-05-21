@@ -13,6 +13,8 @@ public:
     // Static Methods
     static std::string GetModifierTypeNameAsString(ModifierType type);
     static std::string GetItemTypeAsString(InventoryType type);
+    //static std::string GetCompanionTypeAsString(InventoryType type);
+    static CompanionType GetCompanionTypeFromString(std::string type);
     static InventoryType GetItemTypeFromString(std::string type);
     static bool CaselessEquality(std::string strA, std::string strB);
     static std::string ToUppercase(std::string str);

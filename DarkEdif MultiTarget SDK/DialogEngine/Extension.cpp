@@ -17,7 +17,7 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
         IDs in the JSON here
    */
 
-
+	
 	LinkAction(0, LoadDialogFile);
 	LinkAction(1, LoadQuestFile);
 	LinkAction(2, LoadPlayerDataFile);
@@ -99,6 +99,9 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 
 	LinkAction(65, SetCurrentContainerToNone);
 	LinkAction(66, SetCurrentCompanionToNone);
+	LinkAction(67, LoadContainerDatabase);
+	LinkAction(68, AddCompanionToSaveFile);
+	
 
 
 	LinkCondition(0, IsThereDialogToShow);
@@ -134,6 +137,7 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkCondition(27, IsCurrentBagSkills);
 	LinkCondition(28, IsPlayerAtContainer);
 	LinkCondition(29, PlayerHasCompanion);
+	LinkCondition(30, PlayerHasEncounteredCompanionAlready);
 
 	
 
@@ -217,7 +221,7 @@ Extension::Extension(RuntimeFunctions &runFuncs, EDITDATA * edPtr, jobject javaE
 	LinkExpression(63, GetSkillBagItemNameByIndex);
 	LinkExpression(64, GetItemPositionInInventoryByItemName);
 	LinkExpression(65, GetItemPositionInContainerByItemName);
-
+	
 
 	/*
         This is where you'd do anything you'd do in CreateRunObject in the original SDK

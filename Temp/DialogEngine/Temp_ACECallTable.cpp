@@ -1,4 +1,4 @@
-﻿// AltPlatformPostBuildTool: This file was generated for a Extension.cpp/h that was modified at 2021-05-08T16:12:27.9598813Z.
+﻿// AltPlatformPostBuildTool: This file was generated for a Extension.cpp/h that was modified at 2021-05-20T10:11:11.3572929Z.
 // This file is used by the AltPlatformPreBuildTool as an input template for the calltable generator.
 // Do not modify or delete this file.
 #if DARKEDIF_ACE_CALL_TABLE_INDEX==0
@@ -26,8 +26,6 @@
 				return ext->IsQuestActive(*(TCHAR* *)&Parameters[0]);
 			case 11:
 				return ext->IsQuestInactive(*(TCHAR* *)&Parameters[0]);
-			case 12:
-				return ext->AreQuestRequirementsFullfilled(*(TCHAR* *)&Parameters[0]);
 			case 13:
 				return ext->IsQuestComplete(*(TCHAR* *)&Parameters[0]);
 			case 14:
@@ -48,6 +46,22 @@
 				return ext->IsCurrentBagConsumable();
 			case 22:
 				return ext->IsCurrentBagQuest();
+			case 23:
+				return ext->IsItemUsable(*(TCHAR* *)&Parameters[0]);
+			case 24:
+				return ext->IsItemWearable(*(TCHAR* *)&Parameters[0]);
+			case 25:
+				return ext->IsItemEquipped(*(TCHAR* *)&Parameters[0]);
+			case 26:
+				return ext->WasItemUsed(*(TCHAR* *)&Parameters[0]);
+			case 27:
+				return ext->IsCurrentBagSkills();
+			case 28:
+				return ext->IsPlayerAtContainer();
+			case 29:
+				return ext->PlayerHasCompanion();
+			case 30:
+				return ext->PlayerHasEncounteredCompanionAlready(*(TCHAR* *)&Parameters[0]);
 
 #elif DARKEDIF_ACE_CALL_TABLE_INDEX==1
 			case 0:
@@ -80,14 +94,10 @@
 				return ext->SetGameFlagToFalse(*(TCHAR* *)&Parameters[0]), 0;
 			case 14:
 				return ext->ToggleGameFlag(*(TCHAR* *)&Parameters[0]), 0;
-			case 15:
-				return ext->RegisterItemFixedValue(*(TCHAR* *)&Parameters[0], *(int *)&Parameters[1]), 0;
 			case 16:
 				return ext->GiveItem(*(TCHAR* *)&Parameters[0], *(int *)&Parameters[1]), 0;
 			case 17:
 				return ext->TakeItem(*(TCHAR* *)&Parameters[0], *(int *)&Parameters[1]), 0;
-			case 18:
-				return ext->PickedUpFusionItem(*(int *)&Parameters[0]), 0;
 			case 19:
 				return ext->TriggerFusionActionByName(*(TCHAR* *)&Parameters[0]), 0;
 			case 20:
@@ -98,18 +108,14 @@
 				return ext->FailQuestByName(*(TCHAR* *)&Parameters[0]), 0;
 			case 23:
 				return ext->CheckForQuestCompletion(), 0;
-			case 24:
-				return ext->RegisterNPCFixedValue(*(TCHAR* *)&Parameters[0], *(int *)&Parameters[1]), 0;
 			case 25:
-				return ext->CheckNPCQuestDialog(*(int *)&Parameters[0]), 0;
+				return ext->CheckNPCForStandardDialogAndQuests(*(TCHAR* *)&Parameters[0]), 0;
 			case 26:
-				return ext->CheckNPCInWorldDialog(*(int *)&Parameters[0]), 0;
+				return ext->CheckNPCForInWorldDialog(*(TCHAR* *)&Parameters[0]), 0;
 			case 27:
 				return ext->SetTextTimerDuration(*(int *)&Parameters[0]), 0;
 			case 28:
-				return ext->CheckNPCInWorldQuestDialogText(*(int *)&Parameters[0]), 0;
-			case 29:
-				return ext->CheckNPCStandardDialogText(*(int *)&Parameters[0]), 0;
+				return ext->CheckNPCForInworldQuestDialog(*(TCHAR* *)&Parameters[0]), 0;
 			case 30:
 				return ext->ClearAllData(), 0;
 			case 31:
@@ -170,6 +176,24 @@
 				return ext->EquipToBelt(*(TCHAR* *)&Parameters[0]), 0;
 			case 59:
 				return ext->EquipToEquipSlot(*(TCHAR* *)&Parameters[0]), 0;
+			case 60:
+				return ext->SetInventoryBagSkillsSize(*(int *)&Parameters[0]), 0;
+			case 61:
+				return ext->setCurrentBagToSkills(), 0;
+			case 62:
+				return ext->EquipItemByName(*(TCHAR* *)&Parameters[0]), 0;
+			case 63:
+				return ext->DequipItemByName(*(TCHAR* *)&Parameters[0]), 0;
+			case 64:
+				return ext->UseItemByName(*(TCHAR* *)&Parameters[0]), 0;
+			case 65:
+				return ext->SetCurrentContainerToNone(), 0;
+			case 66:
+				return ext->SetCurrentCompanionToNone(), 0;
+			case 67:
+				return ext->LoadContainerDatabase(*(TCHAR* *)&Parameters[0]), 0;
+			case 68:
+				return ext->AddCompanionToSaveFile(*(TCHAR* *)&Parameters[0], *(TCHAR* *)&Parameters[1]), 0;
 
 #elif DARKEDIF_ACE_CALL_TABLE_INDEX==2
 		case 0:
@@ -242,7 +266,7 @@
 			*((const TCHAR* *)&Result) = ext->GetNPCInWorldDialogStringByIndex(*(int *)&Parameters[0]);
 			break;
 		case 23:
-			*((int *)&Result) = ext->GetNPCFixedValueByIndex(*(int *)&Parameters[0]);
+			*((const TCHAR* *)&Result) = ext->GetNPCNameByIndex(*(int *)&Parameters[0]);
 			break;
 		case 24:
 			*((int *)&Result) = ext->GetInventoryBagGeneralSize();
@@ -320,16 +344,16 @@
 			*((const TCHAR* *)&Result) = ext->GetCurrentContainerName();
 			break;
 		case 49:
-			*((int *)&Result) = ext->GetCurrentContainerSize();
+			*((int *)&Result) = ext->GetContainerSize(*(const TCHAR* *)&Parameters[0]);
 			break;
 		case 50:
-			*((const TCHAR* *)&Result) = ext->GetCurrentContainerItemNameByIndex(*(int *)&Parameters[0]);
+			*((const TCHAR* *)&Result) = ext->GetContainerItemNameByIndex(*(const TCHAR* *)&Parameters[0], *(int *)&Parameters[1]);
 			break;
 		case 51:
-			*((int *)&Result) = ext->GetCurrentContainerItemQuanityByIndex(*(int *)&Parameters[0]);
+			*((int *)&Result) = ext->GetContainerItemQuanityByIndex(*(const TCHAR* *)&Parameters[0], *(int *)&Parameters[1]);
 			break;
 		case 52:
-			*((const TCHAR* *)&Result) = ext->GetCurrentContainerIconName();
+			*((const TCHAR* *)&Result) = ext->GetContainerIconName(*(const TCHAR* *)&Parameters[0]);
 			break;
 		case 53:
 			*((const TCHAR* *)&Result) = ext->GetItemNameEquippedToHead();
@@ -357,6 +381,18 @@
 			break;
 		case 61:
 			*((float *)&Result) = ext->GetMaxWeight();
+			break;
+		case 62:
+			*((int *)&Result) = ext->GetInventoryBagSkillssize();
+			break;
+		case 63:
+			*((const TCHAR* *)&Result) = ext->GetSkillBagItemNameByIndex(*(int *)&Parameters[0]);
+			break;
+		case 64:
+			*((int *)&Result) = ext->GetItemPositionInInventoryByItemName(*(const TCHAR* *)&Parameters[0]);
+			break;
+		case 65:
+			*((int *)&Result) = ext->GetItemPositionInContainerByItemName(*(const TCHAR* *)&Parameters[0]);
 			break;
 
 #else

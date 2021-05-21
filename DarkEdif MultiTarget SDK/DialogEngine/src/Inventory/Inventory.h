@@ -29,8 +29,13 @@ class Inventory {
 public:
 	// functions
 	static void InitDefaults();
+
 	static void LoadInventoryDatabase(std::string filepath);
 	static void SaveInventoryDatabase();
+
+	static void LoadContainerDatabase(std::string filepath);
+	static void SaveContainerDatabase();
+
 	static void NewInventoryItem(std::string name, InventoryType type, float weight, std::string description, int price, bool usable, std::vector<Modifier> modifers);
 	static void TakeItem(std::string name, int quantity);
 	static ReturnValue GiveItem(std::string name, int quantity);
@@ -151,6 +156,10 @@ public:
 	static void SetCurrentCompanionToNone();
 	static bool IsPlayerAtContainer();
 	static bool PlayerHasCompanion();
+
+	static bool PlayerHasEncounteredCompanionAlready(std::string name);
+	static void AddCompanionToSaveFile(std::string name, std::string type);
+
 
 	static Container* p_displayedContainer;
 

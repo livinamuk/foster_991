@@ -1,7 +1,6 @@
 
 #include "Common.h"
 
-
 bool Extension::IsThereDialogToShow()
 {
 	return !DialogEngine::IsDialogOver();
@@ -75,11 +74,6 @@ bool Extension::IsQuestInactive(TCHAR* query) {
 	return (DialogEngine::IsQuestInactive(DarkEdif::TStringToUTF8(query)));
 }
 
-/*bool Extension::AreQuestRequirementsFullfilled(TCHAR* query)
-{
-	return (DialogEngine::AreQuestRequirementsFullfilled(DarkEdif::TStringToUTF8(query)));
-}*/
-
 bool Extension::IsQuestComplete(TCHAR* query) 
 {
 	return (DialogEngine::IsQuestCompleted(DarkEdif::TStringToUTF8(query)));
@@ -152,4 +146,9 @@ bool Extension::IsPlayerAtContainer()
 bool Extension::PlayerHasCompanion()
 {
 	return Inventory::PlayerHasCompanion();
+}
+
+bool Extension::PlayerHasEncounteredCompanionAlready(TCHAR* name)
+{
+	return Inventory::PlayerHasEncounteredCompanionAlready(DarkEdif::TStringToUTF8(name));
 }

@@ -106,7 +106,9 @@
 				[ 63, "Dequip Item By Name" ],
 				[ 64, "Use Item By Name" ],
 				[ 65, "Set current container to none" ],
-				[ 66, "Set current companion to none" ]
+				[ 66, "Set current companion to none" ],
+				[ 67, "Load Container Database" ],
+				[ 68, "Add Companion To Save File" ]
 			]
 		],
 		"ConditionMenu": [
@@ -139,7 +141,8 @@
 			[ 26, "Was Item Used" ],
 			[ 27, "Is Current Bag the Skills bag?" ],
 			[ 28, "Is Player At Container?" ],
-			[ 29, "Dose Play Have A Companion?" ]
+			[ 29, "Dose Play Have A Companion?" ],
+			[ 30, "Player Has Encountered Companion Already?" ]
 		],
 		"ExpressionMenu": [
 			[
@@ -610,6 +613,19 @@
 			},
 			{
 				"Title": "Set current companion to none"
+			},
+			{
+				"Title": "Load Container Database: %0",
+				"Parameters": [
+					[ "Text", "filepath" ]
+				]
+			},
+			{
+				"Title": "Add Companion To Save File: %0 %1",
+				"Parameters": [
+					[ "Text", "name" ],
+					[ "Text", "type" ]
+				]
 			}
 		],
 		"Conditions": [
@@ -783,6 +799,13 @@
 			{
 				"Title": "%o : Does player have a companion?",
 				"Triggered": false
+			},
+			{
+				"Title": "%o : Has Player Encountered Companion Before? %0",
+				"Triggered": false,
+				"Parameters": [
+					[ "Text", "name" ]
+				]
 			}
 		],
 		"Expressions": [

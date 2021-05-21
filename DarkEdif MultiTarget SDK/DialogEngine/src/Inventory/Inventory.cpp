@@ -140,7 +140,7 @@ void Inventory::InitDefaults()
 		*/
 	SetCurrentInventoryBagToGeneral();
 
-	NewContainer("Test Container A", "Box", 9, std::vector<PlayerInventoryItem> {
+	/*NewContainer("Test Container A", "Box", 9, std::vector<PlayerInventoryItem> {
 		PlayerInventoryItem("Knife", 1),
 			PlayerInventoryItem("Jacket", 1),
 			PlayerInventoryItem("Hammer", 2),
@@ -153,7 +153,7 @@ void Inventory::InitDefaults()
 			PlayerInventoryItem("Illegal Documents", 3)});
 
 	NewCompanion("Devil", CompanionType::DOG);
-	NewCompanion("Kitty", CompanionType::CAT);
+	NewCompanion("Kitty", CompanionType::CAT);*/
 }
 
 void Inventory::NewCompanion(std::string name, CompanionType type)
@@ -432,6 +432,93 @@ void Inventory::SaveInventoryDatabase()
 	}
 
 	document.AddMember("InventoryDatabase", inventoryArray, allocator);
+
+	// Convert JSON document to string
+	rapidjson::StringBuffer strbuf;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(strbuf);
+	document.Accept(writer);
+
+	// Save it
+	std::string data = strbuf.GetString();
+	std::ofstream out("res/" + filename);
+	out << data;
+	out.close();
+}
+
+void Inventory::LoadContainerDatabase(std::string filepath)
+{
+	std::string fileName = filepath;
+	FILE* pFile = fopen(fileName.c_str(), "rb");
+	char buffer[65536];
+	rapidjson::FileReadStream is(pFile, buffer, sizeof(buffer));
+	rapidjson::Document document;
+	document.ParseStream<0, rapidjson::UTF8<>, rapidjson::FileReadStream>(is);
+
+	// Check for errors
+	if (document.HasParseError())
+		std::cout << "Error  : " << document.GetParseError() << '\n' << "Offset : " << document.GetErrorOffset() << '\n';
+
+	const rapidjson::Value& a = document["ContainerDatabase"];
+	assert(a.IsArray());
+
+	for (rapidjson::SizeType i = 0; i < a.Size(); i++)
+	{
+		auto element = a[i].GetObject();
+		std::string name = element["Name"].GetString();
+		std::string icon = element["Icon"].GetString();
+
+		std::cout << "\n name: " << name << "\n";
+		std::cout << " icon: " << icon << "\n";
+
+		std::vector<PlayerInventoryItem> contentsVector;
+
+		auto contentsObject = element["InitialContents"].GetArray();;
+
+		for (rapidjson::SizeType i = 0; i < contentsObject.Size(); i++)
+		{
+			auto content = contentsObject[i].GetObject();
+
+			PlayerInventoryItem item;
+			item.m_name = content["Name"].GetString();
+			item.m_quantity = content["Qty"].GetInt();
+
+			contentsVector.push_back(item);
+		}
+		NewContainer(name, icon, contentsVector.size(), contentsVector);
+	}
+}
+
+void Inventory::SaveContainerDatabase()
+{
+	std::string filename = "ContainerDatabase.txt";
+
+	rapidjson::Document document;
+	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+	rapidjson::Value inventoryArray(rapidjson::kArrayType);
+	document.SetObject();
+
+	for (Container& container : s_containers)
+	{
+		rapidjson::Value object(rapidjson::kObjectType);
+
+		SaveString(&object, "Name", container.name, allocator);
+		SaveString(&object, "Icon", container.iconName, allocator);
+
+		rapidjson::Value contentsObject;
+		contentsObject.SetArray();
+		for (int i = 0; i < container.contentsVector.size(); i++) {
+			rapidjson::Value itemObject;
+			itemObject.SetObject();
+			SaveString(&itemObject, "Name", container.contentsVector[i].m_name, allocator);
+			SaveInt(&itemObject, "Qty", container.contentsVector[i].m_quantity, allocator);
+			contentsObject.PushBack(itemObject, allocator);
+		}
+		object.AddMember("InitialContents", contentsObject, allocator);
+
+		inventoryArray.PushBack(object, allocator);
+	}
+
+	document.AddMember("ContainerDatabase", inventoryArray, allocator);
 
 	// Convert JSON document to string
 	rapidjson::StringBuffer strbuf;
@@ -1342,6 +1429,17 @@ void Inventory::SetCurrentContainerByName(std::string name)
 
 void Inventory::SetCurrentCompanionByName(std::string name)
 {
+	// check if companion exists already
+	/*bool exists = false;
+	for (Container& container : s_containers) {
+		if (Util::CaselessEquality(container.name, name)) {
+			exists = true;
+			break;
+		}
+	}
+	if (!exists)
+		NewCompanion()*/
+
 	for (Container& container : s_containers)
 		if (Util::CaselessEquality(container.name, name)) {
 			p_displayedContainer = &container;
@@ -1368,4 +1466,22 @@ bool Inventory::IsPlayerAtContainer()
 bool Inventory::PlayerHasCompanion()
 {
 	return s_inventoryState.currentCompanionName != "";
+}
+
+bool Inventory::PlayerHasEncounteredCompanionAlready(std::string name)
+{
+	for (Container& container : s_containers) {
+		if (Util::CaselessEquality(container.name, name)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Inventory::AddCompanionToSaveFile(std::string name, std::string type)
+{
+	if (PlayerHasEncounteredCompanionAlready(name))
+		return;
+	else
+		NewCompanion(name, Util::GetCompanionTypeFromString(type));
 }
