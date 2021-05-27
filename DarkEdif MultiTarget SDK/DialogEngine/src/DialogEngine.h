@@ -2,7 +2,7 @@
 
 #include "Header.h"
 #include "Util.h"
-#include "GameItem.h"
+//#include "GameItem.h"
 #include "GameFlag.h"
 #include "GameFloat.h"
 #include "Quest.h"
@@ -89,6 +89,8 @@ public:
 	static bool IsQuestFailed(std::string query);
 	static std::string GetQuestStateAsString(std::string query);
 	static std::string GetQuestDescription(std::string query);
+	static void SetQuestStateByString(std::string questName, std::string questState);
+	//static void InactivateQuestByName(std::string query);
 	//static NPC* GetNPCPointer(std::string name);\
 		
 	// NPC abstraction
@@ -140,7 +142,16 @@ public:
 
 	static MyCondition ConditionObjectFromString(std::string line);
 	static bool IsConditionListSatisfied(std::vector<MyCondition>& conidtionList);
+
+private:
+	static void SaveString(rapidjson::Value* object, std::string elementName, std::string string, rapidjson::Document::AllocatorType& allocator);
+	static void SaveFloat(rapidjson::Value* object, std::string elementName, float number, rapidjson::Document::AllocatorType& allocator);
+	static void SaveInt(rapidjson::Value* object, std::string elementName, int number, rapidjson::Document::AllocatorType& allocator);
+	static std::string InventoryTypeToString(InventoryType query);
+	//static std::string InventoryTypeToString(InventoryType query);
+	static std::string ModiferTypeToString(ModifierType query);
 };
+
 
 
 // NOTES.
@@ -152,4 +163,3 @@ public:
 
 // EXTENSION DEV NOTES
 // - You have updated the string to int/float functions. Remember to update in other solution. Have you?
-

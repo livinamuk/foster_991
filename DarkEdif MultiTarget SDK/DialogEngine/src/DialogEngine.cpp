@@ -26,28 +26,175 @@ int DialogEngine::s_textDuration = 150;
 
 void DialogEngine::SavePlayerFile(std::string filename)
 {
-	// Create and open a text file
-	std::ofstream MyFile(filename);
+	rapidjson::Document document;
+	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+	rapidjson::Value inventoryArray(rapidjson::kArrayType);
+	document.SetObject();
 
-	// Save flags
-	for (GameFlag& gameFlag : s_gameFlags) {
-		if (gameFlag.m_state)
-			MyFile << gameFlag.m_name << "=true\n";
-		else
-			MyFile << gameFlag.m_name << "=false\n";
+	rapidjson::Value object(rapidjson::kObjectType);
+
+	SaveString(&object, "Current Companion", Inventory::s_inventoryState.currentCompanionName, allocator);
+	SaveString(&object, "Equiped To Head", Inventory::s_equippedItems.m_head, allocator);
+	SaveString(&object, "Equiped To Upper Body", Inventory::s_equippedItems.m_upperBody, allocator);
+	SaveString(&object, "Equiped To Hands", Inventory::s_equippedItems.m_hands, allocator);
+	SaveString(&object, "Equiped To Belt", Inventory::s_equippedItems.m_belt, allocator);
+	SaveString(&object, "Equiped To Lower Body", Inventory::s_equippedItems.m_lowerBody, allocator);
+	SaveString(&object, "Equiped To Feet", Inventory::s_equippedItems.m_feet, allocator);
+	SaveString(&object, "Equiped To Equipped", Inventory::s_equippedItems.m_equipped, allocator);
+
+	// Quests
+	rapidjson::Value questArray;
+	questArray.SetArray();
+	for (int i = 0; i < s_Quests.size(); i++) {
+		rapidjson::Value flagObject;
+		flagObject.SetObject();
+		SaveString(&flagObject, "Name", s_Quests[i].m_name, allocator);
+		SaveString(&flagObject, "State", s_Quests[i].GetStateAsString(), allocator);
+		questArray.PushBack(flagObject, allocator);
+	}
+	object.AddMember("Quests", questArray, allocator);
+
+	// Values
+	rapidjson::Value valuesArrau;
+	valuesArrau.SetArray();
+	for (int i = 0; i < s_gameFloats.size(); i++) {
+		rapidjson::Value flagObject;
+		flagObject.SetObject();
+		SaveString(&flagObject, "Name", s_gameFloats[i].m_name, allocator);
+		SaveFloat(&flagObject, "Value", s_gameFloats[i].m_value, allocator);
+		valuesArrau.PushBack(flagObject, allocator);
+	}
+	object.AddMember("Values", valuesArrau, allocator);
+
+	// Flags
+	rapidjson::Value flagsArray;
+	flagsArray.SetArray();
+	for (int i = 0; i < s_gameFlags.size(); i++) {
+		rapidjson::Value flagObject;
+		flagObject.SetObject();
+		SaveString(&flagObject, "Name", s_gameFlags[i].m_name, allocator);
+		SaveInt(&flagObject, "State", s_gameFlags[i].m_state, allocator);
+		flagsArray.PushBack(flagObject, allocator);
+	}
+	object.AddMember("Flags", flagsArray, allocator);
+
+	// Inventory
+	for (int j = 0; j < 7; j++)
+	{
+		rapidjson::Value inventoryArray;
+		inventoryArray.SetArray();
+		rapidjson::Value invSize;
+		invSize.SetObject();
+
+		PlayerInventoryItem* playerInventory = Inventory::s_playerInventory_general;
+
+		if (j == 0) {
+			playerInventory = Inventory::s_playerInventory_general;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_general_slots, allocator);
+		}
+		if (j == 1) {
+			playerInventory = Inventory::s_playerInventory_consumable;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_consumable_slots, allocator);
+		}
+		if (j == 2) {
+			playerInventory = Inventory::s_playerInventory_equipable;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_equipable_slots, allocator);
+		}
+		if (j == 3) {
+			playerInventory = Inventory::s_playerInventory_material;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_material_slots, allocator);
+		}
+		if (j == 4) {
+			playerInventory = Inventory::s_playerInventory_quest;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_quest_slots, allocator);
+		}
+		if (j == 5) {
+			playerInventory = Inventory::s_playerInventory_skills;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_skill_slots, allocator);
+		}
+		if (j == 6) {
+			playerInventory = Inventory::s_playerInventory_wearable;
+			SaveInt(&invSize, "BagSize", Inventory::m_max_wearable_slots, allocator);
+		}
+
+		inventoryArray.PushBack(invSize, allocator);
+		for (int i = 0; i < INVENTORY_SIZE_LIMIT; i++)
+		{
+			PlayerInventoryItem* item = &playerInventory[i];
+
+			if (item->m_name != EMPTY_SLOT) {
+				rapidjson::Value obj;
+				obj.SetObject();
+				SaveString(&obj, "Name", item->m_name, allocator);
+				SaveInt(&obj, "Qty", item->m_quantity, allocator);
+				SaveInt(&obj, "Index", i, allocator);
+				inventoryArray.PushBack(obj, allocator);
+			}
+		}
+
+		if (j == 0)	object.AddMember("Inventory General", inventoryArray, allocator);
+		if (j == 1)	object.AddMember("Inventory Consumable", inventoryArray, allocator);
+		if (j == 2)	object.AddMember("Inventory Equipable", inventoryArray, allocator);
+		if (j == 3)	object.AddMember("Inventory Material", inventoryArray, allocator);
+		if (j == 4)	object.AddMember("Inventory Quest", inventoryArray, allocator);
+		if (j == 5)	object.AddMember("Inventory Skills", inventoryArray, allocator);
+		if (j == 6)	object.AddMember("Inventory Wearable", inventoryArray, allocator);
 	}
 
-	// Save floats
-	for (GameFloat& gameFloat : s_gameFloats) {
-		MyFile << gameFloat.m_name << "=" << (int)gameFloat.m_value << "\n";
+	// Companions Encountered
+	rapidjson::Value companionsArray;
+	companionsArray.SetArray();
+	for (int i = 0; i < Inventory::s_compainions.size(); i++) {
+		Companion* companion = &Inventory::s_compainions[i];
+		rapidjson::Value obj;
+		obj.SetObject();
+		SaveString(&obj, "Name", companion->name, allocator);
+		SaveString(&obj, "Type", companion->TypeAsString(), allocator);
+		companionsArray.PushBack(obj, allocator);
 	}
+	object.AddMember("Companions Encountered", companionsArray, allocator);
 
-	// Save items
-	//for (PlayerInventoryItem& item : Inventory::s_playerInventory) {
-	//	MyFile << item.m_name << "=give" << item.m_quantity << "\n";
-	//}
-	// Close the file
-	MyFile.close();
+
+	// Container States
+	rapidjson::Value containersObject;
+	containersObject.SetArray();
+	for (Container& container : Inventory::s_containers)
+	{
+		rapidjson::Value object(rapidjson::kObjectType);
+
+		SaveString(&object, "Name", container.name, allocator);
+		SaveString(&object, "Icon", container.iconName, allocator);
+
+		rapidjson::Value contentsObject;
+		contentsObject.SetArray();
+		for (int i = 0; i < container.contentsVector.size(); i++) {
+			rapidjson::Value itemObject;
+			itemObject.SetObject();
+			SaveString(&itemObject, "Name", container.contentsVector[i].m_name, allocator);
+			SaveInt(&itemObject, "Qty", container.contentsVector[i].m_quantity, allocator);
+			contentsObject.PushBack(itemObject, allocator);
+		}
+		object.AddMember("Contents", contentsObject, allocator);
+
+		containersObject.PushBack(object, allocator);
+	}
+	object.AddMember("Container States", containersObject, allocator);
+
+
+
+	inventoryArray.PushBack(object, allocator);
+	document.AddMember("Savefile", inventoryArray, allocator);
+
+	// Convert JSON document to string
+	rapidjson::StringBuffer strbuf;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(strbuf);
+	document.Accept(writer);
+
+	// Save it
+	std::string data = strbuf.GetString();
+	std::ofstream out(filename);
+	out << data;
+	out.close();
 }
 
 void DialogEngine::LoadQuestFile(std::string filename)
@@ -72,8 +219,8 @@ void DialogEngine::LoadQuestFile(std::string filename)
 				tempQuest.m_name = "";
 				tempQuest.m_description = "";
 				tempQuest.m_requiredFlags.clear();
-				tempQuest.m_requiredItems.clear();
-				tempQuest.m_rewardItems.clear();
+				//tempQuest.m_requiredItems.clear();
+				//tempQuest.m_rewardItems.clear();
 				tempQuest.m_rewardFloats.clear();
 				tempQuest.m_conditions.clear();
 
@@ -131,11 +278,11 @@ void DialogEngine::LoadQuestFile(std::string filename)
 			tempQuest.m_requiredFlags.push_back(GameFlag(Util::GetSubstringAfterColon(line), false));
 
 		// Requirement item
-		else if (Util::StringContains(line, "REQUIREMENT_ITEM:"))
-			tempQuest.m_requiredItems.push_back(GameItem(Util::GetSubstringAfterColon(line), 1));
+		//else if (Util::StringContains(line, "REQUIREMENT_ITEM:"))
+		//	tempQuest.m_requiredItems.push_back(GameItem(Util::GetSubstringAfterColon(line), 1));
 
 		// Reward Item
-		else if (line.substr(0, 12) == "REWARD_ITEM:")
+		/*else if (line.substr(0, 12) == "REWARD_ITEM:")
 		{
 			std::string str = Util::GetSubstringAfterColon(line);
 			std::string itemName = Util::GetSubstringBeforeParentheses(str);
@@ -145,7 +292,7 @@ void DialogEngine::LoadQuestFile(std::string filename)
 
 			tempQuest.m_rewardItems.push_back(GameItem(itemName, quantity));
 			//	std::cout << " " << itemName << " [" << quantity << "]\n";
-		}
+		}*/
 
 		// Reward Float		
 		else if (line.substr(0, 13) == "REWARD_VALUE:")
@@ -177,38 +324,222 @@ void DialogEngine::LoadQuestFile(std::string filename)
 
 	file.close();
 }
+#pragma warning (disable : 4996)
 
 void DialogEngine::LoadPlayerFile(std::string filename)
 {
-	std::ifstream file(filename);
-	std::string line;
-	while (getline(file, line))
+	std::string fileName = filename;
+	FILE* pFile = fopen(fileName.c_str(), "rb");
+	char buffer[65536];
+	rapidjson::FileReadStream is(pFile, buffer, sizeof(buffer));
+	rapidjson::Document document;
+	document.ParseStream<0, rapidjson::UTF8<>, rapidjson::FileReadStream>(is);
+
+	// Check for errors
+	if (document.HasParseError())
+		std::cout << "Error  : " << document.GetParseError() << '\n' << "Offset : " << document.GetErrorOffset() << '\n';
+
+	const rapidjson::Value& a = document["Savefile"];
+	assert(a.IsArray());
+
+	for (rapidjson::SizeType i = 0; i < a.Size(); i++)
 	{
-		int colonPos = line.find('=');
-		std::string name = line.substr(0, colonPos);
-		std::string value = line.substr(colonPos + 1); // everything after the =
+		auto element = a[i].GetObject();
 
-		// FIRST check if it is an item. Which is in the format: give=itemnameX and X is the quantity
-		if (value.find("give") != std::string::npos)
+		// Quests
+		auto quests = element["Quests"].GetArray();
+		for (rapidjson::SizeType q = 0; q < quests.Size(); q++) {
+			auto quest = quests[q].GetObject();
+			std::string questName = quest["Name"].GetString();
+			std::string questState = quest["State"].GetString();
+			DialogEngine::SetQuestStateByString(questName, questState);
+		}
+
+		// Values		
+		auto values = element["Values"].GetArray();
+		for (rapidjson::SizeType q = 0; q < values.Size(); q++) {
+			auto valueElement = values[q].GetObject();
+			std::string name = valueElement["Name"].GetString();
+			float value = valueElement["Value"].GetFloat();
+			DialogEngine::SetGameFloat(name, value);
+		}
+
+		// Flags	
+		auto flags = element["Flags"].GetArray();
+		for (rapidjson::SizeType q = 0; q < flags.Size(); q++) {
+			auto flag = flags[q].GetObject();
+			std::string name = flag["Name"].GetString();
+			int state = flag["State"].GetInt();
+			DialogEngine::SetGameFlag(name, state);
+		}
+
+		// Inventory General
+		auto inventoryGeneral = element["Inventory General"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventoryGeneral.Size(); q++) {
+			auto el = inventoryGeneral[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetGeneralInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_general[index].m_name = itemName;
+				Inventory::s_playerInventory_general[index].m_quantity = itemQty;
+			}
+		}
+		// Inventory Consumable
+		auto inventoryConsumable = element["Inventory Consumable"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventoryConsumable.Size(); q++) {
+			auto el = inventoryConsumable[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetConsumableInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_consumable[index].m_name = itemName;
+				Inventory::s_playerInventory_consumable[index].m_quantity = itemQty;
+			}
+		}
+		// Inventory Equipable
+		auto inventoryEquipable = element["Inventory Equipable"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventoryEquipable.Size(); q++) {
+			auto el = inventoryEquipable[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetEquipableInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_equipable[index].m_name = itemName;
+				Inventory::s_playerInventory_equipable[index].m_quantity = itemQty;
+			}
+		}
+		// Inventory Material
+		auto inventoryMaterial = element["Inventory Material"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventoryMaterial.Size(); q++) {
+			auto el = inventoryMaterial[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetMaterialInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_material[index].m_name = itemName;
+				Inventory::s_playerInventory_material[index].m_quantity = itemQty;
+			}
+		}
+		// Inventory Quest
+		auto inventoryQuest = element["Inventory Quest"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventoryQuest.Size(); q++) {
+			auto el = inventoryQuest[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetQuestInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_quest[index].m_name = itemName;
+				Inventory::s_playerInventory_quest[index].m_quantity = itemQty;
+			}
+		}
+		// Inventory Skills
+		auto inventorySkills = element["Inventory Skills"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventorySkills.Size(); q++) {
+			auto el = inventorySkills[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetSkillInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_skills[index].m_name = itemName;
+				Inventory::s_playerInventory_skills[index].m_quantity = itemQty;
+			}
+		}
+		// Inventory Wearable
+		auto inventoryWearable = element["Inventory Wearable"].GetArray();
+		for (rapidjson::SizeType q = 0; q < inventoryWearable.Size(); q++) {
+			auto el = inventoryWearable[q].GetObject();
+
+			if (el.HasMember("BagSize"))
+				Inventory::SetWearableInventoryBagSize(el["BagSize"].GetInt());
+
+			if (el.HasMember("Name")) {
+				std::string itemName = el["Name"].GetString();
+				int itemQty = el["Qty"].GetInt();
+				int index = el["Index"].GetInt();
+				Inventory::s_playerInventory_wearable[index].m_name = itemName;
+				Inventory::s_playerInventory_wearable[index].m_quantity = itemQty;
+			}
+		}
+
+		// Companions Encountered
+		auto companionsEncountered = element["Companions Encountered"].GetArray();
+		for (rapidjson::SizeType q = 0; q < companionsEncountered.Size(); q++) {
+			auto el = companionsEncountered[q].GetObject();
+			std::string name = el["Name"].GetString();
+			std::string type = el["Type"].GetString();
+			if (type == "DOG")
+				Inventory::NewCompanion(name, CompanionType::DOG);
+			else if (type == "CAT")
+				Inventory::NewCompanion(name, CompanionType::CAT);
+			else if (type == "DONKEY")
+				Inventory::NewCompanion(name, CompanionType::DONKEY);
+		}
+
+		// Container states
+		Inventory::s_containers.clear();
+		auto containers = element["Container States"].GetArray();
+		for (rapidjson::SizeType q = 0; q < containers.Size(); q++)
 		{
-			// Check quantity
-			int quantity = Util::StringToInt(value.substr(4));
-			if (quantity == 0)
-				quantity = 1;
+			auto el = containers[q].GetObject();
+			std::string name = el["Name"].GetString();
+			std::string icon = el["Icon"].GetString();
+			std::vector<PlayerInventoryItem> containerContents;
+			auto contents = el["Contents"].GetArray();
+			for (rapidjson::SizeType j = 0; j < contents.Size(); j++)
+			{
+				auto itemEl = contents[j].GetObject();
+				PlayerInventoryItem item;
+				item.m_name = itemEl["Name"].GetString();
+				item.m_quantity = itemEl["Qty"].GetInt();
+				containerContents.push_back(item);
+			}
+			Inventory::NewContainer(name, icon, containerContents.size(), containerContents);
+		}
 
-			Inventory::GiveItem(name, quantity);
-			//Inventory::s_playerInventory.push_back(PlayerInventoryItem(name, quantity));
-			continue;
-		}
-		// Is it a boolean?
-		if (value.find("true") != std::string::npos)
-			SetGameFlag(name, true);
-		else if (value.find("false") != std::string::npos)
-			SetGameFlag(name, false);
-		// Is it a float
-		else {
-			SetGameFloat(name, std::stof(value));
-		}
+		// Equipped
+		std::string equippedToHead = element["Equiped To Head"].GetString();
+		std::string equippedToUpperBody = element["Equiped To Upper Body"].GetString();
+		std::string equippedToHands = element["Equiped To Hands"].GetString();
+		std::string equippedToBelt = element["Equiped To Belt"].GetString();
+		std::string equippedToLowerBody = element["Equiped To Lower Body"].GetString();
+		std::string equippedToFeet = element["Equiped To Feet"].GetString();
+		std::string equippedToEquipped = element["Equiped To Equipped"].GetString();
+		Inventory::s_equippedItems.m_belt = equippedToBelt;
+		Inventory::s_equippedItems.m_equipped = equippedToEquipped;
+		Inventory::s_equippedItems.m_feet = equippedToFeet;
+		Inventory::s_equippedItems.m_hands = equippedToHands;
+		Inventory::s_equippedItems.m_head = equippedToHead;
+		Inventory::s_equippedItems.m_lowerBody = equippedToLowerBody;
+		Inventory::s_equippedItems.m_upperBody = equippedToUpperBody;
+
+		// Current Companion
+		std::string currentCompanion = element["Current Companion"].GetString();
+		Inventory::SetCurrentCompanionByName(currentCompanion);
 	}
 }
 
@@ -697,6 +1028,15 @@ void DialogEngine::ActivateQuestByName(std::string query)
 			return;
 		}
 }
+/*
+void DialogEngine::InactivateQuestByName(std::string query)
+{
+	for (Quest& quest : s_Quests)
+		if (Util::CaselessEquality(quest.m_name, query)) {
+			quest.m_questState = QuestState::INACTIVE;
+			return;
+		}
+}*/
 
 void DialogEngine::CompleteQuestByName(std::string query)
 {
@@ -779,12 +1119,30 @@ std::string DialogEngine::GetQuestStateAsString(std::string query)
 	return "QUEST NOT FOUND";
 }
 
+
 std::string DialogEngine::GetQuestDescription(std::string query)
 {
 	for (Quest& quest : s_Quests)
 		if (Util::CaselessEquality(quest.m_name, query))
 			return quest.m_description;
 	return "";
+}
+
+void DialogEngine::SetQuestStateByString(std::string questName, std::string questState)
+{
+	for (Quest& quest : s_Quests)
+		if (Util::CaselessEquality(quest.m_name, questName))
+		{
+			if (questState == "ACTIVE")
+				quest.m_questState = QuestState::ACTIVE;
+			else if (questState == "INACTIVE")
+				quest.m_questState = QuestState::INACTIVE;
+			else if (questState == "COMPLETE")
+				quest.m_questState = QuestState::COMPLETE;
+			else if (questState == "FAILED")
+				quest.m_questState = QuestState::FAILED;
+			return;
+		}
 }
 
 
@@ -1186,7 +1544,7 @@ void DialogEngine::CheckNPCForInworldQuestDialog(std::string npcName)
 	NPC* npc = GetNPCPointer(npcName);
 	if (!npc)
 		return;
-	
+
 	// Iterate over each quest and stop at the first one that passes the condition list
 	for (NPCQuestData& questData : npc->m_quests)
 	{
@@ -1213,7 +1571,7 @@ void DialogEngine::CheckNPCForInworldQuestDialog(std::string npcName)
 				npc->m_inWorldDialogString = questData.m_questInWorldDialogText.complete;
 				npc->m_inWorldDialogTextTimer = s_textDuration;
 				return;
-			}			
+			}
 		}
 	}
 	return;
@@ -1233,7 +1591,7 @@ void DialogEngine::CheckNPCForStandardDialogAndQuests(std::string npcName)
 		{
 			for (MyCondition& responseCondition : dialogEntry.m_conditions) {
 				// Bool conditions
-				if (responseCondition.m_ConditionType == ConditionType::BOOOL) 
+				if (responseCondition.m_ConditionType == ConditionType::BOOOL)
 				{
 					if (responseCondition.m_requiredConditionBoolState != DialogEngine::GetGameFlagState(responseCondition.m_conditionName))
 						goto loop_exit;
@@ -1320,8 +1678,8 @@ void DialogEngine::CheckNPCForInWorldDialog(std::string npcName)
 			npc->m_inWorldDialogTextTimer = s_textDuration;
 
 
-		//	Util::Log("timer: " + std::to_string(npc->m_inWorldDialogTextTimer));
-		//	Util::Log("text:  " + npc->m_inWorldDialogString);
+			//	Util::Log("timer: " + std::to_string(npc->m_inWorldDialogTextTimer));
+			//	Util::Log("text:  " + npc->m_inWorldDialogString);
 			return;// npc->m_inWorldDialogString; // return it
 
 
@@ -1330,7 +1688,7 @@ void DialogEngine::CheckNPCForInWorldDialog(std::string npcName)
 		{
 			npc->m_inWorldDialogString = npc->m_inWorldDialogReplies[0]; // store it
 			npc->m_inWorldDialogTextTimer = s_textDuration;
-		//	Util::Log("no fucking text to display");
+			//	Util::Log("no fucking text to display");
 			return;// npc->m_inWorldDialogString; // return it
 		}
 	}
@@ -1544,3 +1902,27 @@ std::string DialogEngine::GetGameFlagNameByIndex(int index)
 }
 
 
+
+void DialogEngine::SaveString(rapidjson::Value* object, std::string elementName, std::string string, rapidjson::Document::AllocatorType& allocator)
+{
+	rapidjson::Value name(elementName.c_str(), allocator);
+	rapidjson::Value value(rapidjson::kObjectType);
+	value.SetString(string.c_str(), static_cast<rapidjson::SizeType>(string.length()), allocator);
+	object->AddMember(name, value, allocator);
+}
+
+void DialogEngine::SaveFloat(rapidjson::Value* object, std::string elementName, float number, rapidjson::Document::AllocatorType& allocator)
+{
+	rapidjson::Value name(elementName.c_str(), allocator);
+	rapidjson::Value value(rapidjson::kObjectType);
+	value.SetFloat(number);
+	object->AddMember(name, value, allocator);
+}
+
+void DialogEngine::SaveInt(rapidjson::Value* object, std::string elementName, int number, rapidjson::Document::AllocatorType& allocator)
+{
+	rapidjson::Value name(elementName.c_str(), allocator);
+	rapidjson::Value value(rapidjson::kObjectType);
+	value.SetInt(number);
+	object->AddMember(name, value, allocator);
+}

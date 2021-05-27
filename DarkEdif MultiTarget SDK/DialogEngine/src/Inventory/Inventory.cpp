@@ -467,8 +467,8 @@ void Inventory::LoadContainerDatabase(std::string filepath)
 		std::string name = element["Name"].GetString();
 		std::string icon = element["Icon"].GetString();
 
-		std::cout << "\n name: " << name << "\n";
-		std::cout << " icon: " << icon << "\n";
+		//	std::cout << "\n name: " << name << "\n";
+		//	std::cout << " icon: " << icon << "\n";
 
 		std::vector<PlayerInventoryItem> contentsVector;
 
@@ -750,16 +750,6 @@ bool Inventory::HasItem(std::string name)
 	else
 		return false;
 }
-
-/*
-std::string Inventory::GetGameItemNameByIndex(int index)
-{
-	if (index < 0 || index >= (int)s_maxInventorySlots)
-		return "out_of_range";
-
-	return s_playerInventory[index].m_name;
-}*/
-
 
 void Inventory::PrintCurrentContainer()
 {
@@ -1470,8 +1460,8 @@ bool Inventory::PlayerHasCompanion()
 
 bool Inventory::PlayerHasEncounteredCompanionAlready(std::string name)
 {
-	for (Container& container : s_containers) {
-		if (Util::CaselessEquality(container.name, name)) {
+	for (Companion& companion : s_compainions) {
+		if (Util::CaselessEquality(companion.name, name)) {
 			return true;
 		}
 	}

@@ -6,6 +6,12 @@
 #include <vector>
 #include <map>
 
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/prettywriter.h>
+
 enum class QuestState {
 	INACTIVE,
 	ACTIVE,
@@ -138,7 +144,7 @@ enum ReturnValue {
 };
 
 enum class CompanionType {
-	DONKEY, 
+	DONKEY,
 	CAT,
 	DOG
 };
@@ -146,6 +152,16 @@ enum class CompanionType {
 struct Companion {
 	std::string name;
 	CompanionType type;
+
+	std::string TypeAsString()
+	{
+		if (type == CompanionType::CAT)
+			return "CAT";
+		if (type == CompanionType::DOG)
+			return "DOG";
+		else
+			return "DONKEY";
+	}
 };
 
 enum class InventoryBagType {
@@ -158,8 +174,8 @@ enum class InventoryBagType {
 	SKILL
 };
 
-enum class InventoryType { 
-	UNDEFINED, 
+enum class InventoryType {
+	UNDEFINED,
 	WEARABLE_HEAD,
 	WEARABLE_UPPER_BODY,
 	WEARABLE_LOWER_BODY,
@@ -168,11 +184,11 @@ enum class InventoryType {
 	WEARABLE_FEET,
 	EQUIPABLE,
 	MATERIAL,
-	CONSUMABLE, 
-	GENERAL, 
+	CONSUMABLE,
+	GENERAL,
 	QUEST,
 	SKILL
-};	
+};
 
 enum ModifierType {
 	NONE,

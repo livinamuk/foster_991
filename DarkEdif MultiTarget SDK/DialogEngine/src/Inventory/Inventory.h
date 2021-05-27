@@ -5,11 +5,6 @@
 #include "rapidjson/document.h"
 #include <rapidjson/filereadstream.h>
 
-#include <rapidjson/istreamwrapper.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/ostreamwrapper.h>
-#include <rapidjson/prettywriter.h>
 
 // Notes
 /*
@@ -41,7 +36,6 @@ public:
 	static ReturnValue GiveItem(std::string name, int quantity);
 	static int GetItemQuantity(std::string name);
 	static bool HasItem(std::string name);
-	/*static std::string GetGameItemNameByIndex(int index);*/
 
 	static void PrintInventoryDatabase();
 	static void PrintPlayerInventoryList();

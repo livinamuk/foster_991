@@ -15,9 +15,9 @@
 				"Files",
 				[ 0, "Load Dialog File" ],
 				[ 1, "Load Quest File" ],
-				[ 2, "LoadPlayerDataFile" ],
+				[ 2, "Load Savefile" ],
 				[ 3, "Load In-World Dialog File" ],
-				[ 4, "SavePlayerDataFile" ]
+				[ 4, "Save Savefile" ]
 			],
 			[
 				"Dialog",
@@ -250,7 +250,7 @@
 				]
 			},
 			{
-				"Title": "Load Player Data File %0",
+				"Title": "Load Savefile %0",
 				"Parameters": [
 					[ "Text", "filepath" ]
 				]
@@ -262,7 +262,7 @@
 				]
 			},
 			{
-				"Title": "Save Player Data File %0",
+				"Title": "Save Savefile %0",
 				"Parameters": [
 					[ "Text", "filepath" ]
 				]
