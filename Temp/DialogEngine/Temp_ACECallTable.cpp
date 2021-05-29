@@ -1,4 +1,4 @@
-﻿// AltPlatformPostBuildTool: This file was generated for a Extension.cpp/h that was modified at 2021-05-20T10:11:11.3572929Z.
+﻿// AltPlatformPostBuildTool: This file was generated for a Extension.cpp/h that was modified at 2021-05-21T00:42:46.5003055Z.
 // This file is used by the AltPlatformPreBuildTool as an input template for the calltable generator.
 // Do not modify or delete this file.
 #if DARKEDIF_ACE_CALL_TABLE_INDEX==0

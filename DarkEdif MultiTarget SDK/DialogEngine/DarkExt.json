@@ -1163,7 +1163,7 @@
 			},
 			{
 				"Title": "GetSkillBagItemNameByIndex(",
-				"Returns": "Integer",
+				"Returns": "Text",
 				"Parameters": [
 					[ "Integer", "index" ]
 				]

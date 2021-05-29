@@ -50,7 +50,7 @@ void Inventory::LoadInventoryDatabase(std::string filepath)
 		std::cout << "Error  : " << document.GetParseError() << '\n' << "Offset : " << document.GetErrorOffset() << '\n';
 
 
-	const rapidjson::Value& a = document["InventoryDatabase"];
+	const rapidjson::Value& a = document["ItemDatabase"];
 	assert(a.IsArray());
 	for (rapidjson::SizeType i = 0; i < a.Size(); i++)
 	{
@@ -402,7 +402,7 @@ InventoryBagType Inventory::GetInventoryBagTypeByItemName(std::string name)
 
 void Inventory::SaveInventoryDatabase()
 {
-	std::string filename = "InventoryDatabase.txt";
+	std::string filename = "ItemDatabase.txt";
 
 	rapidjson::Document document;
 	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();

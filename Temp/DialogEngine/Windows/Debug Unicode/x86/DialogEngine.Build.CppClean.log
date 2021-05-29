@@ -1,11 +1,11 @@
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\vc141.pdb
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\vc141.idb
-d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\edittime.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\edif.edittime.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\runtime.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\util.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\quest.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\npc.obj
+d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\inventory.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\gameitem.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\gamefloat.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\gameflag.obj
@@ -21,7 +21,7 @@ d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\edif.gene
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\edif.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\darkedif.obj
 d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\general.obj
-d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\inventory.obj
+d:\github repos\foster_991\temp\dialogengine\windows\debug unicode\x86\edittime.obj
 d:\github repos\foster_991\mfx\extensions\unicode\dialogengine.ilk
 d:\github repos\foster_991\mfx\extensions\unicode\dialogengine.mfx
 d:\github repos\foster_991\mfx\extensions\unicode\dialogengine_full.pdb

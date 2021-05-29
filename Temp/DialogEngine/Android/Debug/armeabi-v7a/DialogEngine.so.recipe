@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <SOLibPaths>D:\Github Repos\foster_991\Temp\DialogEngine\Android\Debug\armeabi-v7a\DialogEngine.so;C:\Microsoft\AndroidNDK64\android-ndk-r16b\prebuilt\android-arm\gdbserver\gdbserver;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\armeabi-v7a\libandroid_support.a;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\armeabi-v7a\libc++_static.a;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\armeabi-v7a\libc++abi.a</SOLibPaths>
+  <AndroidLibPaths />
+  <OObjPaths>D:\Github Repos\foster_991\Temp\DialogEngine\Android\Debug\armeabi-v7a</OObjPaths>
+  <Configuration>Debug</Configuration>
+  <Platform>ARM</Platform>
+  <AndroidArchitecture>armeabi-v7a</AndroidArchitecture>
+  <!--links to other recipe files-->
+  <RecipeFiles />
+</project>

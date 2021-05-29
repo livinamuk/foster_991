@@ -13,11 +13,44 @@
   json.cpp
   ObjectSelection.cpp
   Actions.cpp
-  In file included from D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\Actions.cpp:6:
-./Extension.h(5,7): error : redefinition of 'Extension'
-  class Extension
-        ^
-  ./Extension.h(5,7):  note: previous definition is here
-  class Extension
-        ^
-  1 error generated.
+  Conditions.cpp
+  Expressions.cpp
+  Extension.cpp
+  DialogEngine.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\DialogEngine.cpp(327,9): warning : unknown pragma ignored [-Wunknown-pragmas]
+CLANGCOMPILE : #pragma warning (disable: 4996)
+          ^
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\DialogEngine.cpp(815,2): warning : unused label 'loop_exit' [-Wunused-label]
+          loop_exit:;
+          ^~~~~~~~~~
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\DialogEngine.cpp(967,9): warning : unused variable 'npc' [-Wunused-variable]
+                          NPC* npc = CreateNPC(npcName);
+                               ^
+  3 warnings generated.
+  GameFlag.cpp
+  GameFloat.cpp
+  GameItem.cpp
+  Inventory.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(37,9): warning : unknown pragma ignored [-Wunknown-pragmas]
+CLANGCOMPILE : #pragma warning (disable: 4996)
+          ^
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Inventory\Inventory.cpp(295,16): warning : unused variable 'itemType' [-Wunused-variable]
+          InventoryType itemType = GetItemTypeByInventoryName(itemName);
+                        ^
+  2 warnings generated.
+  NPC.cpp
+  Quest.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Quest.cpp(56,1): warning : control may reach end of non-void function [-Wreturn-type]
+  }
+  ^
+  1 warning generated.
+  Util.cpp
+D:\Github Repos\foster_991\DarkEdif MultiTarget SDK\DialogEngine\src\Util.cpp(1,9): warning : #pragma once in main file [-Wpragma-once-outside-header]
+  #pragma once
+          ^
+  1 warning generated.
+  Runtime.cpp
+  DialogEngine.Android.vcxproj -> D:\Github Repos\foster_991\Temp/DialogEngine/Android/Runtime/arm64-v8a\DialogEngine.so
+  Copying the built SO into a ZIP file inside MFX\Data\Runtime...
+  AltPlatformPostBuildTool: running for extension DialogEngine, ABI arm64-v8a...
+  AltPlatformPostBuildTool complete. Outputted to archive: D:\Github Repos\foster_991\MFX\Data\Runtime\Android\DialogEngine.zip
